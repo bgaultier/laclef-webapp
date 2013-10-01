@@ -1,0 +1,17 @@
+# Mandatory 1and1 instructions
+Options +FollowSymLinks
+RewriteEngine On
+RewriteBase /
+
+# Make index.php handle any 404 errors.
+ErrorDocument 404 /index.php
+
+# Set the default handler.
+DirectoryIndex index.php
+
+# Various rewrite rules.
+<IfModule mod_rewrite.c>
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(.*)$ index.php [L,QSA]
+</IfModule>

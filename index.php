@@ -47,23 +47,59 @@
   $uri = $_SERVER['REQUEST_URI'];
 
   if ('/' == $uri)
-    home_action($_SESSION['id']);
+    home_action($_SESSION['uid']);
   elseif ('/login' == $uri)
     login_action();
   elseif ('/logout' == $uri)
     logout_action();
   elseif ('/signup' == $uri)
     signup_action();
-  elseif ('/account' == $uri)
-    account_action($_SESSION['email']);
-  elseif ('/users' == $uri)
-    list_users_action($_SESSION['id']);
-  elseif ('/tags' == $uri)
-    list_tags_action($_SESSION['id']);
+  elseif ('/account' == $uri && isset($_SESSION['uid']))
+    account_action($_SESSION['uid']);
+  elseif ('/users' == $uri && isset($_SESSION['uid']))
+    list_users_action($_SESSION['uid']);
+  elseif ('/user/delete' == substr($uri, 0, 12) && isset($_GET['uid']))
+  		delete_user_action($_SESSION['uid'], $_GET['uid']);
+  elseif ('/user' == substr($uri, 0, 5) && isset($_GET['uid']))
+  		modify_user_action($_SESSION['uid'], $_GET['uid']);
+  elseif ('/tags' == $uri && isset($_SESSION['uid']))
+    list_tags_action($_SESSION['uid']);
+  elseif ('/tag/delete' == substr($uri, 0, 11) && isset($_GET['uid']))
+  		delete_tag_action($_SESSION['uid'], $_GET['uid']);
+  elseif ('/tag' == substr($uri, 0, 4) && isset($_GET['uid']))
+  		modify_tag_action($_SESSION['uid'], $_GET['uid']);
+  elseif ('/readers' == $uri && isset($_SESSION['uid']))
+    list_readers_action($_SESSION['uid']);
+  elseif ('/reader/delete' == substr($uri, 0, 14) && isset($_GET['id']))
+  		delete_reader_action($_SESSION['uid'], $_GET['id']);
+  elseif ('/reader/all' == substr($uri, 0, 11) && isset($_GET['id']))
+    add_all_user_to_a_reader_action($_SESSION['uid'], $_GET['id']);
+  elseif ('/reader' == substr($uri, 0, 7) && isset($_GET['id']))
+  		modify_reader_action($_SESSION['uid'], $_GET['id']);
+  elseif ('/permission/delete' == substr($uri, 0, 18) && isset($_GET['uid']) && isset($_GET['id']))
+  		delete_permission_action($_SESSION['uid'], $_GET['uid'], $_GET['id']);
+  elseif ('/permission' == substr($uri, 0, 11) && isset($_GET['uid']) && isset($_GET['id']))
+    modify_permission_action($_SESSION['uid'], $_GET['uid'], $_GET['id']);
+  elseif ('/payments' == $uri && isset($_SESSION['uid']))
+    list_payments_action($_SESSION['uid']);
+  elseif ('/snack/delete' == substr($uri, 0, 13) && isset($_GET['id']))
+  		delete_snack_action($_SESSION['uid'], $_GET['id']);
+  elseif ('/snack' == substr($uri, 0, 6) && isset($_GET['id']))
+    modify_snack_action($_SESSION['uid'], $_GET['id']);
+  elseif ('/snacks' == $uri && isset($_SESSION['uid']))
+    list_snacks_action($_SESSION['uid']);
+  elseif ('/tag/delete' == substr($uri, 0, 11) && isset($_GET['uid']))
+  		delete_tag_action($_SESSION['uid'], $_GET['uid']);
+  elseif ('/tag' == substr($uri, 0, 4) && isset($_GET['uid']))
+  		modify_tag_action($_SESSION['uid'], $_GET['uid']);
   elseif ('/help' == $uri)
     help_action();
   elseif ('/about' == $uri)
     about_action();
+  elseif ('/user.json' == substr($uri, 0, 10) && isset($_GET['uid'])) {
+    header('Content-type: application/json; charset=utf-8');
+    get_user_action($_SESSION['uid'], $_GET['uid']);
+  }
   else
     login_action();
 
