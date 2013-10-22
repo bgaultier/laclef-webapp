@@ -97,7 +97,7 @@
 		                echo ' class="ink-label info"';
 		              ?>>
 		            <td class="small"><?php echo datetime_to_string($swipe['timestamp']); ?></td>
-					      <td><span class="tooltip" data-tip-text="<?php echo $swipe['location']; ?>" data-tip-where="up" data-tip-color="black"><?php echo $swipe['id']; ?></span></td>
+					      <td><span class="tooltip" data-tip-text="<?php echo $swipe['location']; ?>" data-tip-where="up" data-tip-color="black"><?php echo $swipe['reader']; ?></span></td>
 					      <td><?php echo $swipe['uid']; ?></td>
 					      <td><?php echo get_service_icon_html($swipe['service']); ?></td>
 		          </tr>
