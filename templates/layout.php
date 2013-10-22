@@ -51,7 +51,7 @@
       <script type="text/javascript" src="templates/ink/js/autoload.js"></script>
   </head>
   <body>
-  		<header>
+  		<header<?php if(isset($dashboard_active)) echo ' class="hide-all"'; ?>>
   			<nav class="ink-navigation ink-grid hide-small hide-medium top-space">
   				<ul class="menu horizontal rounded shadowed grey">
   					<li>
@@ -102,7 +102,11 @@
 		      			echo '<li';
 		      			if(isset($snacks_active)) echo ' class="active"';
 		      			echo '><a href="snacks">' . _('Produits') . '</a></li>';
-		      			echo '<li><a href="logs">' . _('Logs') . '</a></li>';
+		      			echo '<li';
+		      			if(isset($orders_active)) echo ' class="active"';
+		      			echo '><a href="orders">' . _('Commandes') . '</a></li>';
+		      			echo '<li><a href="swipes">' . _('Logs') . '</a></li>';
+		      			echo '<li><a href="dashboards">' . _('Tableaux de bord') . '</a></li>';
 		      			echo '</ul></li>';
 		      		}
 		      	?>
@@ -166,9 +170,18 @@
 		          			echo '<li';
 		          			if(isset($payments_active)) echo ' class="active"';
 		          			echo '><a href="payments">' . _('Paiements') . '</a></li>';
-		          			echo '<li><a href="snacks">' . _('Produits') . '</a></li>';
-		          			echo '<li><a href="logs">' . _('Logs') . '</a></li>';
-		          			echo '</li>';
+		          			echo '<li';
+		          			if(isset($snacks_active)) echo ' class="active"';
+		          			echo '><a href="snacks">' . _('Produits') . '</a></li>';
+		          			echo '<li';
+		          			if(isset($orders_active)) echo ' class="active"';
+		      			    echo '><a href="orders">' . _('Commandes') . '</a></li>';
+		      			    echo '<li';
+		          			if(isset($swipes_active)) echo ' class="active"';
+		          			echo '><a href="swipes">' . _('Logs') . '</a></li>';
+		          			echo '<li';
+		          			if(isset($dashboards_active)) echo ' class="active"';
+		          			echo '><a href="dashboards">' . _('Tableaux de bord') . '</a></li>';
 		          		}
 		          	?>
 						  <li<?php if(isset($help_active)) echo ' class="active"' ?>>

@@ -82,6 +82,10 @@
     modify_permission_action($_SESSION['uid'], $_GET['uid'], $_GET['id']);
   elseif ('/payments' == $uri && isset($_SESSION['uid']))
     list_payments_action($_SESSION['uid']);
+  elseif ('/swipes' == $uri && isset($_SESSION['uid']))
+    list_swipes_action($_SESSION['uid']);
+  elseif ('/orders' == $uri && isset($_SESSION['uid']))
+    list_orders_action($_SESSION['uid']);
   elseif ('/snack/delete' == substr($uri, 0, 13) && isset($_GET['id']))
   		delete_snack_action($_SESSION['uid'], $_GET['id']);
   elseif ('/snack' == substr($uri, 0, 6) && isset($_GET['id']))
@@ -96,6 +100,10 @@
     help_action();
   elseif ('/about' == $uri)
     about_action();
+  elseif ('/dashboards' == $uri)
+    dashboards_action();
+  elseif ('/dashboard' == $uri)
+    dashboard_action();
   elseif ('/user.json' == substr($uri, 0, 10) && isset($_GET['uid'])) {
     header('Content-type: application/json; charset=utf-8');
     get_user_action($_SESSION['uid'], $_GET['uid']);

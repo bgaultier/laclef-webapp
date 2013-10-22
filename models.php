@@ -668,7 +668,7 @@
 		if ($result = mysqli_query($link, $query)) {
 			// fetch associative array
 			while ($row = mysqli_fetch_assoc($result)) {
-			  $row['location'] = get_reader_location_by_id($row['id']);
+			  $row['location'] = get_reader_location_by_id($row['reader']);
 				$swipes[] = $row;
 			}
 				
@@ -682,11 +682,53 @@
     return $swipes;
   }
   
+  function get_all_swipes_by_reader($id)
+  {
+    $link = open_database_connection();
+    
+    $query = "SELECT * FROM swipes WHERE reader = '" . mysqli_real_escape_string($link, $id) . "' ORDER BY timestamp DESC";
+    
+    $swipes = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result)) {
+				$swipes[] = $row;
+			}
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $swipes;
+  }
+  
+  function get_swipe_by_id($id)
+  {
+    $link = open_database_connection();
+    
+    $query = "SELECT * FROM swipes WHERE id = '" . mysqli_real_escape_string($link, $id) . "' LIMIT 1";
+		
+		if ($result = mysqli_query($link, $query)) {
+			$swipe = mysqli_fetch_assoc($result);
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $swipe;
+  }
+  
   function add_swipe($timestamp, $id, $uid, $service, $status)
   {
     $link = open_database_connection();
 		
-		$query = "INSERT INTO swipes (timestamp, id, uid, service, status) VALUES ('" . mysqli_real_escape_string($link, $timestamp) . "', '" . mysqli_real_escape_string($link, $id) . "', '" . mysqli_real_escape_string($link, $uid) . "', '" . mysqli_real_escape_string($link, $service) . "', '" . mysqli_real_escape_string($link, $status) . "')";
+		$query = "INSERT INTO swipes (timestamp, reader, uid, service, status) VALUES ('" . mysqli_real_escape_string($link, $timestamp) . "', '" . mysqli_real_escape_string($link, $id) . "', '" . mysqli_real_escape_string($link, $uid) . "', '" . mysqli_real_escape_string($link, $service) . "', '" . mysqli_real_escape_string($link, $status) . "')";
 		
 		$result = mysqli_query($link, $query);
 		
@@ -697,6 +739,112 @@
     mysqli_close($link);
     
     return $result;		
+  }
+  
+  /* Order Model */
+  function get_all_orders()
+  {
+    $link = open_database_connection();
+    
+    $query = "SELECT * FROM orders ORDER BY swipe DESC LIMIT 0,200";
+    
+    $orders = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result)) {
+			  $swipe = get_swipe_by_id($row['swipe']);
+			  $row['timestamp'] = $swipe['timestamp'];
+			  $row['uid'] = $swipe['uid'];
+			  $row['reader'] = $swipe['reader'];
+			  $row['location'] = get_reader_location_by_id($swipe['reader']);
+				$orders[] = $row;
+			}
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $orders;
+  }
+  
+  function get_all_orders_by_uid($uid)
+  {
+    $link = open_database_connection();
+    
+    $query = "SELECT * FROM orders WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "' ORDER BY timestamp DESC LIMIT 0,200";
+    
+    $orders = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result)) {
+				$orders[] = $row;
+			}
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $orders;
+  }
+  
+  function get_coffees()
+  {
+    $link = open_database_connection();
+    
+    $query = "SELECT SUM(quantity) AS coffees FROM orders WHERE snack = 1 OR snack = 2";
+    
+    if ($result = mysqli_query($link, $query))
+			$coffees = mysqli_fetch_assoc($result);
+		
+		// free result set
+		mysqli_free_result($result);
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $coffees['coffees'];
+  }
+  
+  function get_coffees_this_month()
+  {
+    $link = open_database_connection();
+    
+    $query = "SELECT SUM(quantity) AS coffees FROM orders WHERE (snack = 1 OR snack = 2) AND MONTH(timestamp) = MONTH(NOW()) AND YEAR(timestamp) = YEAR(NOW())";
+    
+    if ($result = mysqli_query($link, $query))
+			$coffees = mysqli_fetch_assoc($result);
+		
+		// free result set
+		mysqli_free_result($result);
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $coffees['coffees'];
+  }
+  
+  function get_coffees_today()
+  {
+    $link = open_database_connection();
+    
+    $query = "SELECT SUM(quantity) AS coffees FROM orders WHERE (snack = 1 OR snack = 2) AND DAY(timestamp) = DAY(NOW()) AND MONTH(timestamp) = MONTH(NOW()) AND YEAR(timestamp) = YEAR(NOW())";
+    
+    if ($result = mysqli_query($link, $query))
+			$coffees = mysqli_fetch_assoc($result);
+		
+		// free result set
+		mysqli_free_result($result);
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $coffees['coffees'];
   }
   
   function datetime_to_string($datetime) {
@@ -732,6 +880,29 @@
 				$user = get_user_by_uid($row['uid']);
 				$row['firstname'] = $user['firstname'];
 				$row['lastname'] = $user['lastname'];
+				$payments[] = $row;
+			}
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $payments;
+  }
+  
+  function get_all_payments_by_uid($uid)
+  {
+    $link = open_database_connection();
+    
+    $query = "SELECT * FROM payments WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "' ORDER BY timestamp DESC";
+    
+    $payments = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result)) {
 				$payments[] = $row;
 			}
 				
@@ -899,6 +1070,14 @@
     mysqli_close($link);
     
     return $result;
+  }
+  
+  function cmp($a, $b)
+  {
+    if ($a["balance"] == $b["balance"]) {
+        return 0;
+    }
+    return ($a["balance"] > $b["balance"]) ? -1 : 1;
   }
 	
 ?>

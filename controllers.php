@@ -20,6 +20,25 @@
     require 'templates/about.php';
   }
   
+  function dashboards_action() {
+    // needed to set the tab active
+    $dashboards_active = true;
+  	
+    require 'templates/dashboards.php';
+  }
+  
+  function dashboard_action() {
+    // needed to hide the menu
+    $dashboard_active = true;
+  
+    // dealing with order form
+    if(isset($_POST['order']))
+      add_order($_POST);
+    // list all the users
+    $users = get_all_users();
+    require 'templates/dashboard.php';
+  }
+  
   function login_action() {
     // check if the admin exists
     $user = user_is_admin_and_password_match($_POST['uid'], $_POST['password']);
@@ -204,6 +223,19 @@
 			require 'templates/login.php';
   }
   
+  function list_swipes_action($uid) {
+  		// needed to set the tab active
+  		$swipes_active = true;
+  		
+  		if(user_is_admin($uid)) {
+    		// list all the swipe records
+    		$swipes = get_all_swipes();
+    		require 'templates/swipes.php';
+  		}
+		else
+			require 'templates/login.php';
+  }
+  
   function modify_reader_action($session_uid, $id) {
     // needed to set the tab active
 		$readers_active = true;
@@ -291,6 +323,21 @@
     		// Fetch all the users UIDs
     		$uids = get_all_uids();
     		require 'templates/payments.php';
+  		}
+		else
+			require 'templates/login.php';
+  }
+  
+  function list_orders_action($uid) {
+  		// needed to set the tab active
+  		$extras_active = true;
+  		$orders_active = true;
+  		
+  		if(user_is_admin($uid)) {
+    		// list all the orders
+    		$orders = get_all_orders();
+    		
+    		require 'templates/orders.php';
   		}
 		else
 			require 'templates/login.php';
