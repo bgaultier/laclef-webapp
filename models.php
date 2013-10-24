@@ -705,6 +705,30 @@
     return $swipes;
   }
   
+  
+  function get_all_swipes_today()
+  {
+    $link = open_database_connection();
+    
+    $query = "SELECT * FROM swipes WHERE DAY(timestamp) = DAY(NOW()) AND MONTH(timestamp) = MONTH(NOW()) AND YEAR(timestamp) = YEAR(NOW())";
+    
+    $swipes = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result)) {
+				$swipes[] = $row;
+			}
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $swipes;
+  }
+  
   function get_swipe_by_id($id)
   {
     $link = open_database_connection();
@@ -793,6 +817,29 @@
     return $orders;
   }
   
+  function get_all_orders_by_swipe($swipe)
+  {
+    $link = open_database_connection();
+    
+    $query = "SELECT * FROM orders WHERE swipe = '" . mysqli_real_escape_string($link, $swipe) . "'";
+    
+    $orders = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result)) {
+				$orders[] = $row;
+			}
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $orders;
+  }
+  
   function get_coffees()
   {
     $link = open_database_connection();
@@ -807,6 +854,9 @@
 		
 		// close connection
     mysqli_close($link);
+    
+    if(!$coffees['coffees'])
+      $coffees['coffees'] = 0;
     
     return $coffees['coffees'];
   }
@@ -826,7 +876,33 @@
 		// close connection
     mysqli_close($link);
     
+    if(!$coffees['coffees'])
+      $coffees['coffees'] = 0;
+    
     return $coffees['coffees'];
+  }
+  
+  function get_all_orders_today()
+  {
+    $link = open_database_connection();
+    
+    $query = "SELECT * FROM swipes WHERE DAY(timestamp) = DAY(NOW()) AND MONTH(timestamp) = MONTH(NOW()) AND YEAR(timestamp) = YEAR(NOW())";
+    
+    $orders = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result)) {
+			  array_merge($orders, get_all_orders_by_swipe(43));
+			}
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $orders;
   }
   
   function get_coffees_today()
@@ -844,7 +920,26 @@
 		// close connection
     mysqli_close($link);
     
+    if(!$coffees['coffees'])
+      $coffees['coffees'] = 0;
+    
     return $coffees['coffees'];
+  }
+  
+  function get_money_spent_today()
+  {
+    $swipes = get_all_swipes_today();
+    
+    $orders = array();
+    $money_spent_today = 0.0;
+    foreach ($swipes as $swipe) {
+      $orders = get_all_orders_by_swipe($swipe['id']);
+      foreach ($orders as $order) {
+        $snack = get_snack_by_id($order['snack']);
+        $money_spent_today += (intval($order['quantity']) * floatval($snack['price']));   
+      }   
+    }
+    return $money_spent_today;
   }
   
   function datetime_to_string($datetime) {

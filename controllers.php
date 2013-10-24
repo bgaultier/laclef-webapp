@@ -36,6 +36,11 @@
       add_order($_POST);
     // list all the users
     $users = get_all_users();
+    
+    $coffees_today = get_coffees_today();
+    $coffees_month = get_coffees_this_month();
+    $money_today = get_money_spent_today();
+    
     require 'templates/dashboard.php';
   }
   
@@ -364,6 +369,20 @@
 		}
 		else
 		  require 'templates/login.php';
+  }
+  
+  function coffees_action() {
+    header('Content-type: application/json; charset=utf-8');
+    $today = get_coffees_today();
+    $month = get_coffees_this_month();
+    $all = get_coffees();
+    
+    $coffees = array("today" => $today,
+                     "month" => $month,
+                     "all" => $all
+                    );
+                    
+    echo json_encode($coffees);      
   }
   
   function modify_snack_action($session_uid, $id) {

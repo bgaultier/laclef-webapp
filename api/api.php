@@ -167,7 +167,7 @@
 	  elseif ('swipes' == $_GET['uri'] && isset($_GET['id'])) {
       send_headers();
       
-      $swipes = get_all_swipes_by_id($_GET['id']);
+      $swipes = get_all_swipes_by_reader($_GET['id']);
 	    echo json_encode($swipes);
 	  }
 	  elseif('orders' == $_GET['uri'] && isset($_GET['uid'])) {

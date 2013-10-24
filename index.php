@@ -104,10 +104,8 @@
     dashboards_action();
   elseif ('/dashboard' == $uri)
     dashboard_action();
-  elseif ('/user.json' == substr($uri, 0, 10) && isset($_GET['uid'])) {
-    header('Content-type: application/json; charset=utf-8');
-    get_user_action($_SESSION['uid'], $_GET['uid']);
-  }
+  elseif ('/coffees.json' == substr($uri, 0, 13))
+    coffees_action();
   else
     login_action();
 

@@ -29,14 +29,19 @@
           <figure id="coffeechart"class="vspace"></figure>
         </div>
         <div class="large-50 medium-50 small-100">
-          <h2 class="push-left"><?php echo _('Statistiques'); ?></h2>
-          <div id="today"></div>
+          <h2><?php echo _('Statistiques'); ?></h2>
+          <h4 style="font-weight:normal;"><span class="ink-badge grey"><?php echo $coffees_today; ?> <i class="icon-coffee"></i></span> <?php echo _("aujourd'hui"); ?></h4>
+          <h4 style="font-weight:normal;"><span class="ink-badge grey"><?php echo $coffees_month; ?> <i class="icon-coffee"></i></span> <?php echo _("dépensés aujourd'hui"); ?></h4>
+          <h4 style="font-weight:normal;"><span class="ink-badge grey"><?php echo number_format($money_today, 2, ',', ' '); ?> <i class="icon-euro"></i></span> <?php echo _("dépensés aujourd'hui"); ?></h4>
+          <script src="http://d3js.org/d3.v3.min.js"></script>
           <script type="text/javascript">
-             Ink.requireModules(['Ink.Net.Ajax_1'],function(Ajax){
-               Ajax.load( 'http://api.laclef.cc/coffees', function( response ){
-                 console.log( response );
-               });
-             });
+            function loadCoffees() {
+              d3.json("coffees.json", function(data) {
+                console.log(data.all);
+              });
+              timeout = setTimeout(loadCoffees, 5000);
+            }
+            loadCoffees();
           </script>
         </div>
       </div>
@@ -58,7 +63,6 @@
       display: none;
     }
   </style>
-  <script src="http://d3js.org/d3.v3.min.js"></script>
   <script>
     var margin = {top: 40, right: 20, bottom: 30, left: 40},
         width = 400 - margin.left - margin.right,
