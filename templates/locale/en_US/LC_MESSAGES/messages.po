@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: laclef\n"
-"POT-Creation-Date: 2013-09-20 13:09+0100\n"
-"PO-Revision-Date: 2013-09-20 18:48+0100\n"
+"POT-Creation-Date: 2013-11-04 11:52+0100\n"
+"PO-Revision-Date: 2013-11-04 12:25+0100\n"
 "Last-Translator: Baptiste Gaultier <b.gaultier@gmail.com>\n"
 "Language-Team: Baptiste Gaultier <b.gaultier@gmail.com>\n"
 "Language: en_US\n"
@@ -16,127 +16,111 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: ../../..\n"
 
-#: ../../../about.php:1
-msgid "À propos - laboîte.cc"
-msgstr "About "
+#: ../../../account.php:1 ../../../login.php:1
+msgid "Connexion - laclef.cc"
+msgstr "Log in - laclef.cc"
 
-#: ../../../about.php:6
-msgid "laboîte-webapp v0.1"
-msgstr ""
+#: ../../../account.php:7
+msgid "Modifier votre compte"
+msgstr "Modify account"
 
-#: ../../../about.php:7
-msgid ""
-"Cette application géniale est dévellopée par <a href=\"http://"
-"baptistegaultier.fr/website/Accueil.html\">Baptiste Gaultier</a> dont le "
-"plan secret est de conquérir le monde avec ses boîtes. Le code de cette "
-"application est open source (<a href=\"http://www.gnu.org/licenses/agpl-3.0."
-"fr.html\">GPL Affero v3</a>), ce qui signifie qu'il peut être être "
-"téléchargé gratuitement <a href=\"https://github.com/bgaultier/laboite-webapp"
-"\">ici</a>, modifié, redistribué et amélioré par tous."
-msgstr ""
-
-#: ../../../signup.php:1
-msgid "Inscription - laboîte.cc"
-msgstr "Sign in"
-
-#: ../../../signup.php:6
-msgid "Attention ! "
-msgstr ""
-
-#: ../../../signup.php:6
-msgid "L'utilisateur existe déjà"
-msgstr ""
-
-#: ../../../signup.php:12
-msgid "Créer un compte"
-msgstr ""
-
-#: ../../../signup.php:13
-msgid "Adresse e-mail"
-msgstr "Email"
-
-#: ../../../signup.php:14 ../../../login.php:17
-msgid "Mot de passe"
-msgstr "Password"
-
-#: ../../../signup.php:16
-msgid "Inscription"
-msgstr "Sign in"
-
-#: ../../../tag.php:1 ../../../user.php:1
-msgid "Modifier l'utilisateur - laclef.cc"
-msgstr "Modify user - laclef.cc"
-
-#: ../../../tag.php:4
-msgid "Modifier un Tag"
-msgstr "Modify tag"
-
-#: ../../../tag.php:9 ../../../user.php:9 ../../../tags.php:45
-#: ../../../users.php:62 ../../../account.php:11
+#: ../../../account.php:11 ../../../equipments.php:51
+#: ../../../equipment.php:10 ../../../users.php:73 ../../../tags.php:45
+#: ../../../tag.php:9 ../../../user.php:9
 msgid "UID : "
 msgstr "UID: "
 
-#: ../../../tag.php:13 ../../../tags.php:49
-msgid "Indiquez ici l'identifiant unique du tag"
-msgstr "Indicate the unique identifier of the tag (UID)"
+#: ../../../account.php:17
+msgid "Adresse email : "
+msgstr "Email:"
 
-#: ../../../tag.php:16 ../../../tags.php:52
-msgid "Key A : "
-msgstr "Key A: "
+#: ../../../account.php:23
+msgid "Modifier le mot de passe : "
+msgstr "Modify password: "
 
-#: ../../../tag.php:20 ../../../tags.php:56
-msgid ""
-"Indiquez ici la clé de chiffrement Key A (uniquement pour les cartes Mifare)"
-msgstr "Indicate Key A"
+#: ../../../account.php:25
+msgid "Ancien mot de passe"
+msgstr "Old password"
 
-#: ../../../tag.php:23 ../../../tags.php:59
-msgid "Type du tag : "
-msgstr "Tag type: "
+#: ../../../account.php:30
+msgid "Nouveau mot de passe"
+msgstr "New password"
 
-#: ../../../tag.php:31 ../../../tags.php:67
-msgid "Propriétaire : "
-msgstr "Owner: "
+#: ../../../account.php:34
+msgid "Langue : "
+msgstr "Locale: "
 
-#: ../../../tag.php:40 ../../../user.php:45 ../../../permission.php:34
-#: ../../../reader.php:24 ../../../snack.php:39
-msgid "Sauvegarder les modifications"
+#: ../../../account.php:42
+msgid " Enregistrer les modifications"
 msgstr "Save"
 
-#: ../../../tag.php:44 ../../../snack.php:43
-msgid "Supprimer le tag"
-msgstr "Delete tag"
+#: ../../../account.php:45
+msgid "Déconnexion"
+msgstr "Log out"
 
-#: ../../../user.php:4
-msgid "Modifier un utilisateur"
-msgstr "Modify user"
+#: ../../../snacks.php:1
+msgid "Produits - laclef.cc"
+msgstr "Snacks - laclef.cc"
 
-#: ../../../user.php:15 ../../../users.php:69
-msgid "Prénom : "
-msgstr "Firstname: "
+#: ../../../snacks.php:9 ../../../readers.php:8 ../../../readers.php:34
+msgid "ID"
+msgstr "ID"
 
-#: ../../../user.php:21 ../../../users.php:75
-msgid "Nom : "
-msgstr "Lastname: "
+#: ../../../snacks.php:10 ../../../equipments.php:11
+#: ../../../dashboards.php:10 ../../../help.php:67 ../../../help.php:89
+#: ../../../help.php:111 ../../../help.php:133 ../../../help.php:151
+#: ../../../help.php:173
+msgid "Description"
+msgstr "Description"
 
-#: ../../../user.php:27 ../../../users.php:81
-msgid "Email : "
-msgstr "Email: "
+#: ../../../snacks.php:11
+msgid "Prix"
+msgstr "Price"
 
-#: ../../../user.php:33 ../../../users.php:87
-msgid "Mot de passe : "
-msgstr "Password:"
+#: ../../../snacks.php:12
+msgid "Visible"
+msgstr "Visible"
 
-#: ../../../user.php:37 ../../../users.php:91
-msgid "Le mot de passe est obligatoire pour les administrateurs"
-msgstr "A password is mandatory for admins"
+#: ../../../snacks.php:13 ../../../equipments.php:13
+#: ../../../dashboards.php:11 ../../../users.php:15 ../../../readers.php:10
+#: ../../../readers.php:37 ../../../reader.php:35 ../../../tags.php:12
+msgid "Actions"
+msgstr "Actions"
 
-#: ../../../user.php:41 ../../../users.php:95
-msgid "Administrateur"
-msgstr "Admin"
+#: ../../../snacks.php:35 ../../../equipments.php:39 ../../../users.php:61
+#: ../../../tags.php:33
+msgid "Ajouter"
+msgstr "Add"
 
-#: ../../../user.php:49
-msgid "Supprimer l'utilisateur"
-msgstr "Delete user"
+#: ../../../snacks.php:41
+msgid "Ajouter un produit"
+msgstr "Add a snack"
+
+#: ../../../snacks.php:47 ../../../snack.php:16
+msgid "Description (français) : "
+msgstr "Description (french): "
+
+#: ../../../snacks.php:53 ../../../snack.php:22
+msgid "Description (anglais) : "
+msgstr "Description (english): "
+
+#: ../../../snacks.php:59 ../../../snack.php:28
+msgid "Prix : "
+msgstr "Price: "
+
+#: ../../../snacks.php:66 ../../../snack.php:35
+msgid "Visible dans les tableaux de bord"
+msgstr "Visible in dashboards"
+
+#: ../../../snacks.php:70 ../../../equipments.php:91 ../../../users.php:110
+#: ../../../readers.php:150 ../../../payments.php:60 ../../../order.php:31
+#: ../../../order.php:76 ../../../tags.php:76
+msgid "Annuler"
+msgstr "Cancel"
+
+#: ../../../snacks.php:71
+msgid "Ajouter le produit"
+msgstr "Add snack"
 
 #: ../../../permission.php:1
 msgid "Modifier les permissions - laclef.cc"
@@ -171,9 +155,573 @@ msgid ""
 "lecteur décrits ci-dessus"
 msgstr "The user will not be able to use this reader after this date"
 
+#: ../../../permission.php:34 ../../../equipment.php:49 ../../../reader.php:24
+#: ../../../snack.php:39 ../../../tag.php:33 ../../../user.php:45
+msgid "Sauvegarder les modifications"
+msgstr "Save"
+
 #: ../../../permission.php:38
 msgid "Supprimer la permission"
 msgstr "Delete permission"
+
+#: ../../../equipments.php:1
+msgid "Équipements - laclef.cc"
+msgstr "Equipments - laclef.cc"
+
+#: ../../../equipments.php:9 ../../../orders.php:10 ../../../users.php:9
+#: ../../../payments.php:11 ../../../tags.php:9
+msgid "UID"
+msgstr "UID"
+
+#: ../../../equipments.php:10 ../../../users.php:11 ../../../payments.php:13
+msgid "Nom"
+msgstr "Lastname"
+
+#: ../../../equipments.php:12
+msgid "État"
+msgstr "Status"
+
+#: ../../../equipments.php:22
+msgid "Loué par"
+msgstr "Borrowed by"
+
+#: ../../../equipments.php:22 ../../../users.php:47 ../../../order.php:51
+msgid "jusqu'au"
+msgstr "until"
+
+#: ../../../equipments.php:22
+msgid "Disponible"
+msgstr "Available"
+
+#: ../../../equipments.php:45
+msgid "Ajouter un équipement"
+msgstr "Add a equipment"
+
+#: ../../../equipments.php:55 ../../../equipment.php:14
+msgid "Indiquez ici le tag de l'équipement ("
+msgstr "Indicate the equipment tag ("
+
+#: ../../../equipments.php:58 ../../../equipment.php:17 ../../../users.php:86
+#: ../../../user.php:21
+msgid "Nom : "
+msgstr "Lastname: "
+
+#: ../../../equipments.php:62 ../../../equipment.php:21
+msgid "Indiquez ici un nom pour l'équipement"
+msgstr "Indicate a name"
+
+#: ../../../equipments.php:65 ../../../equipment.php:24
+msgid "Description : "
+msgstr "Description : "
+
+#: ../../../equipments.php:69 ../../../equipment.php:28
+msgid "Indiquez ici une description courte de l'équipement"
+msgstr "Indicate a shoirt description"
+
+#: ../../../equipments.php:71
+msgid "Location"
+msgstr "Lease"
+
+#: ../../../equipments.php:72 ../../../equipment.php:31
+msgid "Veuillez remplir les champs ci-dessous pour une nouvelle location : "
+msgstr "Please fill in the following fields for a new location :"
+
+#: ../../../equipments.php:74 ../../../equipment.php:33
+msgid "Emprunteur : "
+msgstr "Hier:"
+
+#: ../../../equipments.php:83 ../../../equipment.php:41
+msgid "Fin de la location prévue : "
+msgstr "End of the location :"
+
+#: ../../../equipments.php:87 ../../../equipment.php:45
+msgid "Indiquez ici la date à laquelle l'utilisateur devra rendre l'équipement"
+msgstr "Indicate when the hirer should bring back the equipment"
+
+#: ../../../equipments.php:92
+msgid "Ajouter l'équipement"
+msgstr "Add equipment"
+
+#: ../../../equipment.php:1
+msgid "Modifier l'équipement - laclef.cc"
+msgstr "Modify equipment - laclef.cc"
+
+#: ../../../equipment.php:4
+msgid "Modifier un équipement"
+msgstr "Modify a equipment"
+
+#: ../../../equipment.php:53 ../../../snack.php:43 ../../../tag.php:37
+msgid "Supprimer le tag"
+msgstr "Delete tag"
+
+#: ../../../swipes.php:1
+msgid "Logs - laclef.cc"
+msgstr "Logs - laclef.cc"
+
+#: ../../../swipes.php:9 ../../../orders.php:9 ../../../readers.php:83
+#: ../../../payments.php:10
+msgid "Date"
+msgstr "Date"
+
+#: ../../../swipes.php:10 ../../../orders.php:11 ../../../readers.php:84
+msgid "Lecteur"
+msgstr "Reader"
+
+#: ../../../swipes.php:11 ../../../readers.php:85
+msgid "Utilisateur"
+msgstr "User"
+
+#: ../../../swipes.php:12 ../../../readers.php:86
+msgid "Service"
+msgstr "Service"
+
+#: ../../../orders.php:1
+msgid "Commandes - laclef.cc"
+msgstr "orders - laclef.cc"
+
+#: ../../../orders.php:12
+msgid "Produit"
+msgstr "Snack"
+
+#: ../../../orders.php:13
+msgid "Quantité"
+msgstr "Quantity"
+
+#: ../../../orders.php:21 ../../../readers.php:100
+msgid "Interface web"
+msgstr "Web interface"
+
+#: ../../../dashboards.php:1
+msgid "Tableaux de bord - laclef.cc"
+msgstr "Dashboards - laclef.cc"
+
+#: ../../../dashboards.php:9
+msgid "Chemin"
+msgstr "Path"
+
+#: ../../../users.php:1
+msgid "Utilisateurs - laclef.cc"
+msgstr "Users - laclef.cc"
+
+#: ../../../users.php:10 ../../../payments.php:12
+msgid "Prénom"
+msgstr "Firstname"
+
+#: ../../../users.php:12
+msgid "Email"
+msgstr "Email"
+
+#: ../../../users.php:13
+msgid "Admin"
+msgstr "Admin"
+
+#: ../../../users.php:14
+msgid "Solde"
+msgstr "Balance"
+
+#: ../../../users.php:67
+msgid "Ajouter manuellement un utilisateur"
+msgstr "Add manually a user"
+
+#: ../../../users.php:77
+msgid "Indiquez ici un identifiant unique"
+msgstr "Indicate a unique identifier"
+
+#: ../../../users.php:80 ../../../user.php:15
+msgid "Prénom : "
+msgstr "Firstname: "
+
+#: ../../../users.php:92 ../../../user.php:27
+msgid "Email : "
+msgstr "Email: "
+
+#: ../../../users.php:98 ../../../user.php:33
+msgid "Mot de passe : "
+msgstr "Password:"
+
+#: ../../../users.php:102 ../../../user.php:37
+msgid "Le mot de passe est obligatoire pour les administrateurs"
+msgstr "A password is mandatory for admins"
+
+#: ../../../users.php:106 ../../../user.php:41
+msgid "Administrateur"
+msgstr "Admin"
+
+#: ../../../users.php:111
+msgid "Ajouter l'utilisateur"
+msgstr "Add user"
+
+#: ../../../layout.php:65 ../../../layout.php:143
+msgid "Accueil"
+msgstr "Home"
+
+#: ../../../layout.php:73 ../../../layout.php:151 ../../../help.php:13
+#: ../../../help.php:34 ../../../help.php:61
+msgid "Utilisateurs"
+msgstr "Users"
+
+#: ../../../layout.php:81 ../../../layout.php:159 ../../../help.php:14
+#: ../../../help.php:38 ../../../help.php:83
+msgid "Tags"
+msgstr "Tags"
+
+#: ../../../layout.php:89 ../../../layout.php:167 ../../../help.php:15
+#: ../../../help.php:42 ../../../help.php:105
+msgid "Lecteurs"
+msgstr "Readers"
+
+#: ../../../layout.php:97
+msgid "Extras"
+msgstr "Extras"
+
+#: ../../../layout.php:101 ../../../layout.php:175 ../../../help.php:127
+msgid "Paiements"
+msgstr "Payments"
+
+#: ../../../layout.php:104 ../../../layout.php:178 ../../../help.php:145
+msgid "Produits"
+msgstr "Snacks"
+
+#: ../../../layout.php:107 ../../../layout.php:181 ../../../help.php:17
+#: ../../../help.php:50
+msgid "Équipements"
+msgstr "Equipements"
+
+#: ../../../layout.php:110 ../../../layout.php:184
+msgid "Commandes"
+msgstr "Orders"
+
+#: ../../../layout.php:111 ../../../layout.php:187
+msgid "Logs"
+msgstr "Logs"
+
+#: ../../../layout.php:112 ../../../layout.php:190
+msgid "Tableaux de bord"
+msgstr "Dashboards"
+
+#: ../../../layout.php:117 ../../../layout.php:194 ../../../signup.php:10
+#: ../../../dashboard.php:10
+msgid "Aide"
+msgstr "Help"
+
+#: ../../../layout.php:120 ../../../layout.php:197
+msgid "À propos"
+msgstr "About"
+
+#: ../../../layout.php:126 ../../../layout.php:203 ../../../login.php:7
+#: ../../../login.php:22
+msgid "Connexion"
+msgstr "Log in"
+
+#: ../../../login.php:12
+msgid "Nom d'utilisateur"
+msgstr "Username"
+
+#: ../../../login.php:17
+msgid "Mot de passe"
+msgstr "Password"
+
+#: ../../../signup.php:1 ../../../dashboard.php:1
+msgid "Kfet - laclef.cc"
+msgstr "Kfet - laclef.cc"
+
+#: ../../../signup.php:8 ../../../dashboard.php:8
+msgid "Administration"
+msgstr "Admin"
+
+#: ../../../signup.php:9 ../../../dashboard.php:9
+msgid "Inscription"
+msgstr "Sign in"
+
+#: ../../../signup.php:16
+msgid "Revenir"
+msgstr "Go back"
+
+#: ../../../signup.php:18
+msgid "Ajouter un utilisateur depuis le LDAP de Télécom Bretagne"
+msgstr "Add a user from Telecom Bretagne LDAP directory"
+
+#: ../../../signup.php:19
+msgid ""
+"Veuillez sélectionner votre nom dans la liste ci-dessous pour créer un "
+"nouveau compte. Si votre compte n'apparaît pas, merci de contacter <a href="
+"\"http://baptistegaultier.fr/website/Accueil.html\">Baptiste</a>. "
+msgstr ""
+"Please select your name in the following list. If your account does not "
+"appear below, please contact <a href=\"http://baptistegaultier.fr/website/"
+"Accueil.html\">Baptiste</a>. "
+
+#: ../../../help.php:2
+msgid "Aide - laclef.cc"
+msgstr "Help - laclef.cc"
+
+#: ../../../help.php:12 ../../../help.php:25
+msgid "Vue d'ensemble"
+msgstr "Overview"
+
+#: ../../../help.php:16 ../../../help.php:46 ../../../help.php:167
+msgid "Permissions"
+msgstr "Permissions"
+
+#: ../../../help.php:18 ../../../help.php:54
+msgid "Historique des lectures"
+msgstr "Swipes history"
+
+#: ../../../help.php:19 ../../../help.php:58
+msgid "API Rest"
+msgstr "Rest API"
+
+#: ../../../help.php:26
+msgid ""
+"L'application web laclef permet une gestion facilitée de tags (RFID/NFC, QR "
+"code, code-barres...) permettant à des utilisateurs d'accéder aux services "
+"suivants :"
+msgstr ""
+"The web application laclef allows the management of tags (RFID/NFC, QR code, "
+"bar--codes...) belonging to users which can access services: "
+
+#: ../../../help.php:28
+msgid ""
+"<strong>Contrôle d'accès : </strong>ouvrir des portes selon leurs droits."
+msgstr "<strong>Access control: </strong>open doors if they are allowed to."
+
+#: ../../../help.php:29
+msgid ""
+"<strong>Gestion de cafétéria : </strong>payer leurs consommations (cafés, "
+"barres chocolatées, fruits)."
+msgstr ""
+"<strong>Cafeteria management: </strong>payment of snacks, coffees, tea "
+"bags..."
+
+#: ../../../help.php:30
+msgid "<strong>Prêt de matériel : </strong>louer des équipements."
+msgstr ""
+"<strong>Equipment leasing: </strong>they can borrow equipments (like "
+"Arduinos, tablets, keyboards...)"
+
+#: ../../../help.php:35
+msgid "Les utilisateurs peuvent être identifiés par un ou plusieurs"
+msgstr "Users can be identified by several"
+
+#: ../../../help.php:35 ../../../help.php:43 ../../../help.php:55
+msgid "tags"
+msgstr "tags"
+
+#: ../../../help.php:35
+msgid ""
+". Seuls les administrateurs (utilisateurs dotés de droits d'administrations) "
+"peuvent créer, modifier et supprimer les"
+msgstr ""
+". Only administrators (user with admin rights) can add, modify and delete"
+
+#: ../../../help.php:35
+msgid "lecteurs"
+msgstr "readers"
+
+#: ../../../help.php:35
+msgid "et"
+msgstr "and"
+
+#: ../../../help.php:35
+msgid "permissions"
+msgstr "permissions"
+
+#: ../../../help.php:39
+msgid ""
+"Les tags sont des étiquettes digitales (RFID/NFC, QR code, code-barres) "
+"permettant d'identifier de manière unique un "
+msgstr ""
+"Tags are digital identifiers (RFID/NFC, QR code, bar-codes...) which "
+"identify a"
+
+#: ../../../help.php:39 ../../../help.php:47 ../../../help.php:51
+msgid "utilisateur"
+msgstr "user"
+
+#: ../../../help.php:39
+msgid " ou un "
+msgstr "or a"
+
+#: ../../../help.php:39
+msgid "équipement"
+msgstr "equipment"
+
+#: ../../../help.php:43
+msgid "Les lecteurs permettent de lire les"
+msgstr "Readers can read"
+
+#: ../../../help.php:43
+msgid ""
+"La lecture d'un tag peu provoquer différentes actions : l'ouverture d'une "
+"porte, le paiement d'un café, le début d'une location de matériel..."
+msgstr ""
+"A swipe can do several actions : open a door, pay a coffee, start a new "
+"lease..."
+
+#: ../../../help.php:47
+msgid ""
+"Les permissions sont définies par les administrateurs. Si une permission est "
+"créée pour un"
+msgstr ""
+"Permissions are defined by administrators. If a permission is created for a"
+
+#: ../../../help.php:47
+msgid "sur un"
+msgstr "on a"
+
+#: ../../../help.php:47
+msgid "lecteur"
+msgstr "reader"
+
+#: ../../../help.php:47
+msgid "alors celui-ci pourra ouvrir la porte pilotée par le lecteur."
+msgstr "then he will be abled to open the door controlled by this reader."
+
+#: ../../../help.php:51
+msgid "Un équipement est identifié par un"
+msgstr "An equipment is identified by a"
+
+#: ../../../help.php:51
+msgid "tag"
+msgstr "tag"
+
+#: ../../../help.php:51
+msgid "unique. Il peut être loué par un "
+msgstr "unique. It can be borrowed by a"
+
+#: ../../../help.php:55
+msgid "Permet d'avoir un historique des lectures de"
+msgstr "Shows swipes history"
+
+#: ../../../help.php:59
+msgid ""
+"Les ressources accessibles en utilisant l'API Rest sont décrites ci-"
+"dessous : "
+msgstr "Resources can be accessed using Rest API are:"
+
+#: ../../../help.php:62
+msgid ""
+"Actions liées à l'ajout, la suppression et l'affichage d'informations "
+"relatives aux utilisateurs."
+msgstr ""
+
+#: ../../../help.php:66 ../../../help.php:88 ../../../help.php:110
+#: ../../../help.php:132 ../../../help.php:150 ../../../help.php:172
+msgid "Ressource"
+msgstr "Resource"
+
+#: ../../../help.php:73
+msgid "Obtenir la liste de tous les utilisateurs."
+msgstr ""
+
+#: ../../../help.php:77
+msgid ""
+"Obtenir les informations de l'utilisateur <span style=\"color:#0069D6;\">"
+"$uid</span>."
+msgstr ""
+
+#: ../../../help.php:84
+msgid ""
+"Actions liées à l'ajout, la suppression et l'affichage d'informations "
+"relatives aux tags."
+msgstr ""
+
+#: ../../../help.php:95
+msgid "Obtenir la liste de tous les tags."
+msgstr ""
+
+#: ../../../help.php:99
+msgid ""
+"Obtenir les informations du tag <span style=\"color:#0069D6;\">$uid</span>."
+msgstr ""
+
+#: ../../../help.php:106
+msgid ""
+"Actions liées à l'ajout, la suppression et l'affichage d'informations "
+"relatives aux lecteurs de tags."
+msgstr ""
+
+#: ../../../help.php:117
+msgid "Obtenir la liste de tous les lecteurs."
+msgstr ""
+
+#: ../../../help.php:121
+msgid ""
+"Obtenir les informations du lecteur <span style=\"color:#0069D6;\">$id</"
+"span>."
+msgstr ""
+
+#: ../../../help.php:128
+msgid ""
+"Actions liées à l'affichage d'informations relatives aux dépôts effectués "
+"par les utilisateurs."
+msgstr ""
+
+#: ../../../help.php:139
+msgid ""
+"Obtenir le montant et la date des paiements effectués par l'utilisateur "
+"<span style=\"color:#0069D6;\">$uid</span>."
+msgstr ""
+
+#: ../../../help.php:146
+msgid ""
+"Actions liées à l'ajout, la suppression et l'affichage d'informations "
+"relatives aux produits vendus."
+msgstr ""
+
+#: ../../../help.php:157
+msgid "Obtenir la liste de tous les produits."
+msgstr ""
+
+#: ../../../help.php:161
+msgid ""
+"Obtenir les informations du produit <span style=\"color:#0069D6;\">$id</"
+"span>."
+msgstr ""
+
+#: ../../../help.php:168
+msgid ""
+"Actions liées à l'ajout, la suppression et l'affichage des permissions "
+"accordées aux utilisateurs sur un lecteur (il est à noter que si un "
+"utilisateur dispose de droits sur un lecteur alors tous les tags de cet "
+"utlisateur dispose de ce droit)."
+msgstr ""
+
+#: ../../../help.php:179
+msgid ""
+"Obtenir les permissions de l'utilisateur <span style=\"color:#0069D6;\">"
+"$uid</span> sur le lecteur <span style=\"color:#0069D6;\">$id</span>."
+msgstr ""
+
+#: ../../../help.php:183
+msgid ""
+"Obtenir les utilisateurs autorisés à utiliser le lecteur <span style=\"color:"
+"#0069D6;\">$id</span>."
+msgstr ""
+
+#: ../../../readers.php:1
+msgid "Lecteurs - laclef.cc"
+msgstr "Readers - laclef.cc"
+
+#: ../../../readers.php:9 ../../../readers.php:35
+msgid "Emplacement"
+msgstr "Location"
+
+#: ../../../readers.php:36
+msgid "Services"
+msgstr "Services"
+
+#: ../../../readers.php:113
+msgid "Ajouter une permission"
+msgstr "Add permission"
+
+#: ../../../readers.php:119
+msgid "Ajouter manuellement une permission"
+msgstr "Add manually a permission"
+
+#: ../../../readers.php:151
+msgid "Ajouter la permission"
+msgstr "Add permission"
 
 #: ../../../payments.php:1
 msgid "Paiements - laclef.cc"
@@ -186,22 +734,6 @@ msgstr "Error: "
 #: ../../../payments.php:4
 msgid "Le montant doit être positif !"
 msgstr "The amount must be positive !"
-
-#: ../../../payments.php:10 ../../../readers.php:83
-msgid "Date"
-msgstr "Date"
-
-#: ../../../payments.php:11 ../../../tags.php:9 ../../../users.php:9
-msgid "UID"
-msgstr "UID"
-
-#: ../../../payments.php:12 ../../../users.php:10
-msgid "Prénom"
-msgstr "Firstname"
-
-#: ../../../payments.php:13 ../../../users.php:11
-msgid "Nom"
-msgstr "Lastname"
 
 #: ../../../payments.php:14
 msgid "Montant"
@@ -219,238 +751,135 @@ msgstr "Recipient: "
 msgid "Montant : "
 msgstr "Amount"
 
-#: ../../../payments.php:60 ../../../snacks.php:70 ../../../readers.php:150
-#: ../../../tags.php:76 ../../../users.php:99
-msgid "Annuler"
-msgstr "Cancel"
-
 #: ../../../payments.php:61
 msgid "Créditer le compte"
 msgstr "Credit account"
 
-#: ../../../snacks.php:1
-msgid "Produits - laclef.cc"
-msgstr "Snacks - laclef.cc"
+#: ../../../widgets.php:4
+msgid "Nombre de cafés"
+msgstr "Number of coffees"
 
-#: ../../../snacks.php:9 ../../../readers.php:8 ../../../readers.php:34
-msgid "ID"
-msgstr "ID"
+#: ../../../widgets.php:8
+msgid "Statistiques"
+msgstr "Stats"
 
-#: ../../../snacks.php:10 ../../../help.php:42 ../../../help.php:60
-msgid "Description"
-msgstr "Description"
+#: ../../../widgets.php:9 ../../../order.php:90
+msgid "aujourd'hui"
+msgstr "today"
 
-#: ../../../snacks.php:11
-msgid "Prix"
-msgstr "Price"
+#: ../../../widgets.php:10 ../../../order.php:91
+msgid "ce mois"
+msgstr "this month"
 
-#: ../../../snacks.php:12
-msgid "Visible"
-msgstr "Visible"
+#: ../../../widgets.php:11 ../../../order.php:92
+msgid "dépensés aujourd'hui"
+msgstr "spent today"
 
-#: ../../../snacks.php:13 ../../../readers.php:10 ../../../readers.php:37
-#: ../../../tags.php:12 ../../../users.php:15 ../../../reader.php:35
-msgid "Actions"
-msgstr "Actions"
+#: ../../../widgets.php:12 ../../../order.php:93
+msgid "dépensés ce mois"
+msgstr "spent this month"
 
-#: ../../../snacks.php:35 ../../../tags.php:33 ../../../users.php:50
-msgid "Ajouter"
-msgstr "Add"
+#: ../../../widgets.php:27
+msgid "Prochains évènements"
+msgstr "Agenda"
 
-#: ../../../snacks.php:41
-msgid "Ajouter un produit"
-msgstr "Add a snack"
+#: ../../../widgets.php:52
+msgid "Messages"
+msgstr "Messages"
 
-#: ../../../snacks.php:47 ../../../snack.php:16
-msgid "Description (français) : "
-msgstr "Description (french): "
-
-#: ../../../snacks.php:53 ../../../snack.php:22
-msgid "Description (anglais) : "
-msgstr "Description (english): "
-
-#: ../../../snacks.php:59 ../../../snack.php:28
-msgid "Prix : "
-msgstr "Price: "
-
-#: ../../../snacks.php:66 ../../../snack.php:35
-msgid "Visible dans les tableaux de bord"
-msgstr "Visible in dashboards"
-
-#: ../../../snacks.php:71
-msgid "Ajouter le produit"
-msgstr "Add snack"
+#: ../../../widgets.php:127
+msgid "Cafés"
+msgstr "Coffees"
 
 #: ../../../home.php:1
 msgid "Accueil - laclef.cc"
 msgstr "Home - laclef.cc"
 
-#: ../../../home.php:5 ../../../layout.php:65 ../../../layout.php:136
-msgid "Accueil"
-msgstr "Home"
-
-#: ../../../home.php:6
-msgid "À remplir"
-msgstr ""
-
-#: ../../../help.php:2
-msgid "Aide - laclef.cc"
-msgstr "Help - laclef.cc"
-
-#: ../../../help.php:12 ../../../help.php:24 ../../../help.php:25
-#: ../../../help.php:28 ../../../help.php:29
-msgid "Vue d'ensemble"
-msgstr "Overview"
-
-#: ../../../help.php:13 ../../../help.php:36 ../../../layout.php:73
-#: ../../../layout.php:144
-msgid "Utilisateurs"
-msgstr "Users"
-
-#: ../../../help.php:14 ../../../layout.php:81 ../../../layout.php:152
-msgid "Tags"
-msgstr "Tags"
-
-#: ../../../help.php:15 ../../../layout.php:89 ../../../layout.php:160
-msgid "Lecteurs"
-msgstr "Readers"
-
-#: ../../../help.php:16 ../../../help.php:54
-msgid "Permissions"
-msgstr "Permissions"
-
-#: ../../../help.php:17 ../../../layout.php:105 ../../../layout.php:170
-msgid "Logs"
-msgstr "Logs"
-
-#: ../../../help.php:18 ../../../help.php:32
-msgid "API Rest"
-msgstr "Rest API"
-
-#: ../../../help.php:33
+#: ../../../home.php:7
 msgid ""
-"Cette application web dispose d'une API REST. Les ressources accessibles "
-"sont décrites ci-dessous."
+"laclef vous permet d'offrir à vos utilisateurs de nombreux services grâce à "
+"leurs badges RFID/NFC : contrôle d'accès, location de matériel, paiement..."
 msgstr ""
 
-#: ../../../help.php:34
+#: ../../../home.php:10
+msgid "Fonctionnalités"
+msgstr "Features"
+
+#: ../../../home.php:17
 msgid ""
-"Pour plus d'information sur une ressource, veuillez sélectionner sur son nom."
+"laclef est une application web basée sur des technologies robustes et "
+"récentes : PHP, MySQL, <a href=\"http://ink.sapo.pt/\">Ink</a> et <a href="
+"\"http://d3js.org/\">D3.js</a>."
 msgstr ""
 
-#: ../../../help.php:37
+#: ../../../home.php:25
 msgid ""
-"Actions liées à l'ajout, la suppression et l'affichage d'informations "
-"relatives aux utilisateurs."
+"laclef est connectée à différents lecteurs de tags (RFID/NFC, QR code, code-"
+"barres...) permettant d'identifier les utilisateurs. Ces lecteurs sont basés "
+"sur <a href=\"http://arduino.cc/\">Arduino</a>."
 msgstr ""
 
-#: ../../../help.php:41 ../../../help.php:59
-msgid "Ressource"
-msgstr ""
-
-#: ../../../help.php:48
+#: ../../../home.php:33
 msgid ""
-"Obtenir des informations à propos de l'utilisateur <span style=\"color:"
-"#0069D6;\">$uid</span>."
+"laclef offre différents services aux utilisateurs : contrôle d'accès, "
+"location de matériel, paiement..."
 msgstr ""
 
-#: ../../../help.php:55
-msgid ""
-"Actions liées à l'ajout, la suppression et l'affichage des permissions "
-"accordées aux utilisateurs sur un lecteur (il est à noter que si un "
-"utilisateur dispose de droits sur un lecteur alors tous les tags de cet "
-"utlisateur dispose de ce droit)."
-msgstr ""
+#: ../../../order.php:3
+msgid "Soda express"
+msgstr "Soda express"
 
-#: ../../../help.php:66
-msgid ""
-"Obtenir les permissions de l'utilisateur <span style=\"color:#0069D6;\">"
-"$uid</span> sur le lecteur <span style=\"color:#0069D6;\">$id</span>."
-msgstr ""
+#: ../../../order.php:5
+msgid "Café express"
+msgstr "Coffee express"
 
-#: ../../../readers.php:1
-msgid "Lecteurs - laclef.cc"
-msgstr "Readers - laclef.cc"
+#: ../../../order.php:8
+msgid "Solde : "
+msgstr "Balance:"
 
-#: ../../../readers.php:9 ../../../readers.php:35
-msgid "Emplacement"
-msgstr "Location"
+#: ../../../order.php:27
+msgid "Payer la commande"
+msgstr "Checkout"
 
-#: ../../../readers.php:36
-msgid "Services"
-msgstr "Services"
+#: ../../../order.php:32
+msgid "Mes statistiques"
+msgstr "My stats"
 
-#: ../../../readers.php:84
-msgid "Lecteur"
-msgstr "Reader"
+#: ../../../order.php:33 ../../../order.php:62
+msgid "Envoyer un message"
+msgstr "Send a message"
 
-#: ../../../readers.php:85
-msgid "Utilisateur"
-msgstr "User"
+#: ../../../order.php:37
+msgid " Mes tags "
+msgstr "My tags"
 
-#: ../../../readers.php:86
-msgid "Service"
-msgstr "Service"
+#: ../../../order.php:48
+msgid " Mes équipements "
+msgstr "My equipments"
 
-#: ../../../readers.php:113
-msgid "Ajouter une permission"
-msgstr "Add permission"
+#: ../../../order.php:69
+msgid "Message (max. 160 caractères) : "
+msgstr "Message (160 characters max.) : "
 
-#: ../../../readers.php:119
-msgid "Ajouter manuellement une permission"
-msgstr "Add manually a permission"
+#: ../../../order.php:77
+msgid "Envoyer le message"
+msgstr "Send"
 
-#: ../../../readers.php:151
-msgid "Ajouter la permission"
-msgstr "Add permission"
+#: ../../../order.php:87
+msgid "Statistiques de "
+msgstr "Stats : "
 
-#: ../../../tags.php:1
-msgid "Tags - laclef.cc"
-msgstr "Tags - laclef.cc"
+#: ../../../order.php:94
+msgid "La dernière commande a été passée"
+msgstr "Last order : "
 
-#: ../../../tags.php:10
-msgid "Type"
-msgstr "Type"
+#: ../../../order.php:95
+msgid "ont été crédités"
+msgstr "have been "
 
-#: ../../../tags.php:11
-msgid "Propriétaire"
-msgstr "Owner"
-
-#: ../../../tags.php:39
-msgid "Ajouter un tag"
-msgstr "Add a tag"
-
-#: ../../../tags.php:77
-msgid "Ajouter le tag"
-msgstr "Add tag"
-
-#: ../../../users.php:1
-msgid "Utilisateurs - laclef.cc"
-msgstr "Users - laclef.cc"
-
-#: ../../../users.php:12
-msgid "Email"
-msgstr "Email"
-
-#: ../../../users.php:13
-msgid "Admin"
-msgstr "Admin"
-
-#: ../../../users.php:14
-msgid "Solde"
-msgstr "Balance"
-
-#: ../../../users.php:56
-msgid "Ajouter manuellement un utilisateur"
-msgstr "Add manually a user"
-
-#: ../../../users.php:66
-msgid "Indiquez ici un identifiant unique"
-msgstr "Indicate a unique identifier"
-
-#: ../../../users.php:100
-msgid "Ajouter l'utilisateur"
-msgstr "Add user"
+#: ../../../order.php:98
+msgid "Revenir à la commande"
+msgstr "Back to the order"
 
 #: ../../../reader.php:1
 msgid "Modifier le lecteur - laclef.cc"
@@ -492,30 +921,71 @@ msgstr "Delete reader"
 msgid "Ajouter tous les utilisateurs à ce lecteur"
 msgstr "Add all users on this reader"
 
-#: ../../../layout.php:97
-msgid "Extras"
-msgstr "Extras"
+#: ../../../tags.php:1
+msgid "Tags - laclef.cc"
+msgstr "Tags - laclef.cc"
 
-#: ../../../layout.php:101 ../../../layout.php:168
-msgid "Paiements"
-msgstr "Payments"
+#: ../../../tags.php:10
+msgid "Type"
+msgstr "Type"
 
-#: ../../../layout.php:104 ../../../layout.php:169
-msgid "Produits"
-msgstr "Snacks"
+#: ../../../tags.php:11
+msgid "Propriétaire"
+msgstr "Owner"
 
-#: ../../../layout.php:110 ../../../layout.php:175
-msgid "Aide"
-msgstr "Help"
+#: ../../../tags.php:39
+msgid "Ajouter un tag"
+msgstr "Add a tag"
 
-#: ../../../layout.php:113 ../../../layout.php:178
-msgid "À propos"
-msgstr "About"
+#: ../../../tags.php:49 ../../../tag.php:13
+msgid "Indiquez ici l'identifiant unique du tag"
+msgstr "Indicate the unique identifier of the tag (UID)"
 
-#: ../../../layout.php:119 ../../../layout.php:184 ../../../login.php:7
-#: ../../../login.php:22
-msgid "Connexion"
-msgstr "Log in"
+#: ../../../tags.php:52
+msgid "Key A : "
+msgstr "Key A: "
+
+#: ../../../tags.php:56
+msgid ""
+"Indiquez ici la clé de chiffrement Key A (uniquement pour les cartes Mifare)"
+msgstr "Indicate Key A"
+
+#: ../../../tags.php:59 ../../../tag.php:16
+msgid "Type du tag : "
+msgstr "Tag type: "
+
+#: ../../../tags.php:67 ../../../tag.php:24
+msgid "Propriétaire : "
+msgstr "Owner: "
+
+#: ../../../tags.php:77
+msgid "Ajouter le tag"
+msgstr "Add tag"
+
+#: ../../../about.php:1
+msgid "À propos - laboîte.cc"
+msgstr "About "
+
+#: ../../../about.php:7
+msgid "laclef-webapp v0.1"
+msgstr "laclef-webapp v0.1"
+
+#: ../../../about.php:8
+msgid ""
+"Cette application incroyable est développée avec fougue et détermination par "
+"<a href=\"http://baptistegaultier.fr/website/Accueil.html\">Baptiste "
+"Gaultier</a>. En 2013, Baptiste trouva amusant de programmer une application "
+"web capable d'interagir avec de nombreux objets (l'amusement se dissipa "
+"après avoir passer ses vacances et ses nuits à coder"
+msgstr ""
+
+#: ../../../about.php:8
+msgid ""
+"Le code de cette application est open source (<a href=\"http://www.gnu.org/"
+"licenses/agpl-3.0.fr.html\">GPL Affero v3</a>), ce qui signifie qu'il peut "
+"être être téléchargé gratuitement <a href=\"https://github.com/bgaultier/"
+"laclef-webapp\">ici</a>, modifié, redistribué et amélioré par tous."
+msgstr ""
 
 #: ../../../snack.php:1
 msgid "Modifier le produit - laclef.cc"
@@ -529,42 +999,24 @@ msgstr "Modify a snack"
 msgid "Indiquez ici l'identifiant unique du produit"
 msgstr "Indicate the snack unique identifier"
 
-#: ../../../account.php:1 ../../../login.php:1
-msgid "Connexion - laclef.cc"
-msgstr "Log in - laclef.cc"
+#: ../../../tag.php:1 ../../../user.php:1
+msgid "Modifier l'utilisateur - laclef.cc"
+msgstr "Modify user - laclef.cc"
 
-#: ../../../account.php:7
-msgid "Modifier votre compte"
-msgstr "Modify account"
+#: ../../../tag.php:4
+msgid "Modifier un Tag"
+msgstr "Modify tag"
 
-#: ../../../account.php:17
-msgid "Adresse email : "
-msgstr "Email:"
+#: ../../../user.php:4
+msgid "Modifier un utilisateur"
+msgstr "Modify user"
 
-#: ../../../account.php:23
-msgid "Modifier le mot de passe : "
-msgstr "Modify password: "
+#: ../../../user.php:49
+msgid "Supprimer l'utilisateur"
+msgstr "Delete user"
 
-#: ../../../account.php:25
-msgid "Ancien mot de passe"
-msgstr "Old password"
+#~ msgid "Inscription - laboîte.cc"
+#~ msgstr "Sign in"
 
-#: ../../../account.php:30
-msgid "Nouveau mot de passe"
-msgstr "New password"
-
-#: ../../../account.php:34
-msgid "Langue : "
-msgstr "Locale: "
-
-#: ../../../account.php:42
-msgid " Enregistrer les modifications"
-msgstr "Save"
-
-#: ../../../account.php:43
-msgid "Déconnexion"
-msgstr "Log out"
-
-#: ../../../login.php:12
-msgid "Nom d'utilisateur"
-msgstr "Username"
+#~ msgid "Adresse e-mail"
+#~ msgstr "Email"

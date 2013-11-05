@@ -1,4 +1,5 @@
 <?php
+
   // load and initialize any global libraries
   require_once '../models.php';
   
@@ -164,12 +165,6 @@
       $permissions = get_reader_permissions($_GET['id']);
 	    echo json_encode($permissions);
 	  }
-	  elseif ('swipes' == $_GET['uri'] && isset($_GET['id'])) {
-      send_headers();
-      
-      $swipes = get_all_swipes_by_reader($_GET['id']);
-	    echo json_encode($swipes);
-	  }
 	  elseif('orders' == $_GET['uri'] && isset($_GET['uid'])) {
       send_headers();
       
@@ -189,14 +184,13 @@
 	       // This is a payment request
 	       $owner = get_tag_owner($input['uid']);
 	       
-	       if($owner) {
-	        // check user balance
-	        $status = get_user_balance_status($owner);
-	        // log the request if it is a swipe
-	        add_swipe(date('Y-m-d H:i:s'), $_GET['id'], $owner, 1, $status);
+	       if($owner || $input['order']) {
+	        $user = get_user_by_uid($owner);
+	        $input['order']['client'] = $user['uid'];
+	        new_order($input['order']);
+	        
 	        send_headers();
 	        
-	        $user = get_user_by_uid($owner);
 	        $response = array("version" => $version,
 	                          "response" => "OK",
 	                          "uid" => $user['uid'],
@@ -206,7 +200,6 @@
 	       }
 	       else
 	        bad_request();
-	        
 	    }
 	    elseif($input['service'] == 0) {
 	      $owner = get_tag_owner($input['uid']);
@@ -237,6 +230,12 @@
       }
       else
         bad_request();
+	  }
+	  elseif ('swipes' == $_GET['uri'] && isset($_GET['id'])) {
+      send_headers();
+      
+      $swipes = get_all_swipes_by_reader($_GET['id']);
+	    echo json_encode($swipes);
 	  }
 	}
 	

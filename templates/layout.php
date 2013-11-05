@@ -18,7 +18,7 @@
       <link rel="apple-touch-startup-image" href="../img/splash.1024x748.png"
       media="screen and (min-device-width: 481px) and (max-device-width: 1024px) and (orientation:landscape)">
       <link rel="stylesheet" type="text/css" href="templates/ink/css/ink.css">
-      <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+      <link href="templates/ink/css/font-awesome/css/font-awesome.css" rel="stylesheet">
       <link href='http://fonts.googleapis.com/css?family=Kreon:700,400' rel='stylesheet' type='text/css'>
       
       <!--[if IE 7 ]>
@@ -51,7 +51,7 @@
       <script type="text/javascript" src="templates/ink/js/autoload.js"></script>
   </head>
   <body>
-  		<header<?php if(isset($dashboard_active)) echo ' class="hide-all"'; ?>>
+  		<header<?php if(isset($dashboard_active) || isset($signup_active)) echo ' class="hide-all"'; ?>>
   			<nav class="ink-navigation ink-grid hide-small hide-medium top-space">
   				<ul class="menu horizontal rounded shadowed grey">
   					<li>
@@ -102,6 +102,9 @@
 		      			echo '<li';
 		      			if(isset($snacks_active)) echo ' class="active"';
 		      			echo '><a href="snacks">' . _('Produits') . '</a></li>';
+		      			echo '<li';
+		      			if(isset($equipments_active)) echo ' class="active"';
+		      			echo '><a href="equipments">' . _('Équipements') . '</a></li>';
 		      			echo '<li';
 		      			if(isset($orders_active)) echo ' class="active"';
 		      			echo '><a href="orders">' . _('Commandes') . '</a></li>';
@@ -173,6 +176,9 @@
 		          			echo '<li';
 		          			if(isset($snacks_active)) echo ' class="active"';
 		          			echo '><a href="snacks">' . _('Produits') . '</a></li>';
+		          			echo '<li';
+		          			if(isset($equipments_active)) echo ' class="active"';
+		          			echo '><a href="equipments">' . _('Équipements') . '</a></li>';
 		          			echo '<li';
 		          			if(isset($orders_active)) echo ' class="active"';
 		      			    echo '><a href="orders">' . _('Commandes') . '</a></li>';

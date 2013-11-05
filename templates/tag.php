@@ -13,13 +13,6 @@
 				<p class="tip"><?php echo _("Indiquez ici l'identifiant unique du tag"); ?></p>
 			</div>
 			<div class="control-group">
-				<label for="keya"><?php echo _('Key A : '); ?></label>
-				<div class="control">
-					<input type="text" name="keya" id="keya" value="<?php echo $tag['keya']; ?>" />
-				</div>
-				<p class="tip"><?php echo _("Indiquez ici la clé de chiffrement Key A (uniquement pour les cartes Mifare)"); ?></p>
-			</div>
-			<div class="control-group">
 				<p class="label"><?php echo _('Type du tag : '); ?></p>
 				<ul class="control unstyled">
 					<?php $i = 0; foreach ($types as $type): ?>

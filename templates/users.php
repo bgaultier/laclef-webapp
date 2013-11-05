@@ -38,6 +38,17 @@
 						        echo '</ul></div>';
 						      }
 						    ?>
+						    <?php
+						      if(count($user['equipments']) > 0) {
+						        echo '<div class="ink-dropdown">';
+						        echo '<button class="ink-button toggle" data-target="#dropdown-equipments' . $user['uid'] . '">' . '<i class="icon-tablet"></i>' . ' ' . '<i class="icon-caret-down"></i></button>';
+						        echo '<ul id="dropdown-equipments' . $user['uid'] . '" class="dropdown-menu">';
+						        foreach ($user['equipments'] as $equipment):
+						          echo '<li style="font-weight : normal;"><a href="equipment?id=' . $equipment['id'] . '"> ' . $equipment['name'] . '</a>'  . ' ' . _("jusqu'au") . ' ' . date_to_string($equipment['end']) .'</li>';
+						        endforeach;
+						        echo '</ul></div>';
+						      }
+						    ?>
 						</td>
 			    </tr>
 			  <?php endforeach; ?>
@@ -47,7 +58,7 @@
   </div>
 </section>
 <div>
-	<button id="userModal" class="ink-button blue"><i class="icon-plus-sign"></i> <?php echo _('Ajouter'); ?></button>
+  <button id="userModal" class="ink-button blue push-left"><i class="icon-plus-sign"></i> <?php echo _('Ajouter'); ?></button>
 </div>
 <div class="ink-shade">
 	<div id="userModal" class="ink-modal" data-trigger="#userModal">

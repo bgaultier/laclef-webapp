@@ -56,7 +56,7 @@
     signup_action();
   elseif ('/account' == $uri && isset($_SESSION['uid']))
     account_action($_SESSION['uid']);
-  elseif ('/users' == $uri && isset($_SESSION['uid']))
+  elseif ('/users' == substr($uri, 0, 6) && isset($_SESSION['uid']))
     list_users_action($_SESSION['uid']);
   elseif ('/user/delete' == substr($uri, 0, 12) && isset($_GET['uid']))
   		delete_user_action($_SESSION['uid'], $_GET['uid']);
@@ -92,20 +92,36 @@
     modify_snack_action($_SESSION['uid'], $_GET['id']);
   elseif ('/snacks' == $uri && isset($_SESSION['uid']))
     list_snacks_action($_SESSION['uid']);
+  elseif ('/equipments/available' == substr($uri, 0, 21) && isset($_GET['id']))
+    equipment_available_action($_SESSION['uid'], $_GET['id']);
+  elseif ('/equipments/delete' == substr($uri, 0, 18) && isset($_GET['id']))
+  		delete_equipment_action($_SESSION['uid'], $_GET['id']);
+  elseif ('/equipment' == substr($uri, 0, 10) && isset($_GET['id']))
+    modify_equipment_action($_SESSION['uid'], $_GET['id']);
+  elseif ('/equipments' == $uri && isset($_SESSION['uid']))
+    list_equipments_action($_SESSION['uid']);
   elseif ('/tag/delete' == substr($uri, 0, 11) && isset($_GET['uid']))
-  		delete_tag_action($_SESSION['uid'], $_GET['uid']);
+    delete_tag_action($_SESSION['uid'], $_GET['uid']);
   elseif ('/tag' == substr($uri, 0, 4) && isset($_GET['uid']))
-  		modify_tag_action($_SESSION['uid'], $_GET['uid']);
+  	modify_tag_action($_SESSION['uid'], $_GET['uid']);
+  elseif ('/coffee' == substr($uri, 0, 7) && isset($_GET['uid']))
+    coffee_order_action($_GET['uid']);
+  elseif ('/soda' == substr($uri, 0, 5) && isset($_GET['uid']))
+    soda_order_action($_GET['uid']);
   elseif ('/help' == $uri)
     help_action();
+  elseif ('/kfet' == $uri)
+    kfet_action();
   elseif ('/about' == $uri)
     about_action();
   elseif ('/dashboards' == $uri)
     dashboards_action();
-  elseif ('/dashboard' == $uri)
+  elseif ('/dashboard.json' == substr($uri, 0, 15))
+    dashboard_json_action();
+  elseif ('/coffees.tsv' == substr($uri, 0, 12))
+    coffees_tsv_action();
+  elseif ('/dashboard' == substr($uri, 0, 10))
     dashboard_action();
-  elseif ('/coffees.json' == substr($uri, 0, 13))
-    coffees_action();
   else
     login_action();
 

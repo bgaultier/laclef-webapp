@@ -54,7 +54,7 @@
       <h2><?php echo _("Historique des lectures"); ?></h2>
       <p><?php echo _("Permet d'avoir un historique des lectures de"); ?> <a href="#tags"><?php echo _("tags"); ?></a>.</p>
     </section>
-    <section>
+    <section id="api">
       <h2><?php echo _("API Rest"); ?></h2>
       <p><?php echo _("Les ressources accessibles en utilisant l'API Rest sont décrites ci-dessous : "); ?>
       <section id="api-users" class ="top-space" style="border-top: 1px solid rgb(204, 204, 204);">

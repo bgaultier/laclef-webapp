@@ -13,7 +13,7 @@
 			</thead>
 			<tbody>
 			  <tr>
-			    <td><a href="kfet">/kfet</a></td>
+			    <td><a href="dashboard">/dashboard</a></td>
 			    <td>Tableau de bord de la cafétéria RSM</td>
 			    <td>
 			      <a href="dashboard"><button class="ink-button"><i class="icon-external-link"></i></button></a>

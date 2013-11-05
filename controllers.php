@@ -32,14 +32,34 @@
     $dashboard_active = true;
   
     // dealing with order form
-    if(isset($_POST['order']))
-      add_order($_POST);
-    // list all the users
+    if(isset($_POST['client']))
+      new_order($_POST);
+    // dealing with message form
+    if(isset($_POST['message']))
+      add_message($_POST['uid'], $_POST['message']);
+    // if order form is needed
+    if(isset($_GET['uid'])) {
+      $client = get_user_by_uid($_GET['uid']);
+      $client['coffees_today'] = get_coffees_today_by_uid($client['uid']);
+      $client['coffees_month'] = get_coffees_this_month_by_uid($client['uid']);
+      $client['money_today'] = get_money_spent_today_by_uid($client['uid']);
+      $client['money_month'] = get_money_spent_this_month_by_uid($client['uid']);
+      $client['lastorder'] = get_last_order_timestamp_by_uid($client['uid']);
+      $client['lastpayment'] = get_last_payment_by_uid($client['uid']);
+      $client['tags'] = get_user_tags($client['uid']);
+      $client['equipments'] = get_user_equipments($client['uid']);
+    }
+    // get all the users
     $users = get_all_users();
+    
+    // get all the snacks
+    $snacks = get_visible_snacks();
     
     $coffees_today = get_coffees_today();
     $coffees_month = get_coffees_this_month();
     $money_today = get_money_spent_today();
+    $money_month = get_money_spent_this_month();
+    $messages = get_all_messages();
     
     require 'templates/dashboard.php';
   }
@@ -131,16 +151,6 @@
   			header("Location: http://" . $_SERVER['SERVER_NAME'] . "/users");
   			// Make sure that code below does not get executed when we redirect
   			exit;
-  		}
-  		else
-  			require 'templates/login.php';
-  }
-  
-  function get_user_action($session_uid, $uid) {
-  		//check if the user is admin
-  		if(user_is_admin($session_uid)) {
-  			$user = get_user_by_uid($uid);
-  			require 'templates/user.json.php';
   		}
   		else
   			require 'templates/login.php';
@@ -299,6 +309,28 @@
 		  require 'templates/login.php';
   }
   
+  function coffee_order_action($uid) {
+    $order = array();
+    $order['client'] = $uid;
+    $order['snack_2'] = 1;
+    new_order($order);
+    // Redirect browser
+    header("Location: http://" . $_SERVER['SERVER_NAME'] . "/dashboard");
+    // Make sure that code below does not get executed when we redirect
+    exit;
+  }
+  
+  function soda_order_action($uid) {
+    $order = array();
+    $order['client'] = $uid;
+    $order['snack_6'] = 1;
+    new_order($order);
+    // Redirect browser
+    header("Location: http://" . $_SERVER['SERVER_NAME'] . "/dashboard");
+    // Make sure that code below does not get executed when we redirect
+    exit;
+  }
+  
   function delete_permission_action($session_uid, $uid, $id) {
   		//check if the user is admin
   		if(user_is_admin($session_uid)) {
@@ -348,6 +380,45 @@
 			require 'templates/login.php';
   }
   
+  function list_equipments_action($uid) {
+		// needed to set the tab active
+		$extras_active = true;
+		$equipments_active = true;
+		
+		if(user_is_admin($uid)) {
+		  // dealing with equipment add form
+			if(isset($_POST['description']) && isset($_POST['name'])) {
+				$equipment_added = get_equipment_by_id($_POST['id']);
+				// equipment exists
+	      if($equipment_added)
+	        update_equipment($_POST['id'], $_POST['uid'], $_POST['name'], $_POST['description'], $_POST['hirer'], $_POST['end']);
+	      else
+	        add_equipment($_POST['uid'], $_POST['name'], $_POST['description'], $_POST['hirer'], $_POST['end']);
+	    }
+  		// get all the equipments
+  		$equipments = get_all_equipments();
+  		$uids = get_all_uids();
+  		
+  		require 'templates/equipments.php';
+		}
+		else
+		  require 'templates/login.php';
+  }
+  
+  function equipment_available_action($session_uid, $id) {
+	  //check if the user is admin
+	  if(user_is_admin($session_uid)) {
+		  set_equipment_available($id);
+		  // Redirect browser
+		  header("Location: http://" . $_SERVER['SERVER_NAME'] . "/equipments");
+		  // Make sure that code below does not get executed when we redirect
+		  exit;
+	  }
+	  else
+		  require 'templates/login.php';
+  }
+  
+  
   function list_snacks_action($uid) {
 		// needed to set the tab active
 		$extras_active = true;
@@ -363,7 +434,7 @@
 	      else
 	        add_snack($_POST['description_fr_FR'], $_POST['description_en_US'], $_POST['price'], $_POST['visible']);
 	    }
-  		// list all the readers
+  		// get all the snacks
   		$snacks = get_all_snacks();
   		require 'templates/snacks.php';
 		}
@@ -371,18 +442,42 @@
 		  require 'templates/login.php';
   }
   
-  function coffees_action() {
+  function dashboard_json_action() {
     header('Content-type: application/json; charset=utf-8');
-    $today = get_coffees_today();
-    $month = get_coffees_this_month();
-    $all = get_coffees();
+	  header("Cache-Control: no-cache, must-revalidate");
+	  
+    $coffee_today = get_coffees_today();
+    $coffee_month = get_coffees_this_month();
+    $money_today = get_money_spent_today();
+    $money_month = get_money_spent_this_month();
     
-    $coffees = array("today" => $today,
-                     "month" => $month,
-                     "all" => $all
-                    );
+    $json = array("coffee_today" => $coffee_today,
+                  "coffee_month" => $coffee_month,
+                  "money_today" => $money_today,
+                  "money_month" => $money_month
+                 );
                     
-    echo json_encode($coffees);      
+    echo json_encode($json);      
+  }
+  
+  function coffees_tsv_action() {
+    header('Content-type: text/tab-separated-values; charset=utf-8');
+	  header("Cache-Control: no-cache, must-revalidate");
+	  
+	  $tsv = array();
+	  
+	  for ($i = 0; $i <= 5; $i++)
+	  {
+	    $key = date("m", strtotime("-$i month", time()));
+	    $value = 
+	    $tsv[$key] = get_coffees_by_month(date("m", strtotime("-$i month", time())), date("Y", strtotime("-$i month", time())));
+	  }
+                    
+    echo "month\tcoffees\n";
+    foreach ($tsv as $month => $coffees)
+    {
+     echo "$month\t$coffees\n";
+    }
   }
   
   function modify_snack_action($session_uid, $id) {
@@ -400,7 +495,6 @@
 		  require 'templates/login.php';
   }
   
-  
   function delete_snack_action($session_uid, $id) {
 	  //check if the user is admin
 	  if(user_is_admin($session_uid)) {
@@ -412,6 +506,63 @@
 	  }
 	  else
 		  require 'templates/login.php';
+  }
+  
+  function modify_equipment_action($session_uid, $id) {
+    // needed to set the tab active
+		$extras_active = true;
+		$equipments_active = true;
+		
+		//check if the user is admin
+		if(user_is_admin($session_uid)) {
+			$equipment = get_equipment_by_id($id);
+			// get all users uids
+  		$uids = get_all_uids();
+			
+			require 'templates/equipment.php';
+		}
+		else
+		  require 'templates/login.php';
+  }
+  
+  function delete_equipment_action($session_uid, $id) {
+	  //check if the user is admin
+	  if(user_is_admin($session_uid)) {
+		  delete_equipment($id);
+		  // Redirect browser
+		  header("Location: http://" . $_SERVER['SERVER_NAME'] . "/equipments");
+		  // Make sure that code below does not get executed when we redirect
+		  exit;
+	  }
+	  else
+		  require 'templates/login.php';
+  }
+  
+  function signup_action() {
+    $signup_active = true;
+    
+    // get LDAP users
+    $users = get_ldap_users();
+    
+    // if user creation is needed
+    if(isset($_GET['uid'])) {
+      $user = get_ldap_user_by_uid($_GET['uid']);
+      $values = array("uid" => $user['uid'],
+                      "firstname" => $user['firstname'],
+                      "lastname" => $user['lastname'],
+                      "email" => $user['email'],
+                      "password" => null,
+                      "admin" => false,
+                      "locale" => "en_US"
+                     );
+      add_user(values);
+    }
+    
+    require 'templates/signup.php';
+  }
+  
+  function kfet_action() {
+    require 'templates/kfet.php';
   }
   
 ?>

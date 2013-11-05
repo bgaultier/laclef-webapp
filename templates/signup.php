@@ -1,21 +1,34 @@
-<?php $title = _('Inscription - laboîte.cc'); ?>
+<?php $title = _('Kfet - laclef.cc'); ?>
 
 <?php ob_start() ?>
-  <?php
-    if(user_exists($_POST['email']) && !empty($_POST['password']))
-      echo '<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button><strong>' . _('Attention ! ') . '</strong> ' . _('L\'utilisateur existe déjà') . '</div>';
-    elseif(!empty($_POST['email']))
-      insert_new_user($_POST['email'], $_POST['password']);
-  ?>
-  <div class="container">
-    <form class="form-signin" action="signup" method="post" accept-charset="utf-8">
-      <h2 class="form-signin-heading"><?php echo _('Créer un compte'); ?></h2>
-      <input type="text" name="email" class="input-block-level" placeholder="<?php echo _('Adresse e-mail'); ?>">
-      <input type="password" name="password" class="input-block-level" placeholder="<?php echo _('Mot de passe'); ?>">
-      <input id="locale" type="hidden" name="locale" value="<?php echo getenv('LANG');?>">
-      <button class="btn btn-large btn-inverse btn-block" type="submit"><i class=" icon-ok-circle icon-white"></i> <?php echo _('Inscription'); ?></button>
-    </form>
-  </div> <!-- /container -->
+  <header class="vertical-space">
+    <h1 class="pull-left medium-100 small-100"><i class="icon-coffee"></i> Kfet <small style="font-family: 'Kreon', serif;">laclef.cc</small></h1>
+    <nav class="ink-navigation pull-right hide-medium hide-small">
+      <ul class="menu horizontal grey rounded shadowed">
+        <li><a href="login"><?php echo _('Administration'); ?></a></li>
+        <li><a href="signup"><?php echo _('Inscription'); ?></a></li>
+        <li><a href="kfet"><?php echo _('Aide'); ?></a></li>
+      </ul>
+    </nav>
+  </header>
+  <div class="column-group">
+		<div class="box large-80 medium-80 small-100 push-center">
+		  <a href="dashboard"><button class="ink-button caution ink-dismiss"><i class="icon-chevron-left"></i> <?php echo _("Revenir"); ?></button></a>
+			<div class="space">
+			  <h3><?php echo _('Ajouter un utilisateur depuis le LDAP de Télécom Bretagne'); ?></h3>
+        <p><?php echo _("Veuillez sélectionner votre nom dans la liste ci-dessous pour créer un nouveau compte. Si votre compte n'apparaît pas, merci de contacter <a href=\"mailto:baptiste.gaultier@telecom-bretagne.eu?Subject=Kfet signup problem\">Baptiste</a>. "); ?></p>
+        <div>
+          <nav class="ink-navigation vertical-space" style="font-weight : bold;">
+            <ul class="menu vertical rounded grey">
+              <?php
+                usort($users, cmp);
+                foreach ($users as $user): ?>
+                <li><a href="signup?uid=<?php echo $user['uid']; ?>"><?php echo $user['firstname'] . ' ' . $user['lastname']; ?> <i class="icon-chevron-right push-right"></i></a></li>
+              <?php endforeach; ?>
+            </ul>
+          </nav>
+        </div>
+		  </div>
+	</div>
 <?php $content = ob_get_clean() ?>
-
-<?php include 'layout.php' ?>
+<?php include 'layout.php' ?>  

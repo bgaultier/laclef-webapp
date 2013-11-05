@@ -28,6 +28,7 @@
 			// fetch associative array
 			while ($row = mysqli_fetch_assoc($result)) {
 				$row['tags'] = get_user_tags($row['uid']);
+				$row['equipments'] = get_user_equipments($row['uid']);
 				$users[] = $row;
 			}
 				
@@ -122,7 +123,7 @@
 		if(!isset($values['admin']))
 		  $values['admin'] = "off";
 		
-		$query = "UPDATE users SET firstname = '" . mysqli_real_escape_string($link, $values['firstname']) . "', lastname = '" . mysqli_real_escape_string($link, $values['lastname']) . "', email = '" . mysqli_real_escape_string($link, $values['email']) . "', password = SHA1('" . mysqli_real_escape_string($link, $values['password']) . "'), admin = '" . filter_var($values['admin'], FILTER_VALIDATE_BOOLEAN) . "', locale = '" . mysqli_real_escape_string($link, $values['locale']) . "', balance = '" . mysqli_real_escape_string($link, $values['balance']) . "' WHERE uid = '" . mysqli_real_escape_string($link, $values['uid']) . "' LIMIT 1";
+		$query = "UPDATE users SET firstname = '" . mysqli_real_escape_string($link, $values['firstname']) . "', lastname = '" . mysqli_real_escape_string($link, $values['lastname']) . "', email = '" . mysqli_real_escape_string($link, $values['email']) . "', password = SHA1('" . mysqli_real_escape_string($link, $values['password']) . "'), admin = '" . filter_var($values['admin'], FILTER_VALIDATE_BOOLEAN) . "', locale = '" . mysqli_real_escape_string($link, $values['locale']) . "' WHERE uid = '" . mysqli_real_escape_string($link, $values['uid']) . "' LIMIT 1";
 		
 		$result = mysqli_query($link, $query);
 		
@@ -203,21 +204,21 @@
   }
   
   function get_user_tags($uid) {
-  		$link = open_database_connection();
-  		
-  		$query = "SELECT uid, type FROM tags WHERE owner = '" . mysqli_real_escape_string($link, $uid) . "'";
-  		
-  		$tags = array();
-  		if ($result = mysqli_query($link, $query)) {
-  			// fetch associative array
-  			while ($row = mysqli_fetch_assoc($result))
-  				$tags[] = $row;
-  				
-  			// free result set
-  			mysqli_free_result($result);
-  		}
-  		
-  		// close connection
+		$link = open_database_connection();
+		
+		$query = "SELECT uid, type FROM tags WHERE owner = '" . mysqli_real_escape_string($link, $uid) . "'";
+		
+		$tags = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result))
+				$tags[] = $row;
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
     mysqli_close($link);
     
     return $tags;
@@ -481,7 +482,7 @@
   
   function is_payment_reader($id) {
 		$services = get_reader_services_by_id($id);
-		if(in_array(1, $services))
+		if(in_array(1, $services) || $id == 0)
 		  return true;
 		else
 		  return false;
@@ -729,6 +730,52 @@
     return $swipes;
   }
   
+  function get_all_swipes_this_month()
+  {
+    $link = open_database_connection();
+    
+    $query = "SELECT * FROM swipes WHERE MONTH(timestamp) = MONTH(NOW()) AND YEAR(timestamp) = YEAR(NOW())";
+    
+    $swipes = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result)) {
+				$swipes[] = $row;
+			}
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $swipes;
+  }
+  
+  function get_all_swipes_by_month($month, $year)
+  {
+    $link = open_database_connection();
+    
+    $query = "SELECT * FROM swipes WHERE MONTH(timestamp) = '" . mysqli_real_escape_string($link, $month) . "' AND YEAR(timestamp) = '" . mysqli_real_escape_string($link, $year) . "'";
+    
+    $swipes = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result)) {
+				$swipes[] = $row;
+			}
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $swipes;
+  }
+  
   function get_swipe_by_id($id)
   {
     $link = open_database_connection();
@@ -748,13 +795,15 @@
     return $swipe;
   }
   
-  function add_swipe($timestamp, $id, $uid, $service, $status)
+  function add_swipe($id, $uid, $service, $status)
   {
     $link = open_database_connection();
 		
-		$query = "INSERT INTO swipes (timestamp, reader, uid, service, status) VALUES ('" . mysqli_real_escape_string($link, $timestamp) . "', '" . mysqli_real_escape_string($link, $id) . "', '" . mysqli_real_escape_string($link, $uid) . "', '" . mysqli_real_escape_string($link, $service) . "', '" . mysqli_real_escape_string($link, $status) . "')";
+		$query = "INSERT INTO swipes (id, timestamp, reader, uid, service, status) VALUES ('', NOW(), '" . mysqli_real_escape_string($link, $id) . "', '" . mysqli_real_escape_string($link, $uid) . "', '" . mysqli_real_escape_string($link, $service) . "', '" . mysqli_real_escape_string($link, $status) . "')";
 		
 		$result = mysqli_query($link, $query);
+		
+		$id = mysqli_insert_id($link);
 		
 		// free result set
 		mysqli_free_result($result);
@@ -762,7 +811,7 @@
 		// close connection
     mysqli_close($link);
     
-    return $result;		
+    return $id;		
   }
   
   /* Order Model */
@@ -770,7 +819,7 @@
   {
     $link = open_database_connection();
     
-    $query = "SELECT * FROM orders ORDER BY swipe DESC LIMIT 0,200";
+    $query = "SELECT * FROM orders ORDER BY id DESC LIMIT 0,200";
     
     $orders = array();
 		if ($result = mysqli_query($link, $query)) {
@@ -794,11 +843,51 @@
     return $orders;
   }
   
+  function get_last_order_timestamp_by_uid($uid)
+  {
+    $link = open_database_connection();
+    
+    $query = "SELECT * FROM swipes WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "' AND service = 1 ORDER BY timestamp DESC LIMIT 0,1";
+    
+    if ($result = mysqli_query($link, $query)) {
+      $swipe = mysqli_fetch_assoc($result);
+      $swipe['location'] = get_reader_location_by_id($swipe['reader']);
+		}
+		
+		// free result set
+		mysqli_free_result($result);
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $swipe['timestamp'];
+  }
+  
+  function add_order($swipe, $snack, $quantity)
+  {
+    $link = open_database_connection();
+    
+    $snack = get_snack_by_id($snack);
+    
+    if($snack)
+      $query = "INSERT INTO orders (id, swipe, snack, quantity) VALUES ('', '" . mysqli_real_escape_string($link, $swipe) . "', '" . mysqli_real_escape_string($link, $snack['id']) . "', '" . mysqli_real_escape_string($link, $quantity) . "')";
+  		  
+  	$result = mysqli_query($link, $query);
+		
+		// free result set
+		mysqli_free_result($result);
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $result;
+  }
+  
   function get_all_orders_by_uid($uid)
   {
     $link = open_database_connection();
     
-    $query = "SELECT * FROM orders WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "' ORDER BY timestamp DESC LIMIT 0,200";
+    $query = "SELECT * FROM orders WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "' ORDER BY id DESC LIMIT 0,200";
     
     $orders = array();
 		if ($result = mysqli_query($link, $query)) {
@@ -863,23 +952,72 @@
   
   function get_coffees_this_month()
   {
-    $link = open_database_connection();
+    $swipes = get_all_swipes_this_month();
+     
+    $coffees = 0;
+    foreach ($swipes as $swipe) {
+      $orders = get_all_orders_by_swipe($swipe['id']);
+      foreach ($orders as $order) {
+        if($order['snack'] == 1 || $order['snack'] == 2)
+          $coffees+= $order['quantity'];
+      }   
+    }
+    return $coffees;
+  }
+  
+  function get_coffees_by_month($month, $year)
+  {
+    $swipes = get_all_swipes_by_month($month, $year);
+     
+    $coffees = 0;
+    foreach ($swipes as $swipe) {
+      $orders = get_all_orders_by_swipe($swipe['id']);
+      foreach ($orders as $order) {
+        if($order['snack'] == 1 || $order['snack'] == 2)
+          $coffees+= $order['quantity'];
+      }   
+    }
+    return $coffees;
+  }
+  
+  function get_coffees_this_month_by_uid($uid)
+  {
+    $swipes = get_all_swipes_this_month();
+     
+    $coffees = 0;
+    foreach ($swipes as $swipe) {
+      if($swipe['uid'] == $uid)
+        $orders = get_all_orders_by_swipe($swipe['id']);
+      foreach ($orders as $order) {
+        if($order['snack'] == 1 || $order['snack'] == 2)
+          $coffees+= $order['quantity'];
+      }   
+    }
+    return $coffees;
+  }
+  
+  function new_order($values)
+  {
+    $user = get_user_by_uid($values['client']);
     
-    $query = "SELECT SUM(quantity) AS coffees FROM orders WHERE (snack = 1 OR snack = 2) AND MONTH(timestamp) = MONTH(NOW()) AND YEAR(timestamp) = YEAR(NOW())";
+    unset($values['client']);
+    unset($values['sub']);
     
-    if ($result = mysqli_query($link, $query))
-			$coffees = mysqli_fetch_assoc($result);
-		
-		// free result set
-		mysqli_free_result($result);
-		
-		// close connection
-    mysqli_close($link);
-    
-    if(!$coffees['coffees'])
-      $coffees['coffees'] = 0;
-    
-    return $coffees['coffees'];
+    $debit = 0.0;
+    if($user) {
+      $swipe = add_swipe(0, $user['uid'], 1, 1);
+      foreach ($values as $snack_id => $quantity)
+      {
+        if($quantity > 0)
+        {
+          $snack = get_snack_by_id(intval(str_replace('snack_', '', $snack_id)));
+          add_order($swipe, $snack['id'], $quantity);
+          $debit += intval($quantity) * floatval($snack['price']);
+        }
+      }
+      if($debit > 0)
+        debit_account($user['uid'], $debit);
+    }
   }
   
   function get_all_orders_today()
@@ -907,23 +1045,33 @@
   
   function get_coffees_today()
   {
-    $link = open_database_connection();
-    
-    $query = "SELECT SUM(quantity) AS coffees FROM orders WHERE (snack = 1 OR snack = 2) AND DAY(timestamp) = DAY(NOW()) AND MONTH(timestamp) = MONTH(NOW()) AND YEAR(timestamp) = YEAR(NOW())";
-    
-    if ($result = mysqli_query($link, $query))
-			$coffees = mysqli_fetch_assoc($result);
-		
-		// free result set
-		mysqli_free_result($result);
-		
-		// close connection
-    mysqli_close($link);
-    
-    if(!$coffees['coffees'])
-      $coffees['coffees'] = 0;
-    
-    return $coffees['coffees'];
+    $swipes = get_all_swipes_today();
+     
+    $coffees = 0;
+    foreach ($swipes as $swipe) {
+      $orders = get_all_orders_by_swipe($swipe['id']);
+      foreach ($orders as $order) {
+        if($order['snack'] == 1 || $order['snack'] == 2)
+          $coffees+= $order['quantity'];
+      }   
+    }
+    return $coffees;
+  }
+  
+  function get_coffees_today_by_uid($uid)
+  {
+    $swipes = get_all_swipes_today();
+     
+    $coffees = 0;
+    foreach ($swipes as $swipe) {
+      if($swipe['uid'] == $uid)
+        $orders = get_all_orders_by_swipe($swipe['id']);
+      foreach ($orders as $order) {
+        if($order['snack'] == 1 || $order['snack'] == 2)
+          $coffees+= $order['quantity'];
+      }   
+    }
+    return $coffees;
   }
   
   function get_money_spent_today()
@@ -940,6 +1088,56 @@
       }   
     }
     return $money_spent_today;
+  }
+  
+  function get_money_spent_today_by_uid($uid)
+  {
+    $swipes = get_all_swipes_today();
+    
+    $orders = array();
+    $money_spent_today = 0.0;
+    foreach ($swipes as $swipe) {
+      if($swipe['uid'] == $uid)
+        $orders = get_all_orders_by_swipe($swipe['id']);
+      foreach ($orders as $order) {
+        $snack = get_snack_by_id($order['snack']);
+        $money_spent_today += (intval($order['quantity']) * floatval($snack['price']));   
+      }   
+    }
+    return $money_spent_today;
+  }
+  
+  function get_money_spent_this_month()
+  {
+    $swipes = get_all_swipes_this_month();
+    
+    $orders = array();
+    $money_spent_this_month = 0.0;
+    foreach ($swipes as $swipe) {
+      $orders = get_all_orders_by_swipe($swipe['id']);
+      foreach ($orders as $order) {
+        $snack = get_snack_by_id($order['snack']);
+        $money_spent_this_month += (intval($order['quantity']) * floatval($snack['price']));   
+      }   
+    }
+    return $money_spent_this_month;
+  }
+  
+  function get_money_spent_this_month_by_uid($uid)
+  {
+    $swipes = get_all_swipes_this_month();
+    
+    $orders = array();
+    $money_spent_this_month = 0.0;
+    foreach ($swipes as $swipe) {
+      if($swipe['uid'] == $uid)
+        $orders = get_all_orders_by_swipe($swipe['id']);
+      foreach ($orders as $order) {
+        $snack = get_snack_by_id($order['snack']);
+        $money_spent_this_month += (intval($order['quantity']) * floatval($snack['price']));   
+      }   
+    }
+    return $money_spent_this_month;
   }
   
   function datetime_to_string($datetime) {
@@ -959,6 +1157,69 @@
       else
         return $datetime;
     }
+  }
+  
+  function date_to_string($date) {
+    if(!isset($date))
+      return _("Aucune date de fin");
+  
+    $today = date('Y-m-d');
+    
+    if(date('Y-m-d', strtotime($date)) == $today)
+      return _("aujourd'hui");
+    else {
+      if(getenv('LANG') == 'fr_FR')
+        return date('d/m/Y', strtotime($date));
+      else
+        return $date;
+    }
+  }
+  
+  /* Message Model */
+  function get_all_messages()
+  {
+    $link = open_database_connection();
+    
+    $query = "SELECT * FROM messages ORDER BY timestamp DESC LIMIT 0,200";
+    
+    $messages = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result)) {
+			  $user = get_user_by_uid($row['uid']);
+			  $row['firstname'] = $user['firstname'];
+			  $row['lastname'] = $user['lastname'];
+				$messages[] = $row;
+			}
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $messages;
+  }
+  
+  function add_message($uid, $message)
+  {
+    $link = open_database_connection();
+    
+    $user = get_user_by_uid($uid);
+    
+    if($user)
+      $query = "INSERT INTO messages (id, uid, timestamp, message) VALUES ('', '" . mysqli_real_escape_string($link, $uid) . "', NOW(), '" . mysqli_real_escape_string($link, $message) . "')";
+		
+		$result = mysqli_query($link, $query);
+		
+		// free result set
+		mysqli_free_result($result);
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $result;		
   }
   
   /* Payment Model */
@@ -1011,6 +1272,24 @@
     return $payments;
   }
   
+  function get_last_payment_by_uid($uid)
+  {
+    $link = open_database_connection();
+    
+    $query = "SELECT * FROM payments WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "' ORDER BY timestamp DESC LIMIT 0,1";
+    
+    if ($result = mysqli_query($link, $query))
+      $payment = mysqli_fetch_assoc($result);
+		
+		// free result set
+		mysqli_free_result($result);
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $payment;
+  }
+  
   function add_payment($uid, $amount)
   {
   		//TODO Store the IP client address, can be useful if you wanna blacklist hackers
@@ -1057,11 +1336,53 @@
     return $result;
   }
   
+  function debit_account($uid, $amount)
+  {
+		$user = get_user_by_uid($uid);
+		$current_balance = $user['balance'];
+		$new_balance = $current_balance - floatval($amount);
+		
+		$link = open_database_connection();
+		
+		$query = "UPDATE users SET balance = '$new_balance' WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "' LIMIT 1";
+		
+		$result = mysqli_query($link, $query);
+		
+		// free result set
+		mysqli_free_result($result);
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $result;
+  }
+  
   /* Snack Model */
   function get_all_snacks() {
     $link = open_database_connection();
 		
 		$query = "SELECT * FROM snacks";
+		
+		$snacks = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result))
+				$snacks[] = $row;
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $snacks;
+  }
+  
+  function get_visible_snacks() {
+    $link = open_database_connection();
+		
+		$query = "SELECT * FROM snacks WHERE visible = 1";
 		
 		$snacks = array();
 		if ($result = mysqli_query($link, $query)) {
@@ -1150,6 +1471,134 @@
     return $result;
   }
   
+  /* Equipment Model */
+  function get_all_equipments() {
+    $link = open_database_connection();
+		
+		$query = "SELECT * FROM equipments ORDER BY name ASC";
+		
+		$equipments = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result))
+				$equipments[] = $row;
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $equipments;
+  }
+  
+  function get_user_equipments($uid) {
+    $link = open_database_connection();
+		
+		$query = "SELECT * FROM equipments WHERE hirer = '" . mysqli_real_escape_string($link, $uid) . "'  ORDER BY name ASC";
+		
+		$equipments = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result))
+				$equipments[] = $row;
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $equipments;
+  }
+  
+  function add_equipment($uid, $name, $description, $hirer, $end)
+  {
+  		$link = open_database_connection();
+  		
+  		$query = "INSERT INTO equipments (id, uid, name, description, hirer, start, end) VALUES (NULL, '" . mysqli_real_escape_string($link, $uid) . "', '" . mysqli_real_escape_string($link, $name) . "', '" . mysqli_real_escape_string($link, $description) . "', '" . mysqli_real_escape_string($link, $hirer) . "', NOW(), '" . mysqli_real_escape_string($link, $end) . "')";
+		
+		$result = mysqli_query($link, $query);
+		
+		// free result set
+		mysqli_free_result($result);
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $result;
+  }
+  
+  function get_equipment_by_id($id) {
+  		$link = open_database_connection();
+		
+		$query = "SELECT * FROM equipments WHERE id = '" . mysqli_real_escape_string($link, $id) . "' LIMIT 1";
+		
+		if ($result = mysqli_query($link, $query))
+			$equipment = mysqli_fetch_assoc($result);
+		
+		// free result set
+		mysqli_free_result($result);
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $equipment;
+  }
+  
+  function delete_equipment($id)
+  {
+		$link = open_database_connection();
+		
+		$query = "DELETE FROM equipments WHERE id = '" . mysqli_real_escape_string($link, $id) . "' LIMIT 1";
+		
+		$result = mysqli_query($link, $query);
+		
+		// free result set
+		mysqli_free_result($result);
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $result;
+  }
+  
+  function update_equipment($id, $uid, $name, $description, $hirer, $end)
+  {
+		$link = open_database_connection();
+		
+		$query = "UPDATE equipments SET uid = '" . mysqli_real_escape_string($link, $uid) . "', name = '" . mysqli_real_escape_string($link, $name) . "', description = '" . mysqli_real_escape_string($link, $description) . "', hirer = '" . mysqli_real_escape_string($link, $hirer) . "', start = NOW(), end = '" . mysqli_real_escape_string($link, $end) . "' WHERE id = '" . mysqli_real_escape_string($link, $id) . "' LIMIT 1";
+		
+		$result = mysqli_query($link, $query);
+		
+		// free result set
+		mysqli_free_result($result);
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $result;
+  }
+  
+  function set_equipment_available($id)
+  {
+		$link = open_database_connection();
+		
+		$query = "UPDATE equipments SET hirer = NULL, start = NULL, end = NULL WHERE id = '" . mysqli_real_escape_string($link, $id) . "' LIMIT 1";
+		
+		$result = mysqli_query($link, $query);
+		
+		// free result set
+		mysqli_free_result($result);
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $result;
+  }
+  
   function update_user_locale($uid, $locale)
   {
 		$link = open_database_connection();
@@ -1167,6 +1616,13 @@
     return $result;
   }
   
+  function get_ldap_users()
+  {
+	  //TODO get the fucking LDAP server working first 
+	  $users = get_all_users();
+	  return $users;
+  }
+  
   function cmp($a, $b)
   {
     if ($a["balance"] == $b["balance"]) {
@@ -1174,5 +1630,5 @@
     }
     return ($a["balance"] > $b["balance"]) ? -1 : 1;
   }
-	
+  
 ?>
