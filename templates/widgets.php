@@ -1,10 +1,10 @@
 <?php ob_start() ?>
   <div class="column-group gutters">
-    <div class="large-50 medium-50 small-100" style="height:320px">
+    <div class="large-50 medium-50 small-100" style="height:340px">
       <h2><?php echo _('Nombre de cafés'); ?></h2>
       <figure id="coffeechart"></figure>
     </div>
-    <div class="large-50 medium-50 small-100" style="height:320px">
+    <div class="large-50 medium-50 small-100" style="height:340px">
       <h2><?php echo _('Statistiques'); ?></h2>
       <h4 style="font-weight:normal;"><span id="coffee_today" class="ink-badge grey"><?php echo $coffees_today; ?> <i class="icon-coffee"></i></span> <?php echo _("aujourd'hui"); ?></h4>
       <h4 style="font-weight:normal;"><span id="coffee_month" class="ink-badge grey"><?php echo $coffees_month; ?> <i class="icon-coffee"></i></span> <?php echo _("ce mois"); ?></h4>
@@ -28,6 +28,14 @@
       <h2><?php echo _('Prochains évènements'); ?></h2>
       <table class="ink-table">
         <tbody>
+          <?php foreach ($events as $event): ?>
+            <tr>
+              <td>
+                <strong><?php echo $event['title']; ?></strong>
+                <div class="small"><i class="icon-calendar"></i> <?php echo str_replace("<", "", str_replace("<br>", "", substr($event['summary'], 7, strpos($event['summary'],"<br>")))); ?></div>
+              </td>
+            </tr>
+          <?php endforeach; ?>
           <tr>
             <td>
               <strong>Rendez-vous chez le docteur</strong>

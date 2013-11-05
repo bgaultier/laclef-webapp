@@ -49,17 +49,20 @@
       $client['tags'] = get_user_tags($client['uid']);
       $client['equipments'] = get_user_equipments($client['uid']);
     }
+    else {
+      $coffees_today = get_coffees_today();
+      $coffees_month = get_coffees_this_month();
+      $money_today = get_money_spent_today();
+      $money_month = get_money_spent_this_month();
+      $messages = get_all_messages();
+      $events = get_google_calendar_events();
+    }
+    
     // get all the users
     $users = get_all_users();
     
     // get all the snacks
     $snacks = get_visible_snacks();
-    
-    $coffees_today = get_coffees_today();
-    $coffees_month = get_coffees_this_month();
-    $money_today = get_money_spent_today();
-    $money_month = get_money_spent_this_month();
-    $messages = get_all_messages();
     
     require 'templates/dashboard.php';
   }
@@ -460,13 +463,22 @@
     echo json_encode($json);      
   }
   
+  function events_json_action() {
+    header('Content-type: application/json; charset=utf-8');
+	  header("Cache-Control: no-cache, must-revalidate");
+	  
+    $events = get_google_calendar_events();
+                    
+    echo json_encode($events);      
+  }
+  
   function coffees_tsv_action() {
     header('Content-type: text/tab-separated-values; charset=utf-8');
 	  header("Cache-Control: no-cache, must-revalidate");
 	  
 	  $tsv = array();
 	  
-	  for ($i = 0; $i <= 5; $i++)
+	  for ($i = 5; $i >= 0; $i--)
 	  {
 	    $key = date("m", strtotime("-$i month", time()));
 	    $value = 

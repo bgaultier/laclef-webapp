@@ -1623,6 +1623,13 @@
 	  return $users;
   }
   
+  function get_google_calendar_events()
+  {
+    $xml = json_decode(json_encode((array) simplexml_load_file("calendar.xml")), 1);
+    
+    return $xml['entry'];
+  }
+  
   function cmp($a, $b)
   {
     if ($a["balance"] == $b["balance"]) {
