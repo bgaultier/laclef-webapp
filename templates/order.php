@@ -1,6 +1,6 @@
 <?php ob_start() ?>
 <div class="box">
-  <a href="soda?uid=<?php echo $client['uid']; ?>"><button class="ink-button push-right"><i class="icon-beer"></i> <?php $soda = get_snack_by_id(12); echo _("Soda express") . ' ' . number_format($soda['price'], 2, ',', ' ') . '&euro;';
+  <a href="soda?uid=<?php echo $client['uid']; ?>"><button class="ink-button push-right"><i class="icon-beer"></i> <?php $soda = get_snack_by_id(9); echo _("Soda express") . ' ' . number_format($soda['price'], 2, ',', ' ') . '&euro;';
     ?></button></a>
     <a href="coffee?uid=<?php echo $client['uid']; ?>"><button class="ink-button push-right"><i class="icon-coffee"></i> <?php $coffee = get_snack_by_id(2); echo _("Café express") . ' ' . number_format($coffee['price'], 2, ',', ' ') . '&euro;'; ?></button></a>
   <form id="orderForm" class="ink-form" method="post" action="dashboard">
@@ -29,8 +29,8 @@
 	</form>
 	<div>
 	  <a href="dashboard"><button class="ink-button red"><i class="icon-remove"></i> <?php echo _("Annuler"); ?></button></a>
-	  <a href="dashboard"><button id="statisticsModal" class="ink-button"><i class="icon-bar-chart"></i> <?php echo _("Mes statistiques"); ?></button></a>
-	  <a href="dashboard"><button id="messageModal" class="ink-button"><i class="icon-comment-alt"></i> <?php echo _("Envoyer un message"); ?></button></a>
+	  <button id="statisticsModal" class="ink-button" onclick="loadStatsJSON()"><i class="icon-bar-chart"></i> <?php echo _("Mes statistiques"); ?></button>
+	  <button id="messageModal" class="ink-button"><i class="icon-comment-alt"></i> <?php echo _("Envoyer un message"); ?></button>
 	  <?php
       if(count($client['tags']) > 0) {
         echo '<div class="ink-dropdown">';
@@ -87,10 +87,10 @@
 			<h3><?php echo _('Statistiques de ') . $client['firstname'] . ' ' . $client['lastname']; ?></h3>
 		</div>
 		<div class="modal-body" id="modalContent">
-		  <h4 style="font-weight:normal;"><span class="ink-badge grey"><?php echo $client['coffees_today']; ?> <i class="icon-coffee"></i></span> <?php echo _("aujourd'hui"); ?></h4>
-      <h4 style="font-weight:normal;"><span class="ink-badge grey"><?php echo $client['coffees_month']; ?> <i class="icon-coffee"></i></span> <?php echo _("ce mois"); ?></h4>
-      <h4 style="font-weight:normal;"><span class="ink-badge grey"><?php echo number_format($client['money_today'], 0, ',', ' '); ?> <i class="icon-euro"></i></span> <?php echo _("dépensés aujourd'hui"); ?></h4>
-      <h4 style="font-weight:normal;"><span class="ink-badge grey"><?php echo number_format($client['money_month'], 0, ',', ' '); ?> <i class="icon-euro"></i></span> <?php echo _("dépensés ce mois"); ?></h4>
+		  <h4 style="font-weight:normal;"><span id="coffees_user_today" class="ink-badge grey"> <i class="icon-coffee"></i></span> <?php echo _("aujourd'hui"); ?></h4>
+      <h4 style="font-weight:normal;"><span id="coffees_user_month" class="ink-badge grey"> <i class="icon-coffee"></i></span> <?php echo _("ce mois"); ?></h4>
+      <h4 style="font-weight:normal;"><span id="money_user_today" class="ink-badge grey"> <i class="icon-euro"></i></span> <?php echo _("dépensés aujourd'hui"); ?></h4>
+      <h4 style="font-weight:normal;"><span id="money_user_month" class="ink-badge grey"> <i class="icon-euro"></i></span> <?php echo _("dépensés ce mois"); ?></h4>
       <?php if($client['lastorder']) echo '<p>' . _("La dernière commande a été passée") . ' ' . strtolower(datetime_to_string($client['lastorder'])) . '</p>'; ?>
       <?php if($client['lastpayment']) echo '<p>' . number_format($client['lastpayment']['amount'], 2, ',', ' ') . '&euro; ' . _("ont été crédités") . ' ' . strtolower(datetime_to_string($client['lastpayment']['timestamp'])) . '</p>'; ?>
     </div><!--/.modal-body -->
@@ -99,4 +99,16 @@
 		</div><!--/.modal-footer -->
 	</div><!--/.ink-modal -->
 </div><!--/.ink-shade -->
+<script src="templates/d3/d3.v3.min.js"></script>
+<script type="text/javascript">
+  function loadStatsJSON() {
+    d3.json("stats.json?uid=<?php echo $client['uid']; ?>", function(data) {
+      d3.select("#coffees_user_today").html(data.coffees_user_today + ' <i class="icon-coffee"></i>');
+      d3.select("#coffees_user_month").html(data.coffees_user_month + ' <i class="icon-coffee"></i>');
+      d3.select("#money_user_today").html(Math.round(data.money_user_today) + ' <i class="icon-euro"></i>');
+      d3.select("#money_user_month").html(Math.round(data.money_user_month) + ' <i class="icon-euro"></i>');
+      console.log(data);
+    });
+  }
+</script>
 <?php echo ob_get_clean() ?>

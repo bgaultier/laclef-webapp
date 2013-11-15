@@ -6,54 +6,39 @@
     </div>
     <div class="large-50 medium-50 small-100" style="height:340px">
       <h2><?php echo _('Statistiques'); ?></h2>
-      <h4 style="font-weight:normal;"><span id="coffee_today" class="ink-badge grey"><?php echo $coffees_today; ?> <i class="icon-coffee"></i></span> <?php echo _("aujourd'hui"); ?></h4>
-      <h4 style="font-weight:normal;"><span id="coffee_month" class="ink-badge grey"><?php echo $coffees_month; ?> <i class="icon-coffee"></i></span> <?php echo _("ce mois"); ?></h4>
-      <h4 style="font-weight:normal;"><span id="money_today" class="ink-badge grey"><?php echo number_format(round($money_today), 0, ',', ' '); ?> <i class="icon-euro"></i></span> <?php echo _("dépensés aujourd'hui"); ?></h4>
-      <h4 style="font-weight:normal;"><span id="money_month" class="ink-badge grey"><?php echo number_format(round($money_mont), 0, ',', ' '); ?> <i class="icon-euro"></i></span> <?php echo _("dépensés ce mois"); ?></h4>
+      <h4 style="font-weight:normal;"><span id="coffees_today" class="ink-badge grey"> <i class="icon-coffee"></i></span> <?php echo _("aujourd'hui"); ?></h4>
+      <h4 style="font-weight:normal;"><span id="coffees_month" class="ink-badge grey"> <i class="icon-coffee"></i></span> <?php echo _("ce mois"); ?></h4>
+      <h4 style="font-weight:normal;"><span id="money_today" class="ink-badge grey"> <i class="icon-euro"></i></span> <?php echo _("dépensés aujourd'hui"); ?></h4>
+      <h4 style="font-weight:normal;"><span id="money_month" class="ink-badge grey"> <i class="icon-euro"></i></span> <?php echo _("dépensés ce mois"); ?></h4>
       <script src="templates/d3/d3.v3.min.js"></script>
       <script type="text/javascript">
-        function loadJSON() {
+        function loadDashboardJSON() {
           d3.json("dashboard.json", function(data) {
-            d3.select("#coffee_today").html(data.coffee_today + ' <i class="icon-coffee"></i>');
-            d3.select("#coffee_month").html(data.coffee_month + ' <i class="icon-coffee"></i>');
+            d3.select("#coffees_today").html(data.coffees_today + ' <i class="icon-coffee"></i>');
+            d3.select("#coffees_month").html(data.coffees_month + ' <i class="icon-coffee"></i>');
             d3.select("#money_today").html(Math.round(data.money_today) + ' <i class="icon-euro"></i>');
             d3.select("#money_month").html(Math.round(data.money_month) + ' <i class="icon-euro"></i>');
           });
-          setTimeout(loadJSON, 5000);
+          dashboardTimer = setTimeout(loadDashboardJSON, 10000);
         }
-        loadJSON();
+        loadDashboardJSON();
       </script>
     </div>
     <div class="large-50 medium-50 small-100">
       <h2><?php echo _('Prochains évènements'); ?></h2>
       <table class="ink-table">
         <tbody>
-          <?php foreach ($events as $event): ?>
+          <?php
+            $i = 0;
+            foreach ($events as $event): ?>
             <tr>
               <td>
                 <strong><?php echo $event['title']; ?></strong>
                 <div class="small"><i class="icon-calendar"></i> <?php echo str_replace("<", "", str_replace("<br>", "", substr($event['summary'], 7, strpos($event['summary'],"<br>")))); ?></div>
               </td>
             </tr>
+            <?php $i++; if($i > 7) break; ?>
           <?php endforeach; ?>
-          <tr>
-            <td>
-              <strong>Rendez-vous chez le docteur</strong>
-              <div class="small"><i class="icon-calendar"></i> Mardi 29 oct.</div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <strong>Rendez-vous chez Martin</strong>
-              <div class="small"><i class="icon-calendar"></i> Mardi 22 oct.</div>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <strong>Journées portes ouvertes</strong>
-              <div class="small"><i class="icon-calendar"></i> Lundi 21 oct.</div>
-            </td>
-          </tr>
         </tbody>
       </table>
     </div>
@@ -61,16 +46,23 @@
       <h2><?php echo _('Messages'); ?></h2>
       <table class="ink-table">
         <tbody>
-          <?php foreach ($messages as $message): ?>
+          <?php 
+            $i = 0;
+            foreach ($messages as $message): ?>
             <tr>
               <td>
                 <strong><?php echo $message['message']; ?></strong>
                 <div class="small"><i class="icon-calendar"></i> <?php echo datetime_to_string($message['timestamp']); ?> <i class="icon-user"></i> <?php echo $message['firstname']; ?> </div>
               </td>
             </tr>
+            <?php $i++; if($i > 1) break; ?>
           <?php endforeach; ?>
         </tbody>
       </table>
+      <h2><?php echo _('Compteurs SmarTB'); ?></h2>
+      <div id="iframe">
+        <iframe frameborder="0" marginheight="0" marginwidth="0" scrolling="no" src="http://smartb.labo4g.enstb.fr/demo&amp;id=23&amp;embed=1&amp;apikey=9d557961a518fc3f95cb6478e612e520" style="height : 169px; width: 400px;"></iframe>
+      </div>
     </div>
   </div><!--/.column-group -->
   <style>
