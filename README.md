@@ -1,7 +1,7 @@
 laclef-webapp
 ==============
 
-This is a PHP+MySQL web application for the management of users, devices, door locks, payments, RFID tags.  and readers with this open-source web-app
+This is a PHP+MySQL web application for the management of users, devices, door locks, payments, RFID tags.
 
 ![laclef webapp](http://laclef.cc/templates/images/arch_en_US.svg)
 
