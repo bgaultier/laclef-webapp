@@ -13,7 +13,7 @@ Installation
 3. Clone it to your /var/www/ directory
 4. Import the database by using this command (please use [this SQL dump](https://raw.github.com/bgaultier/laclef-webapp/master/laclef-webapp.sql)): `$ mysql -u <your_username> -p <your_password> <your_database_name> < laclef-webapp.sql`
 5. Modify [settings.php](settings.php) according to your MySQL configuration
-6. Fire up your web browser and go to http://<your_server_adress_or_hostname>/login (login : admin, password : admin)
+6. Fire up your web browser and go to http://localhost/login (login : admin, password : admin)
 7. Enjoy a freshly-brewed coffee !
 
 License
