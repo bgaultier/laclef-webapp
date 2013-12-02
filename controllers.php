@@ -30,41 +30,34 @@
   function dashboard_action() {
     // needed to hide the menu
     $dashboard_active = true;
-  
-    // dealing with order form
-    if(isset($_POST['client']))
-      new_order($_POST);
-    // dealing with message form
-    if(isset($_POST['message']))
-      add_message($_POST['uid'], $_POST['message']);
-    // if order form is needed
-    if(isset($_GET['uid'])) {
-      $client = get_user_by_uid($_GET['uid']);
-      $client['coffees_today'] = get_coffees_today_by_uid($client['uid']);
-      $client['coffees_month'] = get_coffees_this_month_by_uid($client['uid']);
-      $client['money_today'] = get_money_spent_today_by_uid($client['uid']);
-      $client['money_month'] = get_money_spent_this_month_by_uid($client['uid']);
-      $client['lastorder'] = get_last_order_timestamp_by_uid($client['uid']);
-      $client['lastpayment'] = get_last_payment_by_uid($client['uid']);
-      $client['tags'] = get_user_tags($client['uid']);
-      $client['equipments'] = get_user_equipments($client['uid']);
-    }
-    else {
-      $coffees_today = get_coffees_today();
-      $coffees_month = get_coffees_this_month();
-      $money_today = get_money_spent_today();
-      $money_month = get_money_spent_this_month();
-      $messages = get_all_messages();
-      $events = get_google_calendar_events();
-    }
     
-    // get all the users
-    $users = get_all_users();
-    
-    // get all the snacks
-    $snacks = get_visible_snacks();
-    
-    require 'templates/dashboard.php';
+	// dealing with order form
+	if(isset($_POST['client']))
+	  new_order($_POST);
+	// dealing with message form
+	if(isset($_POST['message']))
+	  add_message($_POST['uid'], $_POST['message']);
+	// if order form is needed
+	if(isset($_GET['uid'])) {
+	  // get all the snacks
+	  $snacks = get_visible_snacks();
+	  
+	  $client = get_user_by_uid($_GET['uid']);
+	  $client['lastorder'] = get_last_order_timestamp_by_uid($client['uid']);
+	  $client['lastpayment'] = get_last_payment_by_uid($client['uid']);
+	  $client['tags'] = get_user_tags($client['uid']);
+	  $client['equipments'] = get_user_equipments($client['uid']);
+	}
+	else {
+	  $messages = get_all_messages();
+	  $events = get_google_calendar_events();
+	}
+	
+	// get all the users
+	$users = get_all_users_sorted_by_balance_descending();
+	
+	require 'templates/dashboard.php';
+	
   }
   
   function login_action() {
@@ -326,7 +319,7 @@
   function soda_order_action($uid) {
     $order = array();
     $order['client'] = $uid;
-    $order['snack_6'] = 1;
+    $order['snack_9'] = 1;
     new_order($order);
     // Redirect browser
     header("Location: http://" . $_SERVER['SERVER_NAME'] . "/dashboard");
@@ -449,16 +442,36 @@
     header('Content-type: application/json; charset=utf-8');
 	  header("Cache-Control: no-cache, must-revalidate");
 	  
-    $coffee_today = get_coffees_today();
-    $coffee_month = get_coffees_this_month();
+    $coffees_today = get_coffees_today();
+    $coffees_month = get_coffees_this_month();
     $money_today = get_money_spent_today();
     $money_month = get_money_spent_this_month();
     
-    $json = array("coffee_today" => $coffee_today,
-                  "coffee_month" => $coffee_month,
+    $json = array("coffees_today" => $coffees_today,
+                  "coffees_month" => $coffees_month,
                   "money_today" => $money_today,
                   "money_month" => $money_month
                  );
+                    
+    echo json_encode($json);      
+  }
+  
+  function stats_json_action($uid) {
+    header('Content-type: application/json; charset=utf-8');
+    header("Cache-Control: no-cache, must-revalidate");
+    
+    $user = get_user_by_uid($uid);
+    $coffees_user_today = get_coffees_today_by_uid($user['uid']);
+    $coffees_user_month = get_coffees_this_month_by_uid($user['uid']);
+    $money_user_today = get_money_spent_today_by_uid($user['uid']);
+    $money_user_month = get_money_spent_this_month_by_uid($user['uid']);
+  
+  $json = array("coffees_user_today" => $coffees_user_today,
+                "coffees_user_month" => $coffees_user_month,
+                "money_user_today" => $money_user_today,
+                "money_user_month" => $money_user_month
+               );
+    
                     
     echo json_encode($json);      
   }
@@ -480,9 +493,8 @@
 	  
 	  for ($i = 5; $i >= 0; $i--)
 	  {
-	    $key = date("m", strtotime("-$i month", time()));
-	    $value = 
-	    $tsv[$key] = get_coffees_by_month(date("m", strtotime("-$i month", time())), date("Y", strtotime("-$i month", time())));
+	    $month = date("m", strtotime("-$i month", time()));
+	    $tsv[$month] = get_coffees_by_month($month, date("Y", strtotime("-$i month", time())));
 	  }
                     
     echo "month\tcoffees\n";

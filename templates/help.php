@@ -163,6 +163,28 @@
           </tbody>
         </table>
       </section>
+      <section id="api-swipes" class ="top-space" style="border-top: 1px solid rgb(204, 204, 204);">
+        <h3><?php echo _("Lectures des tag"); ?></h3>
+        <p><?php echo _("Actions liées à l'ajout, la suppression et l'affichage d'un passage de tag sur un lecteur."); ?></p>
+        <table class="ink-table bordered">
+          <thead>
+            <tr>
+              <th class="content-left"><?php echo _("Ressource"); ?></th>
+              <th class="content-left"><?php echo _("Description"); ?></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a href="<?php echo $href; ?>/swipes/$id" ><span class="ink-label info">POST</span> /swipes/$id</a></td>
+              <td><?php echo _('Effectuer un passage de tag sur le lecteur <span style="color:#0069D6;">$id</span>.'); ?></td>
+            </tr>
+            <tr>
+              <td><a href="<?php echo $href; ?>/coffees/$uid" ><span class="ink-label info">PUT</span> /coffees/$uid</a></td>
+              <td><?php echo _('Effectuer le paiement d\'un café pour l\'utilisateur <span style="color:#0069D6;">$uid</span>.'); ?></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
       <section id="api-permissions" class ="top-space" style="border-top: 1px solid rgb(204, 204, 204);">
         <h3><?php echo _("Permissions"); ?></h3>
         <p><?php echo _("Actions liées à l'ajout, la suppression et l'affichage des permissions accordées aux utilisateurs sur un lecteur (il est à noter que si un utilisateur dispose de droits sur un lecteur alors tous les tags de cet utlisateur dispose de ce droit)."); ?></p>

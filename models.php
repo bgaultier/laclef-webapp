@@ -42,6 +42,29 @@
     return $users;
   }
   
+  function get_all_users_sorted_by_balance_descending()
+  {
+		$link = open_database_connection();
+		
+		$query = "SELECT * FROM users ORDER BY balance DESC";
+		
+		$users = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result)) {
+				$users[] = $row;
+			}
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $users;
+  }
+  
   function get_all_uids()
   {
 		$link = open_database_connection();
@@ -251,7 +274,7 @@
   }
   
   function get_tag_types() {
-  		return [ _('Mifare Classic'), _('Mifare UltraLight'), _('Code-barres'), _('QR code')];
+  		return array(_('Mifare Classic'), _('Mifare UltraLight'), _('Code-barres'), _('QR code'));
   }
   
   
@@ -457,7 +480,7 @@
   }
   
   function get_reader_services() {
-  		return [ _('Ouverture de porte'), _('Paiement'), _('Location de matériel')];
+  		return array(_('Ouverture de porte'), _('Paiement'), _('Location de matériel'));
   }
   
   
@@ -795,11 +818,30 @@
     return $swipe;
   }
   
-  function add_swipe($id, $uid, $service, $status)
+  function add_swipe($reader, $uid, $service, $status)
   {
     $link = open_database_connection();
 		
-		$query = "INSERT INTO swipes (id, timestamp, reader, uid, service, status) VALUES ('', NOW(), '" . mysqli_real_escape_string($link, $id) . "', '" . mysqli_real_escape_string($link, $uid) . "', '" . mysqli_real_escape_string($link, $service) . "', '" . mysqli_real_escape_string($link, $status) . "')";
+		$query = "INSERT INTO swipes (id, timestamp, reader, uid, service, status) VALUES ('', NOW(), '" . mysqli_real_escape_string($link, $reader) . "', '" . mysqli_real_escape_string($link, $uid) . "', '" . mysqli_real_escape_string($link, $service) . "', '" . mysqli_real_escape_string($link, $status) . "')";
+		
+		$result = mysqli_query($link, $query);
+		
+		$id = mysqli_insert_id($link);
+		
+		// free result set
+		mysqli_free_result($result);
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $id;		
+  }
+  
+  function add_swipe_timestamped($id, $timestamp, $uid, $service, $status)
+  {
+    $link = open_database_connection();
+		
+		$query = "INSERT INTO swipes (id, timestamp, reader, uid, service, status) VALUES ('', '" . mysqli_real_escape_string($link, $timestamp) . "', '" . mysqli_real_escape_string($link, $id) . "', '" . mysqli_real_escape_string($link, $uid) . "', '" . mysqli_real_escape_string($link, $service) . "', '" . mysqli_real_escape_string($link, $status) . "')";
 		
 		$result = mysqli_query($link, $query);
 		
@@ -952,48 +994,70 @@
   
   function get_coffees_this_month()
   {
-    $swipes = get_all_swipes_this_month();
-     
-    $coffees = 0;
-    foreach ($swipes as $swipe) {
-      $orders = get_all_orders_by_swipe($swipe['id']);
-      foreach ($orders as $order) {
-        if($order['snack'] == 1 || $order['snack'] == 2)
-          $coffees+= $order['quantity'];
-      }   
-    }
-    return $coffees;
+    $link = open_database_connection();
+    
+    $query = "SELECT SUM(quantity) AS coffees FROM orders WHERE (snack = 2 OR snack = 1) AND swipe IN (
+              SELECT id FROM swipes WHERE MONTH(`timestamp`) = MONTH(NOW()) AND YEAR(`timestamp`) = YEAR(NOW()))";
+		
+		if ($result = mysqli_query($link, $query))
+			$coffees = mysqli_fetch_assoc($result);
+		
+		// free result set
+		mysqli_free_result($result);
+		
+		// close connection
+    mysqli_close($link);
+    
+    if($coffees['coffees'])
+      return $coffees['coffees'];
+    else
+      return 0;
   }
   
   function get_coffees_by_month($month, $year)
   {
-    $swipes = get_all_swipes_by_month($month, $year);
-     
-    $coffees = 0;
-    foreach ($swipes as $swipe) {
-      $orders = get_all_orders_by_swipe($swipe['id']);
-      foreach ($orders as $order) {
-        if($order['snack'] == 1 || $order['snack'] == 2)
-          $coffees+= $order['quantity'];
-      }   
-    }
-    return $coffees;
+    $link = open_database_connection();
+    
+    $query = "SELECT SUM(quantity) AS coffees FROM orders WHERE (snack = 2 OR snack = 1) AND swipe IN (
+              SELECT id FROM swipes WHERE MONTH(`timestamp`) = '" . mysqli_real_escape_string($link, $month) . "' AND YEAR(`timestamp`) = '" . mysqli_real_escape_string($link, $year) . "')";
+		
+		if ($result = mysqli_query($link, $query)) {
+			$coffees = mysqli_fetch_assoc($result);
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
+    mysqli_close($link);
+    
+    if($coffees['coffees'])
+      return $coffees['coffees'];
+    else
+      return 0;
   }
   
   function get_coffees_this_month_by_uid($uid)
   {
-    $swipes = get_all_swipes_this_month();
-     
-    $coffees = 0;
-    foreach ($swipes as $swipe) {
-      if($swipe['uid'] == $uid)
-        $orders = get_all_orders_by_swipe($swipe['id']);
-      foreach ($orders as $order) {
-        if($order['snack'] == 1 || $order['snack'] == 2)
-          $coffees+= $order['quantity'];
-      }   
-    }
-    return $coffees;
+    $link = open_database_connection();
+    
+    $query = "SELECT SUM(quantity) AS coffees FROM orders WHERE (snack = 2 OR snack = 1) AND swipe IN (
+              SELECT id FROM swipes WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "' AND MONTH(`timestamp`) = MONTH(NOW()) AND YEAR(`timestamp`) = YEAR(NOW()))";
+		
+		if ($result = mysqli_query($link, $query)) {
+			$coffees = mysqli_fetch_assoc($result);
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
+    mysqli_close($link);
+    
+    if($coffees['coffees'])
+      return $coffees['coffees'];
+    else
+      return 0;
   }
   
   function new_order($values)
@@ -1002,17 +1066,18 @@
     
     unset($values['client']);
     unset($values['sub']);
+    $values['reader'] = intval($values['reader']);
     
     $debit = 0.0;
     if($user) {
-      $swipe = add_swipe(0, $user['uid'], 1, 1);
+      $swipe = add_swipe($values['reader'], $user['uid'], 1, 1);
       foreach ($values as $snack_id => $quantity)
       {
         if($quantity > 0)
         {
           $snack = get_snack_by_id(intval(str_replace('snack_', '', $snack_id)));
           add_order($swipe, $snack['id'], $quantity);
-          $debit += intval($quantity) * floatval($snack['price']);
+          $debit += $quantity * floatval($snack['price']);
         }
       }
       if($debit > 0)
@@ -1024,14 +1089,82 @@
   {
     $link = open_database_connection();
     
-    $query = "SELECT * FROM swipes WHERE DAY(timestamp) = DAY(NOW()) AND MONTH(timestamp) = MONTH(NOW()) AND YEAR(timestamp) = YEAR(NOW())";
-    
+    $query = "SELECT * FROM orders WHERE swipe IN (
+              SELECT id FROM swipes WHERE DAY(`timestamp`) = DAY(NOW()) AND MONTH(`timestamp`) = MONTH(NOW()) AND YEAR(`timestamp`) = YEAR(NOW()))";
+              
     $orders = array();
 		if ($result = mysqli_query($link, $query)) {
 			// fetch associative array
-			while ($row = mysqli_fetch_assoc($result)) {
-			  array_merge($orders, get_all_orders_by_swipe(43));
-			}
+			while ($row = mysqli_fetch_assoc($result))
+				$orders[] = $row;
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $orders;
+  }
+  
+  function get_all_orders_this_month()
+  {
+    $link = open_database_connection();
+    
+    $query = "SELECT * FROM orders WHERE swipe IN (SELECT id FROM swipes WHERE MONTH(`timestamp`) = MONTH(NOW()) AND YEAR(`timestamp`) = YEAR(NOW()))";
+              
+    $orders = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result))
+				$orders[] = $row;
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $orders;
+  }
+  
+  function get_all_orders_this_month_by_uid($uid)
+  {
+    $link = open_database_connection();
+    
+    $query = "SELECT * FROM orders WHERE swipe IN (
+              SELECT id FROM swipes WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "' AND MONTH(`timestamp`) = MONTH(NOW()) AND YEAR(`timestamp`) = YEAR(NOW()))";
+              
+    $orders = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result))
+				$orders[] = $row;
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $orders;
+  }
+  
+  function get_all_orders_today_by_uid($uid)
+  {
+    $link = open_database_connection();
+    
+    $query = "SELECT * FROM orders WHERE swipe IN (
+              SELECT id FROM swipes WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "' AND DAY(`timestamp`) = DAY(NOW()) AND MONTH(`timestamp`) = MONTH(NOW()) AND YEAR(`timestamp`) = YEAR(NOW()))";
+              
+    $orders = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result))
+				$orders[] = $row;
 				
 			// free result set
 			mysqli_free_result($result);
@@ -1045,98 +1178,101 @@
   
   function get_coffees_today()
   {
-    $swipes = get_all_swipes_today();
-     
-    $coffees = 0;
-    foreach ($swipes as $swipe) {
-      $orders = get_all_orders_by_swipe($swipe['id']);
-      foreach ($orders as $order) {
-        if($order['snack'] == 1 || $order['snack'] == 2)
-          $coffees+= $order['quantity'];
-      }   
-    }
-    return $coffees;
+    $link = open_database_connection();
+    
+    $query = "SELECT SUM(quantity) AS coffees FROM orders WHERE (snack = 2 OR snack = 1) AND swipe IN (
+              SELECT id FROM swipes WHERE DAY(`timestamp`) = DAY(NOW()) AND MONTH(`timestamp`) = MONTH(NOW()) AND YEAR(`timestamp`) = YEAR(NOW()))";
+              
+		if ($result = mysqli_query($link, $query))
+			$coffees = mysqli_fetch_assoc($result);
+		
+		// free result set
+		mysqli_free_result($result);
+		
+		// close connection
+    mysqli_close($link);
+    
+    if($coffees['coffees'])
+      return $coffees['coffees'];
+    else
+      return 0;
   }
   
   function get_coffees_today_by_uid($uid)
   {
-    $swipes = get_all_swipes_today();
-     
-    $coffees = 0;
-    foreach ($swipes as $swipe) {
-      if($swipe['uid'] == $uid)
-        $orders = get_all_orders_by_swipe($swipe['id']);
-      foreach ($orders as $order) {
-        if($order['snack'] == 1 || $order['snack'] == 2)
-          $coffees+= $order['quantity'];
-      }   
-    }
-    return $coffees;
+    $link = open_database_connection();
+    
+    $query = "SELECT SUM(quantity) AS coffees FROM orders WHERE (snack = 2 OR snack = 1) AND swipe IN (
+              SELECT id FROM swipes WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "' AND DAY(`timestamp`) = DAY(NOW()) AND MONTH(`timestamp`) = MONTH(NOW()) AND YEAR(`timestamp`) = YEAR(NOW()))";
+		
+		if ($result = mysqli_query($link, $query))
+			$coffees = mysqli_fetch_assoc($result);
+		
+		// free result set
+		mysqli_free_result($result);
+		
+		// close connection
+    mysqli_close($link);
+    
+    if($coffees['coffees'])
+      return $coffees['coffees'];
+    else
+      return 0;
   }
   
   function get_money_spent_today()
   {
-    $swipes = get_all_swipes_today();
-    
     $orders = array();
+    $orders = get_all_orders_today();
     $money_spent_today = 0.0;
-    foreach ($swipes as $swipe) {
-      $orders = get_all_orders_by_swipe($swipe['id']);
-      foreach ($orders as $order) {
-        $snack = get_snack_by_id($order['snack']);
-        $money_spent_today += (intval($order['quantity']) * floatval($snack['price']));   
-      }   
+    
+    foreach ($orders as $order) {
+      $snack = get_snack_by_id($order['snack']);
+      $money_spent_today += (intval($order['quantity']) * floatval($snack['price']));
     }
     return $money_spent_today;
   }
   
   function get_money_spent_today_by_uid($uid)
   {
-    $swipes = get_all_swipes_today();
-    
     $orders = array();
+    $orders = get_all_orders_today_by_uid($uid);
+    
     $money_spent_today = 0.0;
-    foreach ($swipes as $swipe) {
-      if($swipe['uid'] == $uid)
-        $orders = get_all_orders_by_swipe($swipe['id']);
-      foreach ($orders as $order) {
-        $snack = get_snack_by_id($order['snack']);
-        $money_spent_today += (intval($order['quantity']) * floatval($snack['price']));   
-      }   
+    
+    foreach ($orders as $order) {
+      $snack = get_snack_by_id($order['snack']);
+      $money_spent_today += (intval($order['quantity']) * floatval($snack['price']));
     }
     return $money_spent_today;
   }
   
   function get_money_spent_this_month()
   {
-    $swipes = get_all_swipes_this_month();
-    
     $orders = array();
+    $orders = get_all_orders_this_month();
+    
     $money_spent_this_month = 0.0;
-    foreach ($swipes as $swipe) {
-      $orders = get_all_orders_by_swipe($swipe['id']);
-      foreach ($orders as $order) {
-        $snack = get_snack_by_id($order['snack']);
-        $money_spent_this_month += (intval($order['quantity']) * floatval($snack['price']));   
-      }   
+    
+    foreach ($orders as $order) {
+      $snack = get_snack_by_id($order['snack']);
+      $money_spent_this_month += (intval($order['quantity']) * floatval($snack['price']));
     }
+    
     return $money_spent_this_month;
   }
   
   function get_money_spent_this_month_by_uid($uid)
   {
-    $swipes = get_all_swipes_this_month();
-    
     $orders = array();
+    $orders = get_all_orders_this_month_by_uid($uid);
     $money_spent_this_month = 0.0;
-    foreach ($swipes as $swipe) {
-      if($swipe['uid'] == $uid)
-        $orders = get_all_orders_by_swipe($swipe['id']);
-      foreach ($orders as $order) {
-        $snack = get_snack_by_id($order['snack']);
-        $money_spent_this_month += (intval($order['quantity']) * floatval($snack['price']));   
-      }   
+    
+    foreach ($orders as $order) {
+      $snack = get_snack_by_id($order['snack']);
+      $money_spent_this_month += (intval($order['quantity']) * floatval($snack['price']));
     }
+    
     return $money_spent_this_month;
   }
   
@@ -1148,12 +1284,12 @@
     $yesterday = date('Y-m-d', strtotime('-1 day'));
     
     if(date('Y-m-d', strtotime($datetime)) == $today)
-      return _("Aujourd'hui à ") . substr($datetime, -8, 5);
+      return _("Aujourd'hui &agrave; ") . substr($datetime, -8, 5);
     elseif(date('Y-m-d', strtotime($datetime)) == $yesterday)
-      return _("Hier à ") . substr($datetime, -8, 5);
+      return _("Hier &agrave; ") . substr($datetime, -8, 5);
     else {
       if(getenv('LANG') == 'fr_FR')
-        return date('\L\e d/m/Y \à h:i', strtotime($datetime));
+        return date('\L\e d/m/Y \&\a\g\r\a\v\e\; H:i', strtotime($datetime));
       else
         return $datetime;
     }
@@ -1219,7 +1355,29 @@
 		// close connection
     mysqli_close($link);
     
+    send_message_to_laboite($message);
+    
     return $result;		
+  }
+  
+  function send_message_to_laboite($message) {
+    /* Send a message to laboite */
+    
+    //set POST variables
+    $url = 'http://api.laboite.cc/61c119ce/message';
+    $optional_headers = 'Content-Type: application/json';
+    
+    $params = array('http' => array(
+                    'method' => 'POST',
+                    'content' => json_encode(array('message' => $message)))
+                   );
+     
+    if ($optional_headers !== null) {
+        $params['http']['header'] = $optional_headers;
+    }
+     
+    $ctx = stream_context_create($params);
+    $fp = fopen($url, 'rb', false, $ctx);
   }
   
   /* Payment Model */
@@ -1292,11 +1450,11 @@
   
   function add_payment($uid, $amount)
   {
-  		//TODO Store the IP client address, can be useful if you wanna blacklist hackers
-  		if(floatval($amount) > 0) {
+		//TODO Store the IP client address, can be useful if you wanna blacklist hackers
+		if(floatval($amount) > 0) {
 		  $link = open_database_connection();
 		
-			$query = "INSERT INTO payments (uid, amount, timestamp) VALUES ('" . mysqli_real_escape_string($link, $uid) . "', '" . floatval($amount) . "', '" . date('Y-m-d H:i:s') . "')";
+			$query = "INSERT INTO payments (uid, amount, timestamp) VALUES ('" . mysqli_real_escape_string($link, $uid) . "', '" . floatval($amount) . "', NOW())";
 		
 			$result = mysqli_query($link, $query);
 		
@@ -1315,22 +1473,46 @@
 			return true;
   }
   
+  function add_payment_timestamped($uid, $amount, $timestamp)
+  {
+		//TODO Store the IP client address, can be useful if you wanna blacklist hackers
+		if(floatval($amount) > 0) {
+		  $link = open_database_connection();
+		
+			$query = "INSERT INTO payments (uid, amount, timestamp) VALUES ('" . mysqli_real_escape_string($link, $uid) . "', '" . floatval($amount) . "', '" . mysqli_real_escape_string($link, $timestamp) . "')";
+		
+			$result = mysqli_query($link, $query);
+		
+			// free result set
+			mysqli_free_result($result);
+		
+			// close connection
+		  mysqli_close($link);
+		  
+		  return false;
+		}
+		else
+			return true;
+  }
+  
   function credit_account($uid, $amount)
   {
-  		$user = get_user_by_uid($uid);
-  		$current_balance = $user['balance'];
-  		$new_balance = $current_balance + floatval($amount);
-  		
-  		$link = open_database_connection();
-  		
-  		$query = "UPDATE users SET balance = '$new_balance' WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "' LIMIT 1";
-  		
-  		$result = mysqli_query($link, $query);
-  		
-  		// free result set
-  		mysqli_free_result($result);
-  		
-  		// close connection
+		$user = get_user_by_uid($uid);
+		$current_balance = $user['balance'];
+		$new_balance = $current_balance + floatval($amount);
+		
+		$new_balance = str_replace(',', '.', (string) $new_balance);
+		
+		$link = open_database_connection();
+		
+		$query = "UPDATE users SET balance = '$new_balance' WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "' LIMIT 1";
+		
+		$result = mysqli_query($link, $query);
+		
+		// free result set
+		mysqli_free_result($result);
+		
+		// close connection
     mysqli_close($link);
     
     return $result;
@@ -1339,8 +1521,10 @@
   function debit_account($uid, $amount)
   {
 		$user = get_user_by_uid($uid);
-		$current_balance = $user['balance'];
+		$current_balance = floatval($user['balance']);
 		$new_balance = $current_balance - floatval($amount);
+		
+		$new_balance = str_replace(',', '.', (string) $new_balance);
 		
 		$link = open_database_connection();
 		
@@ -1629,13 +1813,4 @@
     
     return $xml['entry'];
   }
-  
-  function cmp($a, $b)
-  {
-    if ($a["balance"] == $b["balance"]) {
-        return 0;
-    }
-    return ($a["balance"] > $b["balance"]) ? -1 : 1;
-  }
-  
 ?>

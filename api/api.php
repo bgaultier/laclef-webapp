@@ -7,7 +7,7 @@
   $version = "0.1";
   
   // fetch json post request 
-  $input = json_decode(file_get_contents("php://input"), true, 2);
+  $input = json_decode(file_get_contents("php://input"), true, 3);
   
   if(isset($_GET['uri'])) {
     if ('users' == $_GET['uri'] && isset($_GET['id'])) {
@@ -136,6 +136,30 @@
       
 	    echo json_encode($equipments);
 	  }
+	  elseif ('coffees' == $_GET['uri'] && isset($_GET['id'])) {
+	  	// This is a payment request
+	  	$user = get_user_by_uid($_GET['id']);
+	  	if($user) {
+	  		$order = array();
+		  	$order['client'] = $user['uid'];
+		  	$order['snack_2'] = 1;
+		  	new_order($order);
+		  	
+		  	// get the new user balance
+		  	$user = get_user_by_uid($user['uid']);
+		  	
+		  	send_headers();
+		  	
+		  	$response = array("version" => $version,
+	                        "response" => "OK",
+	                        "uid" => $user['uid'],
+	                        "balance" => $user['balance']
+	                       );
+		  	echo json_encode($response);
+	  	}
+	  	else
+	  		forbidden();
+	  }
 	  elseif ('coffees' == $_GET['uri']) {
       send_headers();
       
@@ -184,10 +208,14 @@
 	       // This is a payment request
 	       $owner = get_tag_owner($input['uid']);
 	       
-	       if($owner || $input['order']) {
+	       if($owner && $input['order']) {
 	        $user = get_user_by_uid($owner);
 	        $input['order']['client'] = $user['uid'];
+	        $input['order']['reader'] = $_GET['id'];
 	        new_order($input['order']);
+	        
+	        // get the new user balance
+	        $user = get_user_by_uid($user['uid']);
 	        
 	        send_headers();
 	        
@@ -199,7 +227,7 @@
 	        echo json_encode($response);
 	       }
 	       else
-	        bad_request();
+	        forbidden();
 	    }
 	    elseif($input['service'] == 0) {
 	      $owner = get_tag_owner($input['uid']);
@@ -231,12 +259,8 @@
       else
         bad_request();
 	  }
-	  elseif ('swipes' == $_GET['uri'] && isset($_GET['id'])) {
-      send_headers();
-      
-      $swipes = get_all_swipes_by_reader($_GET['id']);
-	    echo json_encode($swipes);
-	  }
+	  else
+	    bad_request();
 	}
 	
 	function bad_request() {
@@ -260,7 +284,7 @@
 	}
 	
 	function send_headers() {
-	  header('Content-type: application/json; charset=utf-8');
+	  header("Content-type: application/json; charset=utf-8");
 	  header("Cache-Control: no-cache, must-revalidate");
 	}
 	

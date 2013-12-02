@@ -1,6 +1,6 @@
 <?php
   /*
-    laclef-webapp v0.1 is a PHP+MySQL web application that allows the
+    laclef-webapp v0.2 is a PHP+MySQL web application that allows the
     management of users,  users, devices, door locks, payments, RFID tags
     and readers.
     
