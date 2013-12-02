@@ -11,10 +11,9 @@ Installation
 1. [Install a LAMP server](http://wiki.debian.org/LaMp)
 2. [Fork this repo](https://help.github.com/articles/fork-a-repo) 
 3. Clone it to your /var/www/ directory
-4. Import the database by using this command (please use [this SQL dump](https://raw.github.com/bgaultier/laboite-webapp/master/laboite-webapp.sql)): `$ mysql -u <your_username> -p <your_password> <your_database_name> < laclef-webapp.sql`
-5. Create an admin user by typing the following MySQL query : 
-`$ mysql -u <your_username> -p <your_database> -e "INSERT INTO users (uid, firstname, lastname, email, password, admin, locale) VALUES ('<your_username>', '<your_firstname>', '<your_lastname>', '<your_emailaddress>', SHA1('<your_password>'), '1', 'fr_FR');`
-6. Fire up your web browser and go to http://<your_server_adress_or_hostname>/
+4. Import the database by using this command (please use [this SQL dump](https://raw.github.com/bgaultier/laclef-webapp/master/laclef-webapp.sql)): `$ mysql -u <your_username> -p <your_password> <your_database_name> < laclef-webapp.sql`
+5. Modify [settings.php](settings.php) according to your MySQL configuration
+6. Fire up your web browser and go to http://<your_server_adress_or_hostname>/login (login : admin, password : admin)
 7. Enjoy a freshly-brewed coffee !
 
 License
