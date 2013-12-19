@@ -120,6 +120,8 @@
     dashboard_json_action();
   elseif ('/stats.json' == substr($uri, 0, 11) && isset($_GET['uid']))
     stats_json_action($_GET['uid']);
+  elseif ('/stats.tsv' == substr($uri, 0, 10) && isset($_GET['uid']))
+    stats_tsv_action($_GET['uid']);  
   elseif ('/coffees.tsv' == substr($uri, 0, 12))
     coffees_tsv_action();
   elseif ('/dashboard' == substr($uri, 0, 10))

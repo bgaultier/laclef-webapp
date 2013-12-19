@@ -75,7 +75,11 @@
             <tr>
               <td><a href="<?php echo $href; ?>/users/$uid" ><span class="ink-label info">GET</span> /users/$uid</a></td>
               <td><?php echo _('Obtenir les informations de l\'utilisateur <span style="color:#0069D6;">$uid</span>.'); ?></td>
-            </tr>            
+            </tr>
+            <tr>
+              <td><a href="<?php echo $href; ?>/stats/$uid" ><span class="ink-label info">GET</span> /stats/$uid</a></td>
+              <td><?php echo _('Obtenir les statistiques de consommation de l\'utilisateur <span style="color:#0069D6;">$uid</span>.'); ?></td>
+            </tr>          
           </tbody>
         </table>
       </section>
@@ -179,7 +183,7 @@
               <td><?php echo _('Effectuer un passage de tag sur le lecteur <span style="color:#0069D6;">$id</span>.'); ?></td>
             </tr>
             <tr>
-              <td><a href="<?php echo $href; ?>/coffees/$uid" ><span class="ink-label info">PUT</span> /coffees/$uid</a></td>
+              <td><a href="<?php echo $href; ?>/coffees/$uid" ><span class="ink-label info">POST</span> /coffees/$uid</a></td>
               <td><?php echo _('Effectuer le paiement d\'un café pour l\'utilisateur <span style="color:#0069D6;">$uid</span>.'); ?></td>
             </tr>
           </tbody>

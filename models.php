@@ -1014,6 +1014,27 @@
       return 0;
   }
   
+  function get_user_orders_by_snack($uid, $id)
+  {
+    $link = open_database_connection();
+    
+    $query = "SELECT SUM(quantity) AS total FROM orders WHERE snack = " . mysqli_real_escape_string($link, $id) . " AND swipe IN (SELECT id FROM swipes WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "')";
+		
+		if ($result = mysqli_query($link, $query))
+			$orders = mysqli_fetch_assoc($result);
+		
+		// free result set
+		mysqli_free_result($result);
+		
+		// close connection
+    mysqli_close($link);
+    
+    if($orders['total'])
+      return $orders['total'];
+    else
+      return 0;
+  }
+  
   function get_coffees_by_month($month, $year)
   {
     $link = open_database_connection();
@@ -1136,6 +1157,11 @@
     
     $query = "SELECT * FROM orders WHERE swipe IN (
               SELECT id FROM swipes WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "' AND MONTH(`timestamp`) = MONTH(NOW()) AND YEAR(`timestamp`) = YEAR(NOW()))";
+              
+    /*$sql = 'SELECT *'
+        . ' FROM swipes'
+        . ' INNER JOIN orders ON swipes.id = orders.swipe'
+        . ' WHERE uid = \'bgault02\' AND MONTH(timestamp) = MONTH(NOW()) AND YEAR(timestamp) = YEAR(NOW()) LIMIT 0, 30 '; */
               
     $orders = array();
 		if ($result = mysqli_query($link, $query)) {

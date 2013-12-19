@@ -31,33 +31,36 @@
     // needed to hide the menu
     $dashboard_active = true;
     
-	// dealing with order form
-	if(isset($_POST['client']))
-	  new_order($_POST);
-	// dealing with message form
-	if(isset($_POST['message']))
-	  add_message($_POST['uid'], $_POST['message']);
-	// if order form is needed
-	if(isset($_GET['uid'])) {
-	  // get all the snacks
-	  $snacks = get_visible_snacks();
-	  
-	  $client = get_user_by_uid($_GET['uid']);
-	  $client['lastorder'] = get_last_order_timestamp_by_uid($client['uid']);
-	  $client['lastpayment'] = get_last_payment_by_uid($client['uid']);
-	  $client['tags'] = get_user_tags($client['uid']);
-	  $client['equipments'] = get_user_equipments($client['uid']);
+    if(substr($_SERVER['REMOTE_ADDR'], 0, 19) == "2001:660:7301:3728:") {
+		// dealing with order form
+			if(isset($_POST['client']))
+				new_order($_POST);
+			// dealing with message form
+			if(isset($_POST['message']))
+				add_message($_POST['uid'], $_POST['message']);
+			// if order form is needed
+			if(isset($_GET['uid'])) {
+				// get all the snacks
+				$snacks = get_visible_snacks();
+				
+				$client = get_user_by_uid($_GET['uid']);
+				$client['lastorder'] = get_last_order_timestamp_by_uid($client['uid']);
+				$client['lastpayment'] = get_last_payment_by_uid($client['uid']);
+				$client['tags'] = get_user_tags($client['uid']);
+				$client['equipments'] = get_user_equipments($client['uid']);
+			}
+			else {
+				$messages = get_all_messages();
+				$events = get_google_calendar_events();
+			}
+		
+			// get all the users
+			$users = get_all_users_sorted_by_balance_descending();
+		
+			require 'templates/dashboard.php';
 	}
-	else {
-	  $messages = get_all_messages();
-	  $events = get_google_calendar_events();
-	}
-	
-	// get all the users
-	$users = get_all_users_sorted_by_balance_descending();
-	
-	require 'templates/dashboard.php';
-	
+	else
+		require 'templates/forbidden.php';
   }
   
   function login_action() {
@@ -458,22 +461,40 @@
   
   function stats_json_action($uid) {
     header('Content-type: application/json; charset=utf-8');
-    header("Cache-Control: no-cache, must-revalidate");
-    
+	  header("Cache-Control: no-cache, must-revalidate");
+	  
+	  
     $user = get_user_by_uid($uid);
     $coffees_user_today = get_coffees_today_by_uid($user['uid']);
     $coffees_user_month = get_coffees_this_month_by_uid($user['uid']);
     $money_user_today = get_money_spent_today_by_uid($user['uid']);
     $money_user_month = get_money_spent_this_month_by_uid($user['uid']);
-  
-  $json = array("coffees_user_today" => $coffees_user_today,
-                "coffees_user_month" => $coffees_user_month,
-                "money_user_today" => $money_user_today,
-                "money_user_month" => $money_user_month
-               );
     
-                    
+    $json = array("coffees_user_today" => $coffees_user_today,
+                  "coffees_user_month" => $coffees_user_month,
+                  "money_user_today" => $money_user_today,
+                  "money_user_month" => $money_user_month
+                 );
+  
+                  
     echo json_encode($json);      
+  }
+  
+  function stats_tsv_action($uid) {
+  	header('Content-type: application/json; charset=utf-8');
+  	header("Cache-Control: no-cache, must-revalidate");
+  	
+  	$user = get_user_by_uid($uid);
+	  $user_orders = array();
+	  $total = 0;
+	  $snacks = get_visible_snacks();
+	  
+    echo "label\torders\n";
+	  foreach ($snacks as $snack)
+	  	$user_orders[$snack['description_' . getenv('LANG')]] = intval(get_user_orders_by_snack($user['uid'], $snack['id']));
+	  	
+	 	foreach ($user_orders as $label => $orders)
+	 		echo "$label\t$orders\n";
   }
   
   function events_json_action() {
@@ -499,9 +520,7 @@
                     
     echo "month\tcoffees\n";
     foreach ($tsv as $month => $coffees)
-    {
-     echo "$month\t$coffees\n";
-    }
+    	echo "$month\t$coffees\n";
   }
   
   function modify_snack_action($session_uid, $id) {

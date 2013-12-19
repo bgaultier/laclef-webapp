@@ -61,7 +61,7 @@
 			<button class="modal-close ink-dismiss"></button>
 			<h3><?php echo _('Envoyer un message'); ?></h3>
 		</div>
-		<div class="modal-body" id="modalContent">
+		<div class="modal-body" id="messageModalContent">
 			<form id="messageForm" class="ink-form" method="post" action="dashboard" onsubmit="return Ink.UI.FormValidator.validate(this);">
 				<fieldset>
 					<input type="hidden" name="uid" id="uid" value="<?php echo $client['uid']; ?>" hidden />
@@ -86,13 +86,15 @@
 			<button class="modal-close ink-dismiss"></button>
 			<h3><?php echo _('Statistiques de ') . $client['firstname'] . ' ' . $client['lastname']; ?></h3>
 		</div>
-		<div class="modal-body" id="modalContent">
+		<div class="modal-body" id="statsModalContent">
 		  <h4 style="font-weight:normal;"><span id="coffees_user_today" class="ink-badge grey"> <i class="icon-coffee"></i></span> <?php echo _("aujourd'hui"); ?></h4>
       <h4 style="font-weight:normal;"><span id="coffees_user_month" class="ink-badge grey"> <i class="icon-coffee"></i></span> <?php echo _("ce mois"); ?></h4>
       <h4 style="font-weight:normal;"><span id="money_user_today" class="ink-badge grey"> <i class="icon-euro"></i></span> <?php echo _("dépensés aujourd'hui"); ?></h4>
       <h4 style="font-weight:normal;"><span id="money_user_month" class="ink-badge grey"> <i class="icon-euro"></i></span> <?php echo _("dépensés ce mois"); ?></h4>
       <?php if($client['lastorder']) echo '<p>' . _("La dernière commande a été passée") . ' ' . strtolower(datetime_to_string($client['lastorder'])) . '</p>'; ?>
       <?php if($client['lastpayment']) echo '<p>' . number_format($client['lastpayment']['amount'], 2, ',', ' ') . '&euro; ' . _("ont été crédités") . ' ' . strtolower(datetime_to_string($client['lastpayment']['timestamp'])) . '</p>'; ?>
+      <h4><?php echo _("Préférences"); ?></h4>
+      <p><?php echo _("Survolez le graphique pour plus d'informations."); ?></p>
     </div><!--/.modal-body -->
 		<div class="modal-footer">
 		  <button class="ink-button caution ink-dismiss"><i class="icon-chevron-left"></i> <?php echo _("Revenir à la commande"); ?></button>
@@ -100,6 +102,7 @@
 	</div><!--/.ink-modal -->
 </div><!--/.ink-shade -->
 <script src="templates/d3/d3.v3.min.js"></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.min.js"></script>
 <script type="text/javascript">
   function loadStatsJSON() {
     d3.json("stats.json?uid=<?php echo $client['uid']; ?>", function(data) {
@@ -107,8 +110,52 @@
       d3.select("#coffees_user_month").html(data.coffees_user_month + ' <i class="icon-coffee"></i>');
       d3.select("#money_user_today").html(Math.round(data.money_user_today) + ' <i class="icon-euro"></i>');
       d3.select("#money_user_month").html(Math.round(data.money_user_month) + ' <i class="icon-euro"></i>');
-      console.log(data);
+      drawChart();
     });
   }
+	
+	function drawChart() {
+		var width = 300,
+				height = 300,
+				radius = Math.min(width, height) / 2;
+
+		var color = d3.scale.ordinal()
+				.range(["#eeeeec", "#d3d7cf", "#888a85", "#555753", "#2e3436"]);
+
+		var arc = d3.svg.arc()
+				.outerRadius(radius - 10)
+				.innerRadius(radius - 70);
+
+		var pie = d3.layout.pie()
+				.sort(null)
+				.value(function(d) { return d.orders; });
+
+		var svg = d3.select("#statsModalContent").append("svg")
+				.attr("width", width)
+				.attr("height", height)
+			.append("g")
+				.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+		d3.tsv("stats.tsv?uid=<?php echo $client['uid']; ?>", function(error, data) {
+			var total = 0;
+
+			data.forEach(function(d) {
+				d.orders = +d.orders;
+				total += d.orders;
+			});
+
+			var g = svg.selectAll(".arc")
+				  .data(pie(data))
+				.enter().append("g")
+				  .attr("class", "arc");
+
+			g.append("path")
+				  .attr("d", arc)
+				  .style("fill", function(d) { return color(d.data.label); });
+
+			g.append("title")
+					.text(function(d) {return d.data.label + " : "+ d.data.orders + " (" + Math.round((d.data.orders * 100) / total) + "%)"; });
+		});
+	}
 </script>
 <?php echo ob_get_clean() ?>

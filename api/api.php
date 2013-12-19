@@ -4,7 +4,7 @@
   require_once '../models.php';
   
   // API version number
-  $version = "0.1";
+  $version = "0.2";
   
   // fetch json post request 
   $input = json_decode(file_get_contents("php://input"), true, 3);
@@ -139,26 +139,88 @@
 	  elseif ('coffees' == $_GET['uri'] && isset($_GET['id'])) {
 	  	// This is a payment request
 	  	$user = get_user_by_uid($_GET['id']);
-	  	if($user) {
-	  		$order = array();
-		  	$order['client'] = $user['uid'];
-		  	$order['snack_2'] = 1;
-		  	new_order($order);
-		  	
-		  	// get the new user balance
-		  	$user = get_user_by_uid($user['uid']);
-		  	
-		  	send_headers();
+	  	if($user && $_SERVER['REQUEST_METHOD'] == 'GET') {
+	  		$coffees_user_today = get_coffees_today_by_uid($user['uid']);
+	  		$coffees_user_month = get_coffees_this_month_by_uid($user['uid']);
+	  		
+	  		$coffees = array("today" => $coffees_user_today,
+		                	 "this_month" => $coffees_user_month
+		               		);
+	  		send_headers();
 		  	
 		  	$response = array("version" => $version,
-	                        "response" => "OK",
-	                        "uid" => $user['uid'],
-	                        "balance" => $user['balance']
-	                       );
+	                          "response" => "OK",
+	                          "uid" => $user['uid'],
+	                          "balance" => $user['balance'],
+	                          "coffees" => $coffees
+	                         );
 		  	echo json_encode($response);
 	  	}
-	  	else
-	  		forbidden();
+	  	else {
+	  		if($user) {
+		  		$order = array();
+			  	$order['client'] = $user['uid'];
+			  	$order['snack_2'] = 1;
+			  	new_order($order);
+			  	
+			  	// get the new user balance
+			  	$user = get_user_by_uid($user['uid']);
+			  	
+			  	send_headers();
+			  	
+			  	$response = array("version" => $version,
+			                    "response" => "OK",
+			                    "uid" => $user['uid'],
+			                    "balance" => $user['balance']
+			                   );
+			  	echo json_encode($response);
+		  	}
+		  	else
+		  		forbidden();
+	  	}
+	  }
+	  elseif ('stats' == $_GET['uri'] && isset($_GET['id'])) {
+	  	$user = get_user_by_uid($_GET['id']);
+	  	
+	  	if($user) {
+	  		$user_orders = array();
+	  		$snacks = get_visible_snacks();
+	  		
+	  		foreach ($snacks as $snack)
+	  			$user_orders[$snack['description_fr_FR']] = intval(get_user_orders_by_snack($user['uid'], $snack['id']));
+	  		
+	  		send_headers();
+		  	
+		  	$response = array("version" => $version,
+		  										"response" => "OK",
+		  										"uid" => $user['uid'],
+                          "stats" => $user_orders
+                         );
+                         
+		  	echo json_encode($response);
+	  	}
+	  	else {
+	  		if($user) {
+		  		$order = array();
+			  	$order['client'] = $user['uid'];
+			  	$order['snack_2'] = 1;
+			  	new_order($order);
+			  	
+			  	// get the new user balance
+			  	$user = get_user_by_uid($user['uid']);
+			  	
+			  	send_headers();
+			  	
+			  	$response = array("version" => $version,
+			                    "response" => "OK",
+			                    "uid" => $user['uid'],
+			                    "balance" => $user['balance']
+			                   );
+			  	echo json_encode($response);
+		  	}
+		  	else
+		  		forbidden();
+	  	}
 	  }
 	  elseif ('coffees' == $_GET['uri']) {
       send_headers();
