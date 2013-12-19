@@ -31,7 +31,7 @@
     // needed to hide the menu
     $dashboard_active = true;
     
-    if(substr($_SERVER['REMOTE_ADDR'], 0, 19) == "2001:660:7301:3728:") {
+   
 		// dealing with order form
 			if(isset($_POST['client']))
 				new_order($_POST);
@@ -58,9 +58,7 @@
 			$users = get_all_users_sorted_by_balance_descending();
 		
 			require 'templates/dashboard.php';
-	}
-	else
-		require 'templates/forbidden.php';
+	
   }
   
   function login_action() {
@@ -463,20 +461,20 @@
     header('Content-type: application/json; charset=utf-8');
 	  header("Cache-Control: no-cache, must-revalidate");
 	  
-	  
-    $user = get_user_by_uid($uid);
-    $coffees_user_today = get_coffees_today_by_uid($user['uid']);
-    $coffees_user_month = get_coffees_this_month_by_uid($user['uid']);
-    $money_user_today = get_money_spent_today_by_uid($user['uid']);
-    $money_user_month = get_money_spent_this_month_by_uid($user['uid']);
-    
-    $json = array("coffees_user_today" => $coffees_user_today,
-                  "coffees_user_month" => $coffees_user_month,
-                  "money_user_today" => $money_user_today,
-                  "money_user_month" => $money_user_month
-                 );
-  
-                  
+	  if($uid != "lloiseau") {
+	    $user = get_user_by_uid($uid);
+	    $coffees_user_today = get_coffees_today_by_uid($user['uid']);
+	    $coffees_user_month = get_coffees_this_month_by_uid($user['uid']);
+	    $money_user_today = get_money_spent_today_by_uid($user['uid']);
+	    $money_user_month = get_money_spent_this_month_by_uid($user['uid']);
+	    
+      $json = array("coffees_user_today" => $coffees_user_today,
+                    "coffees_user_month" => $coffees_user_month,
+                    "money_user_today" => $money_user_today,
+                    "money_user_month" => $money_user_month
+                   );
+    }
+                    
     echo json_encode($json);      
   }
   
