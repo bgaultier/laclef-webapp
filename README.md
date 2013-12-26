@@ -25,9 +25,19 @@ Raspberry Pi guide
 5. Upgrade your distro and install the following tools : `sudo su` then `apt-get update && apt-get upgrade`
 6. You have time for a coffee break since the upgrade can take a looonnnggg time
 7. Install a LAMP server : `apt-get install apache2 php5 mysql-client mysql-server avahi-daemon php5-curl php5-mysql libapache2-mod-php5`
-8. 
+8. Modify [settings.php](settings.php) like so :
 
+```php
+	// MySQL server credentials
+  $host = "localhost";
+  $username = "pi";
+  $password = "raspberry";
+  $database = "laclef";
+```
 
+9. Fire up your web browser and go to http://raspberrypi.local/login (login : admin, password : admin)
+10. Enjoy a cup of tea (since you took a coffee on step 6 :)
+11. If laclef is not working as expected, please consider the use of [this tracker](https://github.com/bgaultier/laclef-webapp/issues). This issue tracker is meant for bug repports and requests for improvements.
 
 License
 -------
