@@ -42,6 +42,27 @@
     return $users;
   }
   
+  function search_users($pattern) {
+  		$link = open_database_connection();
+		
+		$query = "SELECT * FROM users WHERE firstname LIKE '%" . mysqli_real_escape_string($link, $pattern) . "%' OR lastname LIKE '%" . mysqli_real_escape_string($link, $pattern) . "%'";
+		
+		$users = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result))
+				$users[] = $row;
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $users;
+  }
+  
   function get_all_users_sorted_by_balance_descending()
   {
 		$link = open_database_connection();
@@ -997,7 +1018,7 @@
     $link = open_database_connection();
     
     $query = "SELECT SUM(quantity) AS coffees FROM orders WHERE (snack = 2 OR snack = 1) AND swipe IN (
-              SELECT id FROM swipes WHERE MONTH(`timestamp`) = MONTH(NOW()) AND YEAR(`timestamp`) = YEAR(NOW()))";
+              SELECT id FROM swipes WHERE MONTH(timestamp) = MONTH(NOW()) AND YEAR(timestamp) = YEAR(NOW()))";
 		
 		if ($result = mysqli_query($link, $query))
 			$coffees = mysqli_fetch_assoc($result);
@@ -1040,7 +1061,7 @@
     $link = open_database_connection();
     
     $query = "SELECT SUM(quantity) AS coffees FROM orders WHERE (snack = 2 OR snack = 1) AND swipe IN (
-              SELECT id FROM swipes WHERE MONTH(`timestamp`) = '" . mysqli_real_escape_string($link, $month) . "' AND YEAR(`timestamp`) = '" . mysqli_real_escape_string($link, $year) . "')";
+              SELECT id FROM swipes WHERE MONTH(timestamp) = '" . mysqli_real_escape_string($link, $month) . "' AND YEAR(timestamp) = '" . mysqli_real_escape_string($link, $year) . "')";
 		
 		if ($result = mysqli_query($link, $query)) {
 			$coffees = mysqli_fetch_assoc($result);
@@ -1063,7 +1084,7 @@
     $link = open_database_connection();
     
     $query = "SELECT SUM(quantity) AS coffees FROM orders WHERE (snack = 2 OR snack = 1) AND swipe IN (
-              SELECT id FROM swipes WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "' AND MONTH(`timestamp`) = MONTH(NOW()) AND YEAR(`timestamp`) = YEAR(NOW()))";
+              SELECT id FROM swipes WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "' AND MONTH(timestamp) = MONTH(NOW()) AND YEAR(timestamp) = YEAR(NOW()))";
 		
 		if ($result = mysqli_query($link, $query)) {
 			$coffees = mysqli_fetch_assoc($result);
@@ -1111,7 +1132,7 @@
     $link = open_database_connection();
     
     $query = "SELECT * FROM orders WHERE swipe IN (
-              SELECT id FROM swipes WHERE DAY(`timestamp`) = DAY(NOW()) AND MONTH(`timestamp`) = MONTH(NOW()) AND YEAR(`timestamp`) = YEAR(NOW()))";
+              SELECT id FROM swipes WHERE DAY(timestamp) = DAY(NOW()) AND MONTH(timestamp) = MONTH(NOW()) AND YEAR(timestamp) = YEAR(NOW()))";
               
     $orders = array();
 		if ($result = mysqli_query($link, $query)) {
@@ -1133,7 +1154,7 @@
   {
     $link = open_database_connection();
     
-    $query = "SELECT * FROM orders WHERE swipe IN (SELECT id FROM swipes WHERE MONTH(`timestamp`) = MONTH(NOW()) AND YEAR(`timestamp`) = YEAR(NOW()))";
+    $query = "SELECT * FROM orders WHERE swipe IN (SELECT id FROM swipes WHERE MONTH(timestamp) = MONTH(NOW()) AND YEAR(timestamp) = YEAR(NOW()))";
               
     $orders = array();
 		if ($result = mysqli_query($link, $query)) {
@@ -1156,7 +1177,7 @@
     $link = open_database_connection();
     
     $query = "SELECT * FROM orders WHERE swipe IN (
-              SELECT id FROM swipes WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "' AND MONTH(`timestamp`) = MONTH(NOW()) AND YEAR(`timestamp`) = YEAR(NOW()))";
+              SELECT id FROM swipes WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "' AND MONTH(timestamp) = MONTH(NOW()) AND YEAR(timestamp) = YEAR(NOW()))";
               
     /*$sql = 'SELECT *'
         . ' FROM swipes'
@@ -1184,7 +1205,7 @@
     $link = open_database_connection();
     
     $query = "SELECT * FROM orders WHERE swipe IN (
-              SELECT id FROM swipes WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "' AND DAY(`timestamp`) = DAY(NOW()) AND MONTH(`timestamp`) = MONTH(NOW()) AND YEAR(`timestamp`) = YEAR(NOW()))";
+              SELECT id FROM swipes WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "' AND DAY(timestamp) = DAY(NOW()) AND MONTH(timestamp) = MONTH(NOW()) AND YEAR(timestamp) = YEAR(NOW()))";
               
     $orders = array();
 		if ($result = mysqli_query($link, $query)) {
@@ -1207,7 +1228,7 @@
     $link = open_database_connection();
     
     $query = "SELECT SUM(quantity) AS coffees FROM orders WHERE (snack = 2 OR snack = 1) AND swipe IN (
-              SELECT id FROM swipes WHERE DAY(`timestamp`) = DAY(NOW()) AND MONTH(`timestamp`) = MONTH(NOW()) AND YEAR(`timestamp`) = YEAR(NOW()))";
+              SELECT id FROM swipes WHERE DAY(timestamp) = DAY(NOW()) AND MONTH(timestamp) = MONTH(NOW()) AND YEAR(timestamp) = YEAR(NOW()))";
               
 		if ($result = mysqli_query($link, $query))
 			$coffees = mysqli_fetch_assoc($result);
@@ -1229,7 +1250,7 @@
     $link = open_database_connection();
     
     $query = "SELECT SUM(quantity) AS coffees FROM orders WHERE (snack = 2 OR snack = 1) AND swipe IN (
-              SELECT id FROM swipes WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "' AND DAY(`timestamp`) = DAY(NOW()) AND MONTH(`timestamp`) = MONTH(NOW()) AND YEAR(`timestamp`) = YEAR(NOW()))";
+              SELECT id FROM swipes WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "' AND DAY(timestamp) = DAY(NOW()) AND MONTH(timestamp) = MONTH(NOW()) AND YEAR(timestamp) = YEAR(NOW()))";
 		
 		if ($result = mysqli_query($link, $query))
 			$coffees = mysqli_fetch_assoc($result);

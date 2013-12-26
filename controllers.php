@@ -31,7 +31,6 @@
     // needed to hide the menu
     $dashboard_active = true;
     
-   
 		// dealing with order form
 			if(isset($_POST['client']))
 				new_order($_POST);
@@ -58,8 +57,7 @@
 			$users = get_all_users_sorted_by_balance_descending();
 		
 			require 'templates/dashboard.php';
-	
-  }
+	}
   
   function login_action() {
     // check if the admin exists
@@ -461,19 +459,17 @@
     header('Content-type: application/json; charset=utf-8');
 	  header("Cache-Control: no-cache, must-revalidate");
 	  
-	  if($uid != "lloiseau") {
-	    $user = get_user_by_uid($uid);
-	    $coffees_user_today = get_coffees_today_by_uid($user['uid']);
-	    $coffees_user_month = get_coffees_this_month_by_uid($user['uid']);
-	    $money_user_today = get_money_spent_today_by_uid($user['uid']);
-	    $money_user_month = get_money_spent_this_month_by_uid($user['uid']);
-	    
-      $json = array("coffees_user_today" => $coffees_user_today,
-                    "coffees_user_month" => $coffees_user_month,
-                    "money_user_today" => $money_user_today,
-                    "money_user_month" => $money_user_month
-                   );
-    }
+    $user = get_user_by_uid($uid);
+    $coffees_user_today = get_coffees_today_by_uid($user['uid']);
+    $coffees_user_month = get_coffees_this_month_by_uid($user['uid']);
+    $money_user_today = get_money_spent_today_by_uid($user['uid']);
+    $money_user_month = get_money_spent_this_month_by_uid($user['uid']);
+    
+    $json = array("coffees_user_today" => $coffees_user_today,
+                  "coffees_user_month" => $coffees_user_month,
+                  "money_user_today" => $money_user_today,
+                  "money_user_month" => $money_user_month
+                 );
                     
     echo json_encode($json);      
   }

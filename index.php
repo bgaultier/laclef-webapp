@@ -1,7 +1,7 @@
 <?php
   /*
     laclef-webapp v0.2 is a PHP+MySQL web application that allows the
-    management of users,  users, devices, door locks, payments, RFID tags
+    management of users, devices, door locks, payments, RFID tags
     and readers.
     
     Copyright (C) 2013  Baptiste Gaultier
@@ -47,7 +47,7 @@
   $uri = $_SERVER['REQUEST_URI'];
 
   if ('/' == $uri)
-    home_action($_SESSION['uid']);
+    home_action();
   elseif ('/login' == $uri)
     login_action();
   elseif ('/logout' == $uri)
@@ -116,13 +116,13 @@
     about_action();
   elseif ('/dashboards' == $uri)
     dashboards_action();
-  elseif ('/dashboard.json' == substr($uri, 0, 15))
+  elseif ('/dashboard.json' == $uri)
     dashboard_json_action();
   elseif ('/stats.json' == substr($uri, 0, 11) && isset($_GET['uid']))
     stats_json_action($_GET['uid']);
   elseif ('/stats.tsv' == substr($uri, 0, 10) && isset($_GET['uid']))
     stats_tsv_action($_GET['uid']);  
-  elseif ('/coffees.tsv' == substr($uri, 0, 12))
+  elseif ('/coffees.tsv' == $uri)
     coffees_tsv_action();
   elseif ('/dashboard' == substr($uri, 0, 10))
     dashboard_action();
