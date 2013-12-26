@@ -87,10 +87,10 @@
 			<h3><?php echo _('Statistiques de ') . $client['firstname'] . ' ' . $client['lastname']; ?></h3>
 		</div>
 		<div class="modal-body" id="statsModalContent">
-		  <h4 style="font-weight:normal;"><span id="coffees_user_today" class="ink-badge grey"> <i class="icon-coffee"></i></span> <?php echo _("aujourd'hui"); ?></h4>
-      <h4 style="font-weight:normal;"><span id="coffees_user_month" class="ink-badge grey"> <i class="icon-coffee"></i></span> <?php echo _("ce mois"); ?></h4>
-      <h4 style="font-weight:normal;"><span id="money_user_today" class="ink-badge grey"> <i class="icon-euro"></i></span> <?php echo _("dépensés aujourd'hui"); ?></h4>
-      <h4 style="font-weight:normal;"><span id="money_user_month" class="ink-badge grey"> <i class="icon-euro"></i></span> <?php echo _("dépensés ce mois"); ?></h4>
+		  <h4 style="font-weight:normal;"><span id="coffees_user_today" class="ink-badge grey"><i class="icon-spin icon-spinner"></i> <i class="icon-coffee"></i></span> <?php echo _("aujourd'hui"); ?></h4>
+      <h4 style="font-weight:normal;"><span id="coffees_user_month" class="ink-badge grey"><i class="icon-spin icon-spinner"></i> <i class="icon-coffee"></i></span> <?php echo _("ce mois"); ?></h4>
+      <h4 style="font-weight:normal;"><span id="money_user_today" class="ink-badge grey"><i class="icon-spin icon-spinner"></i> <i class="icon-euro"></i></span> <?php echo _("dépensés aujourd'hui"); ?></h4>
+      <h4 style="font-weight:normal;"><span id="money_user_month" class="ink-badge grey"><i class="icon-spin icon-spinner"></i> <i class="icon-euro"></i></span> <?php echo _("dépensés ce mois"); ?></h4>
       <?php if($client['lastorder']) echo '<p>' . _("La dernière commande a été passée") . ' ' . strtolower(datetime_to_string($client['lastorder'])) . '</p>'; ?>
       <?php if($client['lastpayment']) echo '<p>' . number_format($client['lastpayment']['amount'], 2, ',', ' ') . '&euro; ' . _("ont été crédités") . ' ' . strtolower(datetime_to_string($client['lastpayment']['timestamp'])) . '</p>'; ?>
       <h4><?php echo _("Préférences"); ?></h4>
@@ -102,7 +102,6 @@
 	</div><!--/.ink-modal -->
 </div><!--/.ink-shade -->
 <script src="templates/d3/d3.v3.min.js"></script>
-<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.min.js"></script>
 <script type="text/javascript">
   function loadStatsJSON() {
     d3.json("stats.json?uid=<?php echo $client['uid']; ?>", function(data) {
@@ -151,10 +150,52 @@
 
 			g.append("path")
 				  .attr("d", arc)
-				  .style("fill", function(d) { return color(d.data.label); });
+				  .style("fill", function(d) { return color(d.data.label); })
+				  .style("stroke", "#fff")
+				  .style("stroke-width", "1.5px");
 
 			g.append("title")
 					.text(function(d) {return d.data.label + " : "+ d.data.orders + " (" + Math.round((d.data.orders * 100) / total) + "%)"; });
+					
+			var legend = d3.select("#statsModalContent").append("svg")
+				  .attr("class", "legend")
+				  .attr("width", radius * 2)
+				  .attr("height", radius * 2)
+				.selectAll("g")
+				  .data(data)
+				.enter().append("g")
+				  .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+			legend.append("rect")
+					.attr("x", 2)
+				  .attr("y", 1)
+				  .attr("width", 16)
+				  .attr("height", 16)
+				  .attr("rx", 3)
+				  .attr("ry", 3)
+				  .style("fill", function(d) { return color(d.label); })
+				  .style("stroke", function(d) { return d3.rgb(color(d.label)).darker(); })
+				  .style("stroke-width", "1.5px")
+				  .on("mouseover", fade(.1))
+				  .on("mouseout", fade(1));;
+
+			legend.append("text")
+				  .attr("x", 24)
+				  .attr("y", 9)
+				  .attr("dy", ".35em")
+				  .text(function(d) {return d.label + " : "+ Math.round((d.orders * 100) / total) + "%"; });
+				  
+			function fade(opacity) {
+				return function(g, i) {
+					svg.selectAll(".arc")
+						 .filter(function(d) {
+							return d.data.label != g.label;
+					
+						})
+						.transition()
+						.style("opacity", opacity);
+				};
+			}
 		});
 	}
 </script>

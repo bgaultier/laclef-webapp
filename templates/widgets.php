@@ -6,10 +6,10 @@
     </div>
     <div class="large-50 medium-50 small-100" style="height:340px">
       <h2><?php echo _('Statistiques'); ?></h2>
-      <h4 style="font-weight:normal;"><span id="coffees_today" class="ink-badge grey"> <i class="icon-coffee"></i></span> <?php echo _("aujourd'hui"); ?></h4>
-      <h4 style="font-weight:normal;"><span id="coffees_month" class="ink-badge grey"> <i class="icon-coffee"></i></span> <?php echo _("ce mois"); ?></h4>
-      <h4 style="font-weight:normal;"><span id="money_today" class="ink-badge grey"> <i class="icon-euro"></i></span> <?php echo _("dépensés aujourd'hui"); ?></h4>
-      <h4 style="font-weight:normal;"><span id="money_month" class="ink-badge grey"> <i class="icon-euro"></i></span> <?php echo _("dépensés ce mois"); ?></h4>
+      <h4 style="font-weight:normal;"><span id="coffees_today" class="ink-badge grey"><i class="icon-spin icon-spinner"></i> <i class="icon-coffee"></i></span> <?php echo _("aujourd'hui"); ?></h4>
+      <h4 style="font-weight:normal;"><span id="coffees_month" class="ink-badge grey"><i class="icon-spin icon-spinner"></i> <i class="icon-coffee"></i></span> <?php echo _("ce mois"); ?></h4>
+      <h4 style="font-weight:normal;"><span id="money_today" class="ink-badge grey"><i class="icon-spin icon-spinner"></i> <i class="icon-euro"></i></span> <?php echo _("dépensés aujourd'hui"); ?></h4>
+      <h4 style="font-weight:normal;"><span id="money_month" class="ink-badge grey"><i class="icon-spin icon-spinner"></i> <i class="icon-euro"></i></span> <?php echo _("dépensés ce mois"); ?></h4>
       <script src="templates/d3/d3.v3.min.js"></script>
       <script type="text/javascript">
         function loadDashboardJSON() {
@@ -74,13 +74,52 @@
     }
 
     .bar {
-      fill: steelblue;
+      fill: #808080;
+      transition-property: fill;
+      transition-duration: 0.3s;
+    }
+    
+    .bar:hover {
+      fill: #CCCCCC;
+      transition-property: fill;
+      transition-duration: 0.3s;
     }
 
     .x.axis path {
       display: none;
     }
+    
+    .d3-tip {
+    		background: #f0f0f0;
+			padding: 0.5em 0.6em;
+			border-radius: 4px;
+			font-size: 0.8em;
+			color: #8c8c8c;
+			background: rgba(0, 0, 0, 0.8);
+			color: #fff;
+		}
+
+		/* Creates a small triangle extender for the tooltip */
+		.d3-tip:after {
+			box-sizing: border-box;
+			display: inline;
+			font-size: 10px;
+			width: 100%;
+			line-height: 1;
+			color: rgba(0, 0, 0, 0.8);
+			content: "\25BC";
+			position: absolute;
+			text-align: center;
+		}
+
+		/* Style northward tooltips differently */
+		.d3-tip.n:after {
+			margin: -2px 0 0 0;
+			top: 100%;
+			left: 0;
+		}
   </style>
+  <script src="templates/d3/d3.tip.min.js"></script>
   <script>
     var margin = {top: 40, right: 20, bottom: 30, left: 40},
         width = 400 - margin.left - margin.right,
@@ -101,12 +140,21 @@
         .scale(y)
         .orient("left")
         .ticks(5);
+        
+		var tip = d3.tip()
+				.attr('class', 'd3-tip')
+				.offset([-10, 0])
+				.html(function(d) {
+					return d.coffees + ' <i class="icon-coffee"></i></span>';
+				})
 
     var svg = d3.select("#coffeechart").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        
+    svg.call(tip);
 
     d3.tsv("coffees.tsv", type, function(error, data) {
       x.domain(data.map(function(d) { return d.month; }));
@@ -133,10 +181,10 @@
           .attr("class", "bar")
           .attr("x", function(d) { return x(d.month); })
           .attr("width", x.rangeBand())
-          .style("fill", function(d) { return d3.rgb(128, 128, 128); })
           .attr("y", function(d) { return y(d.coffees); })
-          .attr("height", function(d) { return height - y(d.coffees); });
-
+          .attr("height", function(d) { return height - y(d.coffees); })
+          .on('mouseover', tip.show)
+          .on('mouseout', tip.hide);
     });
 
     function type(d) {
