@@ -27,7 +27,8 @@ Raspberry Pi guide
 7. Install a LAMP server : `apt-get install apache2 php5 mysql-client mysql-server avahi-daemon php5-curl php5-mysql libapache2-mod-php5`
 8. Create a user and a database : `$ mysql -u <your_username> -p` then `mysql> CREATE DATABASE laclef; GRANT ALL PRIVILEGES ON laclef.* TO 'pi'@'localhost' IDENTIFIED BY 'raspberry' WITH GRANT OPTION;`
 9. Import the database by using this command (please use [this SQL dump](https://raw.github.com/bgaultier/laclef-webapp/master/laclef-webapp.sql)): `$ mysql -u <your_username> -p <your_password> <your_database_name> < laclef-webapp.sql`
-10. Modify [settings.php](settings.php) like so :
+10. In another project called [emoncms](http://emoncms.org), we noticed that the Raspberry SD card lifetime can be extended if we turn off apache logging. To do so, please have a look at [this documentation](http://emoncms.org/site/docs/raspberrypibuild) (step 6).
+11. Modify [settings.php](settings.php) like so :
 
 ```php
 	// MySQL server credentials
@@ -37,9 +38,10 @@ Raspberry Pi guide
   $database = "laclef";
 ```
 
-11. Fire up your web browser and go to http://raspberrypi.local/login (login : admin, password : admin)
-12. Enjoy a cup of tea (since you took a coffee on step 6 :)
-13. If laclef is not working as expected, please consider the use of [this tracker](https://github.com/bgaultier/laclef-webapp/issues). This issue tracker is meant for bug reports and requests for improvements.
+Last step : go to http://raspberrypi.local/login (login : admin, password : admin)
+Enjoy a cup of tea (since you took a coffee on step 6 :)
+
+If laclef is not working as expected, please consider the use of [this tracker](https://github.com/bgaultier/laclef-webapp/issues). This issue tracker is meant for bug reports and requests for improvements.
 
 License
 -------
