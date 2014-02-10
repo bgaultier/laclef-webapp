@@ -50,7 +50,7 @@
 		</div>
 	</form>
 	<div>
-	  <a href="tag/delete?uid=<?php echo $tag['uid']; ?>"><button class="ink-button red"><i class="icon-remove"></i> <?php echo _("Supprimer le tag"); ?></button></a>
+	  <a href="equipment/delete?id=<?php echo $equipment['id']; ?>"><button class="ink-button red"><i class="icon-remove"></i> <?php echo _("Supprimer l"équipement"); ?></button></a>
 	</div>
 </div>
 <?php $content = ob_get_clean() ?>

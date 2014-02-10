@@ -251,10 +251,10 @@
       $permissions = get_reader_permissions($_GET['id']);
 	    echo json_encode($permissions);
 	  }
-	  elseif('orders' == $_GET['uri'] && isset($_GET['uid'])) {
+	  elseif('orders' == $_GET['uri'] && isset($_GET['id'])) {
       send_headers();
       
-      $orders = get_all_orders_by_uid($_GET['uid']);
+      $orders = get_all_orders_by_uid($_GET['id']);
       
 	    echo json_encode($orders);
 	  }

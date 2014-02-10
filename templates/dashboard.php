@@ -8,11 +8,12 @@
         <li><a href="users"><?php echo _('Administration'); ?></a></li>
         <li><a href="signup"><?php echo _('Inscription'); ?></a></li>
         <li><a href="kfet"><?php echo _('Aide'); ?></a></li>
+        <li><a href="grid"><i class="icon-th"></i></a></li>
       </ul>
     </nav>
   </header>
   <div class="column-group gutters">
-    <div class="large-25 medium-25 small-100">
+    <div class="large-25 medium-25 <?php if(isset($_GET['uid'])) echo " hide-small"; else echo " small-100"; ?>">
       <nav class="ink-navigation vertical-space">
         <ul class="menu vertical rounded black">
           <?php

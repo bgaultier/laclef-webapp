@@ -1,0 +1,95 @@
+/* =============================================================================
+   NORMALIZATION
+========================================================================== */
+
+*  {
+  margin: 0;
+  padding: 0;
+}
+
+article, aside, details, figcaption, figure, footer, header, hgroup, nav, section { display: block; }
+[hidden] { display: none; }
+
+ul, ol {
+    list-style: none;
+}
+
+body {
+	background: #2e3436;
+}
+
+/* Gridster styles */
+
+.gridster {
+    width: 1280px;
+    margin: 0 auto;
+}
+
+.icon-background {
+  width: 100% !important;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0.1;
+  font-size: 205px;
+}
+
+.gridster .gs-w {
+  background: #eeeeec;
+  cursor: pointer;
+  -webkit-box-shadow: 0 0 5px rgba(0,0,0,0.3);
+  box-shadow: 0 0 5px rgba(0,0,0,0.3);
+  text-align: center;
+  color: white;
+  display: table;
+}
+
+.widget {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.gridster .gs-w  h1 {
+	color: rgba(255, 255, 255, 0.7);
+	font-size: 30px;
+	font-weight: 400;
+	padding: 0px;
+	margin: 0px;
+	
+}
+
+.gridster .gs-w  h2 {
+	color: white;
+	text-transform: uppercase;
+	font-size: 60px;
+	font-weight: 700;
+	padding: 0px;
+	margin: 0px;
+}
+
+.gridster #coffees {
+	background: #e9b96b;
+}
+
+.gridster #energy {
+	background: #729fcf;
+	color: white;
+}
+
+/* D3.js */
+.line {
+  fill: rgba(255, 255, 255, 0.7);
+  stroke: rgba(255, 255, 255, 0.7);
+  stroke-width: 1.5px;
+}
+
+.axis path,.axis line {
+	fill: none;
+	stroke: none;
+}
+
+.tick text {
+	font-size: 10px
+}
+

@@ -22,7 +22,7 @@
 						<td><?php if($equipment['hirer']) echo '<span class="ink-label error invert">' . _("Loué par") . ' ' . $equipment['hirer'] . ' ' . _("jusqu'au") . ' ' . date_to_string($equipment['end']) . '</span>'; else echo '<span class="ink-label success invert">' . _("Disponible") . '</span>'; ?></td>
 						<td>
 					    <a href="equipment?id=<?php echo $equipment['id']; ?>"><button class="ink-button"><i class="icon-pencil"></i></button></a>
-					    <a href="equipments/delete?id=<?php echo $equipment['id']; ?>"><button class="ink-button red"><i class="icon-remove"></i></button></a>
+					    <a href="equipment/delete?id=<?php echo $equipment['id']; ?>"><button class="ink-button red"><i class="icon-remove"></i></button></a>
 					    <?php
 					      if($equipment['hirer'])
 					        echo '<a href="equipments/available?id=' . $equipment['id'] . '"><button class="ink-button green"><i class="icon-level-down"></i></button></a>';

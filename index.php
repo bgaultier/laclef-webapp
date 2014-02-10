@@ -94,12 +94,18 @@
     list_snacks_action($_SESSION['uid']);
   elseif ('/equipments/available' == substr($uri, 0, 21) && isset($_GET['id']))
     equipment_available_action($_SESSION['uid'], $_GET['id']);
-  elseif ('/equipments/delete' == substr($uri, 0, 18) && isset($_GET['id']))
+  elseif ('/equipment/delete' == substr($uri, 0, 18) && isset($_GET['id']))
   		delete_equipment_action($_SESSION['uid'], $_GET['id']);
   elseif ('/equipment' == substr($uri, 0, 10) && isset($_GET['id']))
     modify_equipment_action($_SESSION['uid'], $_GET['id']);
   elseif ('/equipments' == $uri && isset($_SESSION['uid']))
     list_equipments_action($_SESSION['uid']);
+   elseif ('/event/delete' == substr($uri, 0, 13) && isset($_GET['id']))
+  		delete_event_action($_SESSION['uid'], $_GET['id']);
+  elseif ('/event' == substr($uri, 0, 6) && isset($_GET['id']))
+    modify_event_action($_SESSION['uid'], $_GET['id']);
+  elseif ('/events' == $uri && isset($_SESSION['uid']))
+    list_events_action($_SESSION['uid']);
   elseif ('/tag/delete' == substr($uri, 0, 11) && isset($_GET['uid']))
     delete_tag_action($_SESSION['uid'], $_GET['uid']);
   elseif ('/tag' == substr($uri, 0, 4) && isset($_GET['uid']))
@@ -122,10 +128,16 @@
     stats_json_action($_GET['uid']);
   elseif ('/stats.tsv' == substr($uri, 0, 10) && isset($_GET['uid']))
     stats_tsv_action($_GET['uid']);  
-  elseif ('/coffees.tsv' == $uri)
-    coffees_tsv_action();
+  elseif ('/coffees.tsv' == substr($uri, 0, 12) && isset($_GET['months']))
+    coffees_tsv_action($_GET['months']);
   elseif ('/dashboard' == substr($uri, 0, 10))
     dashboard_action();
+  elseif ('/energy.json' == substr($uri, 0, 12) && isset($_GET['power']) && isset($_GET['energy']))
+    energy_json_action($_GET['power'], $_GET['energy']);
+  elseif ('/grid.json' == $uri)
+    grid_json_action();
+  elseif ('/grid' == $uri)
+    grid_action();
   else
     login_action();
 

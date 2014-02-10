@@ -10,6 +10,7 @@
       <h4 style="font-weight:normal;"><span id="coffees_month" class="ink-badge grey"><i class="icon-spin icon-spinner"></i> <i class="icon-coffee"></i></span> <?php echo _("ce mois"); ?></h4>
       <h4 style="font-weight:normal;"><span id="money_today" class="ink-badge grey"><i class="icon-spin icon-spinner"></i> <i class="icon-euro"></i></span> <?php echo _("dépensés aujourd'hui"); ?></h4>
       <h4 style="font-weight:normal;"><span id="money_month" class="ink-badge grey"><i class="icon-spin icon-spinner"></i> <i class="icon-euro"></i></span> <?php echo _("dépensés ce mois"); ?></h4>
+      <?php if($first_coffee) echo '<h4 style="font-weight:normal;"><span id="trophy" class="ink-badge grey"><i class="icon-trophy"></i></span> ' . _('Premier café à ') . date("H:i", strtotime($first_coffee['timestamp'])) . ' par ' . $first_coffee['firstname'] . '</h4>'; ?>
       <script src="templates/d3/d3.v3.min.js"></script>
       <script type="text/javascript">
         function loadDashboardJSON() {
@@ -25,7 +26,7 @@
       </script>
     </div>
     <div class="large-50 medium-50 small-100">
-      <h2><?php echo _('Prochains évènements'); ?></h2>
+      <h2><?php echo _('Prochains événements'); ?></h2>
       <table class="ink-table">
         <tbody>
           <?php
@@ -34,7 +35,7 @@
             <tr>
               <td>
                 <strong><?php echo $event['title']; ?></strong>
-                <div class="small"><i class="icon-calendar"></i> <?php echo str_replace("<", "", str_replace("<br>", "", substr($event['summary'], 7, strpos($event['summary'],"<br>")))); ?></div>
+                <div class="small"><i class="icon-calendar"></i> <?php echo str_replace("\nb", "", str_replace("CET", "", str_replace("<", "", str_replace("<br>", "", substr($event['summary'], 7, strpos($event['summary'],"<br>")))))); ?></div>
               </td>
             </tr>
             <?php $i++; if($i > 7) break; ?>
@@ -134,7 +135,7 @@
     var xAxis = d3.svg.axis()
         .scale(x)
         .orient("bottom")
-        .tickFormat(function(d) { return d + "/13"; });
+        .tickFormat(function(d) { return d + "/14"; });
 
     var yAxis = d3.svg.axis()
         .scale(y)
@@ -156,7 +157,7 @@
         
     svg.call(tip);
 
-    d3.tsv("coffees.tsv", type, function(error, data) {
+    d3.tsv("coffees.tsv?months=5", type, function(error, data) {
       x.domain(data.map(function(d) { return d.month; }));
       y.domain([0, d3.max(data, function(d) { return d.coffees; })]);
 

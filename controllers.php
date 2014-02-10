@@ -31,7 +31,8 @@
     // needed to hide the menu
     $dashboard_active = true;
     
-		// dealing with order form
+		
+			// dealing with order form
 			if(isset($_POST['client']))
 				new_order($_POST);
 			// dealing with message form
@@ -51,12 +52,24 @@
 			else {
 				$messages = get_all_messages();
 				$events = get_google_calendar_events();
+				$first_coffee = get_first_coffee();
 			}
 		
 			// get all the users
 			$users = get_all_users_sorted_by_balance_descending();
 		
 			require 'templates/dashboard.php';
+	}
+  
+  function grid_action() {
+    // needed to hide the menu
+    $dashboard_active = true;
+    
+    
+    $messages = get_all_messages();
+    $events = get_google_calendar_events();
+    
+    require 'templates/grid.php';
 	}
   
   function login_action() {
@@ -455,6 +468,70 @@
     echo json_encode($json);      
   }
   
+  function grid_json_action() {
+    header('Content-type: application/json; charset=utf-8');
+	  header("Cache-Control: no-cache, must-revalidate");
+	  
+    $coffees_today = get_coffees_today();
+    $money_today = get_money_spent_today();
+    $filename = "laboite.json";
+		if (!file_exists($filename) || (time() - filemtime($filename)) > 60 ) {
+			copy("http://api.laboite.cc/61c119ce.json", $filename);
+		}
+
+		$json_string = file_get_contents($filename);
+
+		$parsed_json = json_decode($json_string);
+		$bus = $parsed_json->{'bus'};
+		$bikes = $parsed_json->{'bikes'};
+		$temperature = $parsed_json->{'weather'}->{'today'}->{'temperature'};
+		$icon = $parsed_json->{'weather'}->{'today'}->{'icon'};
+		$message = get_last_message();
+		$people = get_people_today();
+		
+    $json = array("coffees" => $coffees_today,
+                  "money" => $money_today,
+                  "message" => $message,
+                  "bus" => $bus,
+                  "bikes" => $bikes,
+                  "people" => $people,
+                  "icon" => $icon,
+                  "temperature" => $temperature
+                 );
+                    
+    echo json_encode($json);
+  }
+  
+  function energy_json_action($power_feedid, $energy_feedid) {
+  		header('Content-type: application/json; charset=utf-8');
+	  header("Cache-Control: no-cache, must-revalidate");
+	  
+  		$filename = "power_feed.json";
+		if (!file_exists($filename) || (time() - filemtime($filename)) > 20 ) {
+			copy("http://smartb.labo4g.enstb.fr/feed/get.json?id=$power_feedid", $filename);
+		}
+
+		$json_string = file_get_contents($filename);
+		$parsed_json = json_decode($json_string);
+		$power = $parsed_json->{'value'};
+		
+		
+		$filename = "energy_feed.json";
+		if (!file_exists($filename) || (time() - filemtime($filename)) > 20 ) {
+			copy("http://smartb.labo4g.enstb.fr/feed/get.json?id=$energy_feedid", $filename);
+		}
+
+		$json_string = file_get_contents($filename);
+		$parsed_json = json_decode($json_string);
+		$energy = $parsed_json->{'value'};
+    
+    $json = array("power" => $power,
+                  "energy" => $energy
+                 );
+                    
+    echo json_encode($json);
+  }
+  
   function stats_json_action($uid) {
     header('Content-type: application/json; charset=utf-8');
 	  header("Cache-Control: no-cache, must-revalidate");
@@ -500,13 +577,13 @@
     echo json_encode($events);      
   }
   
-  function coffees_tsv_action() {
+  function coffees_tsv_action($months) {
     header('Content-type: text/tab-separated-values; charset=utf-8');
 	  header("Cache-Control: no-cache, must-revalidate");
 	  
 	  $tsv = array();
 	  
-	  for ($i = 5; $i >= 0; $i--)
+	  for ($i = $months; $i >= 0; $i--)
 	  {
 	    $month = date("m", strtotime("-$i month", time()));
 	    $tsv[$month] = get_coffees_by_month($month, date("Y", strtotime("-$i month", time())));
@@ -598,7 +675,54 @@
     require 'templates/signup.php';
   }
   
+  function list_events_action($uid) {
+		// needed to set the tab active
+		$extras_active = true;
+		$events_active = true;
+		
+		if(user_is_admin($uid)) {
+		  // dealing with event add form
+			if(isset($_POST['description']) && isset($_POST['title'])) {
+
+				$event_added = get_event_by_id($_POST['id']);
+
+				// event exists
+	      if($event_added)
+	        update_event($_POST['id'], $_POST['title'], $_POST['description'], $_POST['date'], $_POST['max'], $_POST['registrationfee']);
+	      else
+	        add_event($_POST['title'], $_POST['description'], $_POST['date'], $_POST['max'], $_POST['registrationfee']);
+	    }
+  		// get all the events
+  		$events = get_all_events();
+  		$uids = get_all_uids();
+  		
+  		require 'templates/events.php';
+		}
+		else
+		  require 'templates/login.php';
+  }
+  
+  function modify_event_action($session_uid, $id) {
+    // needed to set the tab active
+		$extras_active = true;
+		$events_active = true;
+		
+		//check if the user is admin
+		if(user_is_admin($session_uid)) {
+			$event = get_event_by_id($id);
+			// get all users uids
+  		$uids = get_all_uids();
+			
+			require 'templates/event.php';
+		}
+		else
+		  require 'templates/login.php';
+  }
+  
   function kfet_action() {
+  		// needed to hide the menu
+    $dashboard_active = true;
+    
     require 'templates/kfet.php';
   }
   

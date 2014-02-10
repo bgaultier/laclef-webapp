@@ -1,0 +1,27 @@
+/* =============================================================================
+   NORMALIZATION
+========================================================================== */
+
+*  {
+  margin: 0;
+  padding: 0;
+}
+
+article, aside, details, figcaption, figure, footer, header, hgroup, nav, section { display: block; }
+[hidden] { display: none; }
+
+ul, ol {
+    list-style: none;
+}
+
+body {
+	background: #2e3436;
+}
+
+/* Gridster styles */
+
+.gridster {
+    width: 1280px;
+    margin: 0 auto;
+    
+}

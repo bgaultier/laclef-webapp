@@ -174,8 +174,6 @@
 				  .attr("rx", 3)
 				  .attr("ry", 3)
 				  .style("fill", function(d) { return color(d.label); })
-				  .style("stroke", function(d) { return d3.rgb(color(d.label)).darker(); })
-				  .style("stroke-width", "1.5px")
 				  .on("mouseover", fade(.1))
 				  .on("mouseout", fade(1));;
 

@@ -950,12 +950,18 @@
   {
     $link = open_database_connection();
     
-    $query = "SELECT * FROM orders WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "' ORDER BY id DESC LIMIT 0,200";
+    $query = "SELECT * FROM orders WHERE swipe IN (
+              SELECT id FROM swipes WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "') ORDER BY id DESC LIMIT 0,200";
     
     $orders = array();
 		if ($result = mysqli_query($link, $query)) {
 			// fetch associative array
 			while ($row = mysqli_fetch_assoc($result)) {
+				$swipe = get_swipe_by_id($row['swipe']);
+			  $row['timestamp'] = $swipe['timestamp'];
+			  $row['uid'] = $swipe['uid'];
+			  $row['reader'] = $swipe['reader'];
+			  $row['location'] = get_reader_location_by_id($swipe['reader']);
 				$orders[] = $row;
 			}
 				
@@ -990,6 +996,30 @@
     mysqli_close($link);
     
     return $orders;
+  }
+  
+  function get_first_coffee()
+  {
+    $link = open_database_connection();
+    
+    $query = "SELECT * FROM orders WHERE (snack =2 OR snack =1) AND swipe IN (SELECT id FROM swipes WHERE DAY(timestamp) = DAY(NOW()) AND MONTH(timestamp) = MONTH(NOW()) AND YEAR(timestamp) = YEAR(NOW()) ORDER BY timestamp DESC) LIMIT 1 ";
+              
+		if ($result = mysqli_query($link, $query))
+			$order = mysqli_fetch_assoc($result);
+		
+		// free result set
+		mysqli_free_result($result);
+		
+		// close connection
+    mysqli_close($link);
+    
+    if($order) {
+    	$swipe = get_swipe_by_id($order['swipe']);
+    	$user = get_user_by_uid($swipe['uid']);
+    	$swipe['firstname'] = $user['firstname'];
+    }
+    	
+    return $swipe;
   }
   
   function get_coffees()
@@ -1323,6 +1353,28 @@
     return $money_spent_this_month;
   }
   
+  function get_people_today()
+  {
+    $link = open_database_connection();
+    
+    $query = "SELECT COUNT(DISTINCT(uid)) AS people FROM swipes WHERE DAY(timestamp) = DAY(NOW()) AND MONTH(timestamp) = MONTH(NOW()) AND YEAR(timestamp) = YEAR(NOW())";
+		
+		if ($result = mysqli_query($link, $query)) {
+			$people = mysqli_fetch_assoc($result);
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
+    mysqli_close($link);
+    
+    if($people['people'])
+      return $people['people'];
+    else
+      return 0;
+  }
+  
   function datetime_to_string($datetime) {
     if(!isset($datetime))
       return _("Aucune date de fin");
@@ -1383,6 +1435,32 @@
     mysqli_close($link);
     
     return $messages;
+  }
+  
+  function get_last_message()
+  {
+    $link = open_database_connection();
+    
+    $query = "SELECT * FROM messages ORDER BY timestamp DESC LIMIT 1";
+    
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			$message = mysqli_fetch_assoc($result);
+			$user = get_user_by_uid($message['uid']);
+			$message['firstname'] = $user['firstname'];
+			$message['lastname'] = $user['lastname'];
+			$message['published'] = datetime_to_string($message['timestamp']);
+			unset($message['timestamp']);
+			unset($message['id']);
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $message;
   }
   
   function add_message($uid, $message)
@@ -1500,8 +1578,10 @@
 		//TODO Store the IP client address, can be useful if you wanna blacklist hackers
 		if(floatval($amount) > 0) {
 		  $link = open_database_connection();
+		  
+		  $amount = str_replace(',', '.', (string) floatval($amount));
 		
-			$query = "INSERT INTO payments (uid, amount, timestamp) VALUES ('" . mysqli_real_escape_string($link, $uid) . "', '" . floatval($amount) . "', NOW())";
+			$query = "INSERT INTO payments (uid, amount, timestamp) VALUES ('" . mysqli_real_escape_string($link, $uid) . "', '$amount', NOW())";
 		
 			$result = mysqli_query($link, $query);
 		
@@ -1830,6 +1910,140 @@
     return $result;
   }
   
+  /* Event Model */
+  function get_all_events() {
+    $link = open_database_connection();
+		
+		$query = "SELECT * FROM events ORDER BY date DESC";
+		
+		$events = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result)) {
+				$row['registrations'] = get_registrations_by_event($row['id']);
+				$events[] = $row;
+			}
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $events;
+  }
+  
+  function get_registrations_by_event($id) {
+    $link = open_database_connection();
+		
+		$query = "SELECT * FROM attendees WHERE event = '" . mysqli_real_escape_string($link, $id) . "'";
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result)) {
+				$user = get_user_by_uid($row['uid']);
+				$row['firstname'] = $user['firstname'];
+				$row['lastname'] = $user['lastname'];
+				$registrations[] = $row;
+			}
+				
+			// free result set
+			mysqli_free_result($result);
+		}
+		
+		// close connection
+    mysqli_close($link);
+    
+    return $registrations;
+  }
+  
+  function get_event_by_id($id) {
+  	$link = open_database_connection();
+		
+		$query = "SELECT * FROM events WHERE id = '" . mysqli_real_escape_string($link, $id) . "' LIMIT 1";
+		
+		if ($result = mysqli_query($link, $query))
+			$event = mysqli_fetch_assoc($result);
+		
+		// free result set
+		mysqli_free_result($result);
+		
+		// close connection
+    mysqli_close($link);
+
+    if($event)
+      $event['registrations'] = get_registrations_by_event($event['id']);
+    
+    return $event;
+  }
+
+  function add_event($title, $description, $date, $max, $registrationfee)
+  {
+      $link = open_database_connection();
+      
+      $query = "INSERT INTO events (id, title, description, date, max, registrationfee) VALUES (
+                NULL,
+                '" . mysqli_real_escape_string($link, $title) . "',
+                '" . mysqli_real_escape_string($link, $description) . "',
+                '" . mysqli_real_escape_string($link, $date) . "',
+                '" . mysqli_real_escape_string($link, $max) . "',
+                '" . mysqli_real_escape_string($link, $registrationfee) . "'
+               )";
+    
+    $result = mysqli_query($link, $query);
+    
+    // free result set
+    mysqli_free_result($result);
+    
+    // close connection
+    mysqli_close($link);
+    
+    return $result;
+  }
+  
+  function delete_event($id)
+  {
+    $link = open_database_connection();
+    
+    $query = "DELETE FROM events WHERE id = '" . mysqli_real_escape_string($link, $id) . "' LIMIT 1";
+    
+    $result = mysqli_query($link, $query);
+    
+    // free result set
+    mysqli_free_result($result);
+    
+    // close connection
+    mysqli_close($link);
+    
+    return $result;
+  }
+  
+  function update_event($id, $title, $description, $date, $max, $registrationfee)
+  {
+    $link = open_database_connection();
+    
+    $query = "UPDATE events SET
+              title = '" . mysqli_real_escape_string($link, $title) . "',
+              description = '" . mysqli_real_escape_string($link, $description) . "',
+              date = '" . mysqli_real_escape_string($link, $date) . "',
+              max = '" . mysqli_real_escape_string($link, $max) . "',
+              registrationfee = '" . mysqli_real_escape_string($link, $registrationfee) . "'
+
+              WHERE id = '" . mysqli_real_escape_string($link, $id) . "' LIMIT 1";
+    
+    $result = mysqli_query($link, $query);
+    
+    // free result set
+    mysqli_free_result($result);
+    
+    // close connection
+    mysqli_close($link);
+    
+    return $result;
+  }
+
+
+
   function update_user_locale($uid, $locale)
   {
 		$link = open_database_connection();

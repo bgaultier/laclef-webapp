@@ -106,6 +106,9 @@
 		      			if(isset($equipments_active)) echo ' class="active"';
 		      			echo '><a href="equipments">' . _('Équipements') . '</a></li>';
 		      			echo '<li';
+		      			if(isset($events_active)) echo ' class="active"';
+		      			echo '><a href="events">' . _('Événements') . '</a></li>';
+		      			echo '<li';
 		      			if(isset($orders_active)) echo ' class="active"';
 		      			echo '><a href="orders">' . _('Commandes') . '</a></li>';
 		      			echo '<li><a href="swipes">' . _('Logs') . '</a></li>';
@@ -179,6 +182,9 @@
 		          			echo '<li';
 		          			if(isset($equipments_active)) echo ' class="active"';
 		          			echo '><a href="equipments">' . _('Équipements') . '</a></li>';
+		          			echo '<li';
+		          			if(isset($events_active)) echo ' class="active"';
+		          			echo '><a href="events">' . _('Événements') . '</a></li>';
 		          			echo '<li';
 		          			if(isset($orders_active)) echo ' class="active"';
 		      			    echo '><a href="orders">' . _('Commandes') . '</a></li>';

@@ -1,0 +1,39 @@
+/* =============================================================================
+   NORMALIZATION
+========================================================================== */
+
+*  {
+  margin: 0;
+  padding: 0;
+}
+
+article, aside, details, figcaption, figure, footer, header, hgroup, nav, section { display: block; }
+[hidden] { display: none; }
+
+ul, ol {
+    list-style: none;
+}
+
+body {
+	background: #2e3436;
+}
+
+/* Gridster styles */
+
+.gridster {
+    width: 1280px;
+    margin: 0 auto;
+    
+}
+
+.gridster .gs-w {
+    background: #eeeeec;
+    cursor: pointer;
+    -webkit-box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+.gridster #coffees {
+	background: #e9b96b;
+	color : #fff;
+}

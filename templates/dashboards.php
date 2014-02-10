@@ -19,6 +19,13 @@
 			      <a href="dashboard"><button class="ink-button"><i class="icon-external-link"></i></button></a>
 			    </td>
 			  </tr>
+			  <tr>
+			    <td><a href="grid">/grid</a></td>
+			    <td>Lagrille de la cafétéria RSM</td>
+			    <td>
+			      <a href="grid"><button class="ink-button"><i class="icon-external-link"></i></button></a>
+			    </td>
+			  </tr>
 			</tbody>
 		</table>
   </div>
