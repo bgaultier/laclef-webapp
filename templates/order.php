@@ -1,18 +1,18 @@
 <?php ob_start() ?>
 <div class="box">
-  <a href="soda?uid=<?php echo $client['uid']; ?>"><button class="ink-button push-right"><i class="icon-beer"></i> <?php $soda = get_snack_by_id(9); echo _("Soda express") . ' ' . number_format($soda['price'], 2, ',', ' ') . '&euro;';
+  <a href="soda?uid=<?php echo $client['uid']; ?>"><button class="ink-button push-right"><i class="icon-beer"></i> <?php $soda = get_snack_by_id(9); echo _("Soda express") . ' ' . money_format('%!n&euro;', $soda['price']);
     ?></button></a>
-    <a href="coffee?uid=<?php echo $client['uid']; ?>"><button class="ink-button push-right"><i class="icon-coffee"></i> <?php $coffee = get_snack_by_id(2); echo _("Café express") . ' ' . number_format($coffee['price'], 2, ',', ' ') . '&euro;'; ?></button></a>
+    <a href="coffee?uid=<?php echo $client['uid']; ?>"><button class="ink-button push-right"><i class="icon-coffee"></i> <?php $coffee = get_snack_by_id(2); echo _("Café express") . ' ' . money_format('%!n&euro;', $coffee['price']); ?></button></a>
   <form id="orderForm" class="ink-form" method="post" action="dashboard">
     <h3><?php echo $client['firstname'] . ' ' . $client['lastname']; ?></h3>
-    <div style="margin: 0;"><?php echo _('Solde : ') . number_format($client['balance'], 2, ',', ' ') . '&euro;'; ?></div>
+    <div style="margin: 0;"><?php echo _('Solde : ') . money_format('%!n&euro;', $client['balance']); ?></div>
     <fieldset class="vertical-space">
       <input type="hidden" name="client" id="client" value="<?php echo $client['uid']; ?>" hidden />
 			<?php foreach ($snacks as $snack): ?>
 			  <div class="control-group large-100">
 			    <div class="column-group horizontal-gutters">
 				    <p class="label large-30"><?php echo $snack['description_' . getenv('LANG')]; ?></p>
-				    <p class="label large-20"><?php echo number_format($snack['price'], 2, ',', ' ') . '&euro;'; ?></p>
+				    <p class="label large-20"><?php echo money_format('%!n&euro;', $snack['price']); ?></p>
 				    <select name="snack_<?php echo $snack['id']; ?>" class="control unstyled large-10">
 					    <?php
 					      for ($i = 0; $i <= 10; $i++)
@@ -92,7 +92,7 @@
       <h4 style="font-weight:normal;"><span id="money_user_today" class="ink-badge grey"><i class="icon-spin icon-spinner"></i> <i class="icon-euro"></i></span> <?php echo _("dépensés aujourd'hui"); ?></h4>
       <h4 style="font-weight:normal;"><span id="money_user_month" class="ink-badge grey"><i class="icon-spin icon-spinner"></i> <i class="icon-euro"></i></span> <?php echo _("dépensés ce mois"); ?></h4>
       <?php if($client['lastorder']) echo '<p>' . _("La dernière commande a été passée") . ' ' . strtolower(datetime_to_string($client['lastorder'])) . '</p>'; ?>
-      <?php if($client['lastpayment']) echo '<p>' . number_format($client['lastpayment']['amount'], 2, ',', ' ') . '&euro; ' . _("ont été crédités") . ' ' . strtolower(datetime_to_string($client['lastpayment']['timestamp'])) . '</p>'; ?>
+      <?php if($client['lastpayment']) echo '<p>' . money_format('%!n&euro;', $client['lastpayment']['amount']) . ' ' . _("ont été crédités") . ' ' . strtolower(datetime_to_string($client['lastpayment']['timestamp'])) . '</p>'; ?>
       <h4><?php echo _("Préférences"); ?></h4>
       <p><?php echo _("Survolez le graphique pour plus d'informations."); ?></p>
     </div><!--/.modal-body -->

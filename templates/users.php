@@ -23,7 +23,7 @@
 						<td class="hide-small hide-medium"><?php echo $user['lastname']; ?></td>
 						<td class="hide-small hide-medium"><?php echo $user['email']; ?></td>
 						<td><?php if($user['admin'] == 1) echo '<i class="icon-ok" style="margin-left:12px;"></i>'; ?></td>
-						<td class="content-right hide-small hide-medium"><?php echo number_format($user['balance'], 2, ',', ' ') . '&euro;'; ?></td>
+						<td class="content-right hide-small hide-medium"><?php echo money_format('%!n&euro;', $user['balance']); ?></td>
 						<td>
 							<a href="user?uid=<?php echo $user['uid']; ?>"><button class="ink-button"><i class="icon-pencil"></i></button></a>
 							<a href="user/delete?uid=<?php echo $user['uid']; ?>"><button class="ink-button red"><i class="icon-trash"></i></button></a>

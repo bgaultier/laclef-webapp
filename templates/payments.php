@@ -21,7 +21,7 @@
 			      <td><?php echo $payment['uid']; ?></td>
 						<td class="hide-small hide-medium"><?php echo $payment['firstname']; ?></td>
 						<td class="hide-small hide-medium"><?php echo $payment['lastname']; ?></td>
-						<td><?php echo number_format($payment['amount'], 2, ',', ' ') . '&euro;'; ?></td>
+						<td><?php echo money_format('%!n&euro;', $payment['amount']); ?></td>
 			    </tr>
 			  <?php endforeach; ?>
 			</tbody>
