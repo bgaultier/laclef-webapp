@@ -278,6 +278,8 @@
 					return '<i class="icon-barcode"></i>';
 			case 3:
 					return '<i class="icon-qrcode"></i>';
+			case 4:
+					return '<i class="fa fa-cube"></i>';
 		}
 	}
 
@@ -488,8 +490,8 @@
 				return '<span class="tooltip" data-tip-text="' .	get_reader_service($service) . '"data-tip-where="up" data-tip-color="black"><span class="icon-stack"><i class="icon-check-empty icon-stack-base"></i><i class="icon-tablet"></i></span></span>';
 			case 3:
 				return '<span class="tooltip" data-tip-text="' .	get_reader_service($service) . '"data-tip-where="up" data-tip-color="black"><span class="icon-stack"><i class="icon-check-empty icon-stack-base"></i><i class="icon-money"></i></span></span>';
-			case 3:
-				return '<span class="tooltip" data-tip-text="' .	get_reader_service($service) . '"data-tip-where="up" data-tip-color="black"><span class="icon-stack"><i class="icon-check-empty icon-stack-base"></i><i class="fa fa-codepen"></i></span></span>';
+			case 4:
+				return '<span class="tooltip" data-tip-text="' .	get_reader_service($service) . '"data-tip-where="up" data-tip-color="black"><span class="fa-stack"><i class="fa fa-square-o fa-stack-2x"></i><i class="fa fa-cube fa-stack-1x"></i></span></span>';
 		}
 	}
 
@@ -1958,6 +1960,30 @@
 		return $jobs;
 	}
 
+	function get_last_jobs() {
+		$link = open_database_connection();
+
+		$query = "SELECT * FROM jobs ORDER BY delivery DESC LIMIT 3";
+
+		$jobs = array();
+		if ($result = mysqli_query($link, $query)) {
+			while ($row = mysqli_fetch_assoc($result)) {
+				$user = get_user_by_uid($row['uid']);
+				$row['firstname'] = $user['firstname'];
+				$jobs[] = $row;
+			}
+
+			// free result set
+			mysqli_free_result($result);
+		}
+
+		// close connection
+		mysqli_close($link);
+
+		return $jobs;
+	}
+
+
 	function get_job_by_id($id) {
 		$link = open_database_connection();
 
@@ -1975,10 +2001,30 @@
 		return $job;
 	}
 
+	function get_jobs_by_uid($uid) {
+		$link = open_database_connection();
+
+		$query = "SELECT * FROM jobs WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "'";
+
+		$jobs = array();
+		if ($result = mysqli_query($link, $query)) {
+			while ($row = mysqli_fetch_assoc($result))
+				$jobs[] = $row;
+
+			// free result set
+			mysqli_free_result($result);
+		}
+
+		// close connection
+		mysqli_close($link);
+
+		return $jobs;
+	}
+
 	function add_job($uid, $timestamp, $file, $duration, $filament, $delivery, $price) {
 		$link = open_database_connection();
 
-		$query = "INSERT INTO jobs (id, uid, timestamp, file, duration, filament, delivery, status, price) VALUES (NULL, '" . mysqli_real_escape_string($link, $uid) . "',	NOW(), '" . mysqli_real_escape_string($link, $file) . "', '" . mysqli_real_escape_string($link, $duration) . "', '" . floatval($filament) . "', '" . mysqli_real_escape_string($link, $delivery) . "', '0', '" . floatval($price) . "')";
+		$query = "INSERT INTO jobs (id, uid, timestamp, file, duration, filament, delivery, status, price) VALUES (NULL, '" . mysqli_real_escape_string($link, $uid) . "',	NOW(), '" . mysqli_real_escape_string($link, $file) . "', '" . mysqli_real_escape_string($link, $duration) . "', '" . mysqli_real_escape_string($link, $filament) . "', '" . mysqli_real_escape_string($link, $delivery) . "', '0', '" . mysqli_real_escape_string($link, $price) . "')";
 
 		$result = mysqli_query($link, $query);
 

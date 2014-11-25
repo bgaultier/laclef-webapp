@@ -60,7 +60,7 @@
 	      <tbody>
 	        <?php
 	          foreach ($event['registrations'] as $registration):
-	            echo '<tr><td>' . $registration['firstname'] .' ' . $registration['lastname'] . '</td><td>' . datetime_to_string($registration['registration']) . '</td><td class="content-right"> ' . number_format($registration['paid'], 2, ',', ' ') . '&euro;</td></tr>';
+	            echo '<tr><td>' . $registration['firstname'] .' ' . $registration['lastname'] . '</td><td>' . datetime_to_string($registration['registration']) . '</td><td class="content-right"> ' . money_format('%!n&euro;', $registration['paid']) . '</td></tr>';
             endforeach;
           ?>
         </tbody>

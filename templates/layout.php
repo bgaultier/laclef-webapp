@@ -20,11 +20,11 @@
       <link rel="stylesheet" type="text/css" href="templates/ink/css/ink.css">
       <link href="templates/ink/css/font-awesome/css/font-awesome.css" rel="stylesheet">
       <link href='http://fonts.googleapis.com/css?family=Kreon:700,400' rel='stylesheet' type='text/css'>
-      
+
       <!--[if IE 7 ]>
           <link rel="stylesheet" href="../css/ink-ie7.css" type="text/css" media="screen" title="no title" charset="utf-8">
       <![endif]-->
-      
+
       <style type="text/css">
 		    body {
 		    		background: #f7f7f7;
@@ -102,6 +102,9 @@
 		      			echo '<li';
 		      			if(isset($snacks_active)) echo ' class="active"';
 		      			echo '><a href="snacks">' . _('Produits') . '</a></li>';
+                echo '<li';
+                if(isset($jobs_active)) echo ' class="active"';
+                echo '><a href="jobs">' . _('Impressions 3D') . '</a></li>';
 		      			echo '<li';
 		      			if(isset($equipments_active)) echo ' class="active"';
 		      			echo '><a href="equipments">' . _('Équipements') . '</a></li>';
@@ -179,6 +182,9 @@
 		          			echo '<li';
 		          			if(isset($snacks_active)) echo ' class="active"';
 		          			echo '><a href="snacks">' . _('Produits') . '</a></li>';
+                    echo '<li';
+                    if(isset($jobs_active)) echo ' class="active"';
+                    echo '><a href="jobs">' . _('Impressions 3D') . '</a></li>';
 		          			echo '<li';
 		          			if(isset($equipments_active)) echo ' class="active"';
 		          			echo '><a href="equipments">' . _('Équipements') . '</a></li>';

@@ -67,7 +67,7 @@
 			<h3><?php echo _('Ajouter manuellement un utilisateur'); ?></h3>
 		</div>
 		<div class="modal-body" id="modalContent">
-			<form id="userForm" class="ink-form" method="post" action="users" onsubmit="return Ink.UI.FormValidator.validate(this);">
+			<form id="userForm" class="ink-form" method="post" action="useradded" onsubmit="return Ink.UI.FormValidator.validate(this);">
 				<fieldset>
 					<div class="control-group required">
 						<label for="uid"><?php echo _('UID : '); ?></label>

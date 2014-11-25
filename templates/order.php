@@ -1,6 +1,6 @@
 <?php ob_start() ?>
 <div class="box">
-  <a href="soda?uid=<?php echo $client['uid']; ?>"><button class="ink-button push-right"><i class="icon-beer"></i> <?php $soda = get_snack_by_id(9); echo _("Soda express") . ' ' . money_format('%!n&euro;', $soda['price']);
+  <a href="soda?uid=<?php echo $client['uid']; ?>"><button class="ink-button push-right"><i class="icon-beer"></i> <?php $soda = get_snack_by_id(10); echo _("Coca-Cola Zero") . ' ' . money_format('%!n&euro;', $soda['price']);
     ?></button></a>
     <a href="coffee?uid=<?php echo $client['uid']; ?>"><button class="ink-button push-right"><i class="icon-coffee"></i> <?php $coffee = get_snack_by_id(2); echo _("Café express") . ' ' . money_format('%!n&euro;', $coffee['price']); ?></button></a>
   <form id="orderForm" class="ink-form" method="post" action="dashboard">
@@ -22,6 +22,24 @@
 			    </div>
 			  </div>
 			<?php endforeach; ?>
+			<div class="control-group large-100">
+		    <div class="column-group horizontal-gutters">
+			    <p class="label large-30"><?php echo _('Virement (beta)'); ?></p>
+			    <p class="label large-20"><?php echo money_format('%!n&euro;', 0.50); ?></p>
+			    <select name="transfers" class="control unstyled large-10">
+				    <?php
+				      for ($i = 0; $i <= 10; $i++)
+				        echo "<option>$i</option>";
+				    ?>
+			    </select>
+			    <select name="recipient" class="control unstyled large-25" style="margin-left: 16px;">
+				    <?php
+				    	foreach ($users	as $user)
+				    		echo "<option value=" . $user['uid'] . ">" . $user['firstname'] . " " . $user['lastname'] . "</option>";
+				    ?>
+			    </select>
+		    </div>
+		  </div>
     </fieldset>
 		<div>
 			<input type="submit" name="sub" value="<?php echo _("Payer la commande"); ?>" class="ink-button success green" />
@@ -48,7 +66,23 @@
         echo '<button class="ink-button toggle" data-target="#dropdown-equipments' . $client['uid'] . '">' . '<i class="icon-tablet"></i>' . _(" Mes équipements ") . '<i class="icon-caret-down"></i></button>';
         echo '<ul id="dropdown-equipments' . $client['uid'] . '" class="dropdown-menu">';
         foreach ($client['equipments'] as $equipment):
-          echo '<li style="font-weight : normal;"><a href="equipment?id=' . $equipment['id'] . '"> ' . $equipment['name'] . '</a>'  . ' ' . _("jusqu'au") . ' ' . date_to_string($equipment['end']) .'</li>';
+          echo '<li style="font-weight : normal;"><a href="equipment?id=' . $equipment['id'] . '"> ' . $equipment['name'] . ' ' . _("jusqu'au") . ' ' . date_to_string($equipment['end']) . '</a></li>';
+        endforeach;
+        echo '</ul></div>';
+      }
+    ?>
+    <?php
+      if(count($client['jobs']) > 0) {
+        echo '<div class="ink-dropdown">';
+        echo '<button class="ink-button toggle" data-target="#dropdown-jobs' . $client['uid'] . '">' . '<i class="fa fa-cube"></i>' . _(" Mes impressions 3D ") . '<i class="icon-caret-down"></i></button>';
+        echo '<ul id="dropdown-jobs' . $client['uid'] . '" class="dropdown-menu">';
+        foreach ($client['jobs'] as $job):
+          if($job['status'] == 0)
+            echo '<li><a href="job?id=' . $job['id'] . '"> <i class="icon-circle ink-label error invert"></i> '. $job['file'] . ' ' . _("livré") . ' ' . date_to_string($job['delivery']) .'</a></li>';
+          elseif ($job['status'] == 1)
+            echo '<li><a href="job?id=' . $job['id'] . '"> <i class="icon-circle ink-label warning invert"></i> '. $job['file'] . ' ' . _("livré") . ' ' . date_to_string($job['delivery']) .'</a></li>';
+          else
+            echo '<li><a href="job?id=' . $job['id'] . '"> <i class="icon-circle ink-label success invert"></i> ' . $job['file'] . ' ' . _("livré") . ' ' . date_to_string($job['delivery']) .'</a></li>';
         endforeach;
         echo '</ul></div>';
       }
@@ -112,7 +146,7 @@
       drawChart();
     });
   }
-	
+
 	function drawChart() {
 		var width = 300,
 				height = 300,
@@ -156,7 +190,7 @@
 
 			g.append("title")
 					.text(function(d) {return d.data.label + " : "+ d.data.orders + " (" + Math.round((d.data.orders * 100) / total) + "%)"; });
-					
+
 			var legend = d3.select("#statsModalContent").append("svg")
 				  .attr("class", "legend")
 				  .attr("width", radius * 2)
@@ -182,13 +216,13 @@
 				  .attr("y", 9)
 				  .attr("dy", ".35em")
 				  .text(function(d) {return d.label + " : "+ Math.round((d.orders * 100) / total) + "%"; });
-				  
+
 			function fade(opacity) {
 				return function(g, i) {
 					svg.selectAll(".arc")
 						 .filter(function(d) {
 							return d.data.label != g.label;
-					
+
 						})
 						.transition()
 						.style("opacity", opacity);

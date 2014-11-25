@@ -8,6 +8,7 @@
         <li><a href="users"><?php echo _('Administration'); ?></a></li>
         <li><a href="signup"><?php echo _('Inscription'); ?></a></li>
         <li><a href="kfet"><?php echo _('Aide'); ?></a></li>
+        <li><a href="http://api.laclef.cc/bomberman"><i class="fa fa-bomb"></i></a></li>
         <li><a href="grid"><i class="icon-th"></i></a></li>
       </ul>
     </nav>
@@ -18,7 +19,7 @@
         <ul class="menu vertical rounded black">
           <?php
             foreach ($users as $user): ?>
-            <li><a href="dashboard?uid=<?php echo $user['uid']; ?>"><?php echo number_format($user['balance'], 2, ',', ' ') . '&euro; ' . $user['firstname'] . ' ' . $user['lastname']; ?></a></li>
+            <li><a href="dashboard?uid=<?php echo $user['uid']; ?>"><?php echo money_format('%!n&euro;', $user['balance']) .' ' . $user['firstname'] . ' ' . $user['lastname']; ?></a></li>
           <?php endforeach; ?>
         </ul>
       </nav>
