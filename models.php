@@ -2072,13 +2072,29 @@
 		return $result;
 	}
 
+	function add_swipe_to_job($id, $swipe) {
+		$link = open_database_connection();
+
+		$query = "UPDATE jobs SET swipe = '" . mysqli_real_escape_string($link, $swipe) . "' WHERE id = '" . mysqli_real_escape_string($link, $id) . "'";
+
+		$result = mysqli_query($link, $query);
+
+		// free result set
+		mysqli_free_result($result);
+
+		// close connection
+		mysqli_close($link);
+
+		return $result;
+	}
+
 	function checkout_job($uid, $job)
 	{
 		$user = get_user_by_uid($uid);
 
 		if($user && $job['price'] > 0) {
 			$swipe = add_swipe(0, $user['uid'], 4, 1);
-			add_order($swipe, 0, 1);
+			add_swipe_to_job($job['id'], $swipe)
 			debit_account($user['uid'], $job['price']);
 
 			$link = open_database_connection();
