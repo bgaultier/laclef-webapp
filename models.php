@@ -2094,7 +2094,7 @@
 
 		if($user && $job['price'] > 0) {
 			$swipe = add_swipe(0, $user['uid'], 4, 1);
-			add_swipe_to_job($job['id'], $swipe)
+			add_swipe_to_job($job['id'], $swipe);
 			debit_account($user['uid'], $job['price']);
 
 			$link = open_database_connection();

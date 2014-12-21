@@ -89,7 +89,7 @@
 											 );
 			echo json_encode($response);
 		}
-		/*elseif ('payments' == $_GET['uri']) {
+		elseif ('payments' == $_GET['uri']) {
 			send_headers();
 
 			$payments = get_all_payments();
@@ -98,7 +98,7 @@
 												"response" => $payments
 											 );
 			echo json_encode($response);
-		}*/
+		}
 		elseif('snacks' == $_GET['uri'] && isset($_GET['id'])) {
 			send_headers();
 
@@ -340,7 +340,7 @@
 		header(':', true, 400);
 		send_headers();
 
-		$response = array("version" => "0.1",
+		$response = array("version" => $version,
 											"response" => "Bad Request",
 										 );
 		echo json_encode($response);
@@ -350,7 +350,7 @@
 		header(':', true, 403);
 		send_headers();
 
-		$response = array("version" => "0.1",
+		$response = array("version" => $version,
 											"response" => "Forbidden",
 										 );
 		echo json_encode($response);
