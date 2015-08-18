@@ -802,4 +802,34 @@
 		require 'templates/kfet.php';
 	}
 
+	function usersPreferences_action($post) {
+		//needed to hide the menu
+		$dashboard_active = true;
+		$uid = $post['uid'];
+		for ($buttonId = 0; $buttonId < get_nb_buttons(); $buttonId++)
+		{
+			$id = "snackId$buttonId";
+			if (isset($post[$id]))
+			{
+				$snackId = $post[$id];
+				update_userPreferences($uid, $buttonId, $snackId);
+			}
+		}
+		// Redirect browser
+		header("Location: http://" . $_SERVER['SERVER_NAME'] . "/dashboard?uid=".$uid);
+		exit;
+	}
+	
+	function shortButton_action($uid, $snackId) {
+		//needed to hide the menu
+		$dashboard_active = true;
+		
+		$order = array();
+                $order['client'] = $uid;
+                $order["snack_$snackId"] = 1;
+                new_order($order);
+		// Redirect browser
+		header("Location: http://" . $_SERVER['SERVER_NAME'] . "/dashboard");
+		exit;
+	}
 ?>

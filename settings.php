@@ -1,4 +1,4 @@
-<?
+<?php
 	// MySQL server credentials
   $host = "";
   $username = "";

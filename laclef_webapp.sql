@@ -156,4 +156,19 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Contenu de la table `users`
 -- 
 
-INSERT INTO `users` VALUES ('admin', 'Administrateur', '', 'admin@localhost', 'd033e22ae348aeb5660fc2140aec35850c4da997', 1, 'fr_FR', 0);
+INSERT IGNORE INTO `users` VALUES ('admin', 'Administrateur', '', 'admin@localhost', 'd033e22ae348aeb5660fc2140aec35850c4da997', 1, 'fr_FR', 0);
+
+-- --------------------------------------------------------
+
+-- 
+-- Structure de la table `usersPreferences`
+-- 
+
+CREATE TABLE IF NOT EXISTS `usersPreferences` (
+  `uid` char(8) NOT NULL,
+  `buttonId` int(11) NOT NULL,
+  `snackId` int(11) NOT NULL,
+  PRIMARY KEY (`uid`,`buttonId`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+

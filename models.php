@@ -1,6 +1,7 @@
 <?php
 	/* MySQL functions */
 	function open_database_connection() {
+
 		include "settings.php";
 		$link = mysqli_connect($host, $username, $password, $database);
 
@@ -2277,4 +2278,69 @@
 
 		return $xml['entry'];
 	}
+
+	function get_nb_buttons()
+	{
+		return 2;
+	}
+
+	function get_default_snackid_per_buttonid($buttonId)
+	{
+		switch($buttonId)
+		{
+			case 0:
+				return 2;
+			case 1:
+				return 10;
+			default:
+				return 2;
+		}
+	}
+
+	function get_buttons_preferences_by_user($uid)
+	{
+		$link = open_database_connection();
+
+		$snackIds = array();
+		for ($buttonId = 0; $buttonId < get_nb_buttons(); $buttonId++)
+		{
+			$query = "SELECT * FROM usersPreferences WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "' AND buttonId = '$buttonId'  LIMIT 1";
+
+			if ($result = mysqli_query($link, $query))
+			{
+				$snackId = mysqli_fetch_assoc($result);
+			}
+			if (!$snackId)
+			{
+				$snackId = get_default_snackid_per_buttonid($buttonId);
+			}
+			else
+			{
+				$snackId = $snackId['snackId'];
+			}
+			$snackIds[] = $snackId;
+
+			// free result set
+			mysqli_free_result($result);
+		}
+
+		// close connection
+		mysqli_close($link);
+
+		return $snackIds;
+
+	}
+
+	function update_userPreferences($uid, $buttonId, $snackId)
+	{
+		$link = open_database_connection();
+		
+		$query = "INSERT INTO usersPreferences VALUES ('".mysqli_real_escape_string($link, $uid)."', ".mysqli_real_escape_string($link, $buttonId).", ".mysqli_real_escape_string($link, $snackId).") ON DUPLICATE KEY UPDATE snackId=".mysqli_real_escape_string($link, $snackId);
+
+		$result = mysqli_query($link, $query);
+		
+		mysqli_free_result($result);
+
+		mysqli_close($link);
+	} 
 ?>

@@ -32,7 +32,7 @@
 		$language = $_SESSION['locale'];
 	else {
 		$language = substr($_SERVER['HTTP_ACCEPT_LANGUAGE'], 0, 2);
-		if($language == "fr")
+		if($language === "fr")
 			$language = "fr_FR";
 		else
 			$language = "en_US";
@@ -48,106 +48,110 @@
 
 	if ('/' == $uri)
 		home_action();
-	elseif ('/login' == $uri)
+	elseif ('/login' === $uri)
 		login_action();
-	elseif ('/logout' == $uri)
+	elseif ('/logout' === $uri)
 		logout_action();
-	elseif ('/signup' == $uri)
+	elseif ('/signup' === $uri)
 		signup_action();
-	elseif ('/account' == $uri && isset($_SESSION['uid']))
+	elseif ('/account' === $uri && isset($_SESSION['uid']))
 		account_action($_SESSION['uid']);
-	elseif ('/useradded' == $uri && isset($_SESSION['uid']))
+	elseif ('/useradded' === $uri && isset($_SESSION['uid']))
 		list_users_action($_SESSION['uid']);
-	elseif ('/users' == substr($uri, 0, 6) && isset($_SESSION['uid']))
+	elseif ('/usersPreferences' === substr($uri, 0, 17) && isset($_POST['uid']))
+		usersPreferences_action($_POST);
+	elseif ('/users' === substr($uri, 0, 6) && isset($_SESSION['uid']))
 		list_users_action($_SESSION['uid']);
-	elseif ('/user/delete' == substr($uri, 0, 12) && isset($_GET['uid']))
+	elseif ('/user/delete' === substr($uri, 0, 12) && isset($_GET['uid']))
 			delete_user_action($_SESSION['uid'], $_GET['uid']);
-	elseif ('/user' == substr($uri, 0, 5) && isset($_GET['uid']))
+	elseif ('/user' === substr($uri, 0, 5) && isset($_GET['uid']))
 			modify_user_action($_SESSION['uid'], $_GET['uid']);
-	elseif ('/tags' == $uri && isset($_SESSION['uid']))
+	elseif ('/tags' === $uri && isset($_SESSION['uid']))
 		list_tags_action($_SESSION['uid']);
-	elseif ('/tag/delete' == substr($uri, 0, 11) && isset($_GET['uid']))
+	elseif ('/tag/delete' === substr($uri, 0, 11) && isset($_GET['uid']))
 			delete_tag_action($_SESSION['uid'], $_GET['uid']);
-	elseif ('/tag' == substr($uri, 0, 4) && isset($_GET['uid']))
+	elseif ('/tag' === substr($uri, 0, 4) && isset($_GET['uid']))
 			modify_tag_action($_SESSION['uid'], $_GET['uid']);
-	elseif ('/readers' == $uri && isset($_SESSION['uid']))
+	elseif ('/readers' === $uri && isset($_SESSION['uid']))
 		list_readers_action($_SESSION['uid']);
-	elseif ('/reader/delete' == substr($uri, 0, 14) && isset($_GET['id']))
+	elseif ('/reader/delete' === substr($uri, 0, 14) && isset($_GET['id']))
 			delete_reader_action($_SESSION['uid'], $_GET['id']);
-	elseif ('/reader/all' == substr($uri, 0, 11) && isset($_GET['id']))
+	elseif ('/reader/all' === substr($uri, 0, 11) && isset($_GET['id']))
 		add_all_user_to_a_reader_action($_SESSION['uid'], $_GET['id']);
-	elseif ('/reader' == substr($uri, 0, 7) && isset($_GET['id']))
+	elseif ('/reader' === substr($uri, 0, 7) && isset($_GET['id']))
 			modify_reader_action($_SESSION['uid'], $_GET['id']);
-	elseif ('/permission/delete' == substr($uri, 0, 18) && isset($_GET['uid']) && isset($_GET['id']))
+	elseif ('/permission/delete' === substr($uri, 0, 18) && isset($_GET['uid']) && isset($_GET['id']))
 			delete_permission_action($_SESSION['uid'], $_GET['uid'], $_GET['id']);
-	elseif ('/permission' == substr($uri, 0, 11) && isset($_GET['uid']) && isset($_GET['id']))
+	elseif ('/permission' === substr($uri, 0, 11) && isset($_GET['uid']) && isset($_GET['id']))
 		modify_permission_action($_SESSION['uid'], $_GET['uid'], $_GET['id']);
-	elseif ('/payments' == $uri && isset($_SESSION['uid']))
+	elseif ('/payments' === $uri && isset($_SESSION['uid']))
 		list_payments_action($_SESSION['uid']);
-	elseif ('/swipes' == $uri && isset($_SESSION['uid']))
+	elseif ('/swipes' === $uri && isset($_SESSION['uid']))
 		list_swipes_action($_SESSION['uid']);
-	elseif ('/orders' == $uri && isset($_SESSION['uid']))
+	elseif ('/orders' === $uri && isset($_SESSION['uid']))
 		list_orders_action($_SESSION['uid']);
-	elseif ('/snack/delete' == substr($uri, 0, 13) && isset($_GET['id']))
+	elseif ('/snack/delete' === substr($uri, 0, 13) && isset($_GET['id']))
 			delete_snack_action($_SESSION['uid'], $_GET['id']);
-	elseif ('/snack' == substr($uri, 0, 6) && isset($_GET['id']))
+	elseif ('/snack' === substr($uri, 0, 6) && isset($_GET['id']))
 		modify_snack_action($_SESSION['uid'], $_GET['id']);
-	elseif ('/snacks' == $uri && isset($_SESSION['uid']))
+	elseif ('/snacks' === $uri && isset($_SESSION['uid']))
 		list_snacks_action($_SESSION['uid']);
-  elseif ('/job/checkout' == substr($uri, 0, 13) && isset($_GET['id']))
+  elseif ('/job/checkout' === substr($uri, 0, 13) && isset($_GET['id']))
     checkout_job_action($_SESSION['uid'], $_GET['id']);
-	elseif ('/job/delete' == substr($uri, 0, 11) && isset($_GET['id']))
+	elseif ('/job/delete' === substr($uri, 0, 11) && isset($_GET['id']))
 		delete_job_action($_SESSION['uid'], $_GET['id']);
-	elseif ('/job' == substr($uri, 0, 4) && isset($_GET['id']))
+	elseif ('/job' === substr($uri, 0, 4) && isset($_GET['id']))
 		modify_job_action($_SESSION['uid'], $_GET['id']);
-	elseif ('/jobs' == $uri && isset($_SESSION['uid']))
+	elseif ('/jobs' === $uri && isset($_SESSION['uid']))
 		list_jobs_action($_SESSION['uid']);
-	elseif ('/equipments/available' == substr($uri, 0, 21) && isset($_GET['id']))
+	elseif ('/equipments/available' === substr($uri, 0, 21) && isset($_GET['id']))
 		equipment_available_action($_SESSION['uid'], $_GET['id']);
-	elseif ('/equipment/delete' == substr($uri, 0, 17) && isset($_GET['id']))
+	elseif ('/equipment/delete' === substr($uri, 0, 17) && isset($_GET['id']))
 		delete_equipment_action($_SESSION['uid'], $_GET['id']);
-	elseif ('/equipment' == substr($uri, 0, 10) && isset($_GET['id']))
+	elseif ('/equipment' === substr($uri, 0, 10) && isset($_GET['id']))
 		modify_equipment_action($_SESSION['uid'], $_GET['id']);
-	elseif ('/equipments' == $uri && isset($_SESSION['uid']))
+	elseif ('/equipments' === $uri && isset($_SESSION['uid']))
 		list_equipments_action($_SESSION['uid']);
-	elseif ('/event/delete' == substr($uri, 0, 13) && isset($_GET['id']))
+	elseif ('/event/delete' === substr($uri, 0, 13) && isset($_GET['id']))
 		delete_event_action($_SESSION['uid'], $_GET['id']);
-	elseif ('/event' == substr($uri, 0, 6) && isset($_GET['id']))
+	elseif ('/event' === substr($uri, 0, 6) && isset($_GET['id']))
 		modify_event_action($_SESSION['uid'], $_GET['id']);
-	elseif ('/events' == $uri && isset($_SESSION['uid']))
+	elseif ('/events' === $uri && isset($_SESSION['uid']))
 		list_events_action($_SESSION['uid']);
-	elseif ('/tag/delete' == substr($uri, 0, 11) && isset($_GET['uid']))
+	elseif ('/tag/delete' === substr($uri, 0, 11) && isset($_GET['uid']))
 		delete_tag_action($_SESSION['uid'], $_GET['uid']);
-	elseif ('/tag' == substr($uri, 0, 4) && isset($_GET['uid']))
+	elseif ('/tag' === substr($uri, 0, 4) && isset($_GET['uid']))
 		modify_tag_action($_SESSION['uid'], $_GET['uid']);
-	elseif ('/coffee' == substr($uri, 0, 7) && isset($_GET['uid']))
+	elseif ('/coffee' === substr($uri, 0, 7) && isset($_GET['uid']))
 		coffee_order_action($_GET['uid']);
-	elseif ('/soda' == substr($uri, 0, 5) && isset($_GET['uid']))
+	elseif ('/soda' === substr($uri, 0, 5) && isset($_GET['uid']))
 		soda_order_action($_GET['uid']);
-	elseif ('/help' == $uri)
+	elseif ('/help' === $uri)
 		help_action();
-	elseif ('/kfet' == $uri)
+	elseif ('/kfet' === $uri)
 		kfet_action();
-	elseif ('/about' == $uri)
+	elseif ('/about' === $uri)
 		about_action();
-	elseif ('/dashboards' == $uri)
+	elseif ('/dashboards' === $uri)
 		dashboards_action();
-	elseif ('/dashboard.json' == $uri)
+	elseif ('/dashboard.json' === $uri)
 		dashboard_json_action();
-	elseif ('/stats.json' == substr($uri, 0, 11) && isset($_GET['uid']))
+	elseif ('/stats.json' === substr($uri, 0, 11) && isset($_GET['uid']))
 		stats_json_action($_GET['uid']);
-	elseif ('/stats.tsv' == substr($uri, 0, 10) && isset($_GET['uid']))
+	elseif ('/stats.tsv' === substr($uri, 0, 10) && isset($_GET['uid']))
 		stats_tsv_action($_GET['uid']);
-	elseif ('/coffees.tsv' == substr($uri, 0, 12) && isset($_GET['months']))
+	elseif ('/coffees.tsv' === substr($uri, 0, 12) && isset($_GET['months']))
 		coffees_tsv_action($_GET['months']);
-	elseif ('/dashboard' == substr($uri, 0, 10))
+	elseif ('/dashboard' === substr($uri, 0, 10))
 		dashboard_action();
-	elseif ('/energy.json' == substr($uri, 0, 12) && isset($_GET['power']) && isset($_GET['energy']))
+	elseif ('/energy.json' === substr($uri, 0, 12) && isset($_GET['power']) && isset($_GET['energy']))
 		energy_json_action($_GET['power'], $_GET['energy']);
-	elseif ('/grid.json' == $uri)
+	elseif ('/grid.json' === $uri)
 		grid_json_action();
-	elseif ('/grid' == $uri)
+	elseif ('/grid' === $uri)
 		grid_action();
+	elseif ('/shortButton' === substr($uri, 0, 12) && isset($_GET['uid']) && isset($_GET['snackId']))
+		shortButton_action($_GET['uid'], $_GET['snackId']);
 	else
 		login_action();
 

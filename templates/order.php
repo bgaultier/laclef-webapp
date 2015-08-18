@@ -1,8 +1,14 @@
 <?php ob_start() ?>
 <div class="box">
-  <a href="soda?uid=<?php echo $client['uid']; ?>"><button class="ink-button push-right"><i class="icon-beer"></i> <?php $soda = get_snack_by_id(10); echo _("Coca-Cola Zero") . ' ' . money_format('%!n&euro;', $soda['price']);
+  <?php $buttonsSnackIds = get_buttons_preferences_by_user($client['uid']) ?>
+  <?php for($i = get_nb_buttons()-1; $i >= 0; $i--) { $snack = get_snack_by_id($buttonsSnackIds[$i]); ?>
+	<a href=<?php echo "shortButton?uid=".$client['uid']."&snackId=".$snack['id'] ?>><button class="ink-button push-right"><i class="icon-beer"></i><?php echo $snack['description_' . getenv('LANG')]. ' ' . money_format('%!n&euro;', $snack['price']);
+    ?></button></a>
+  <?php } ?>
+  <!--<a href="soda?uid=<?php echo $client['uid']; ?>"><button class="ink-button push-right"><i class="icon-beer"></i> <?php $soda = get_snack_by_id(10); echo _("Coca-Cola Zero") . ' ' . money_format('%!n&euro;', $soda['price']);
     ?></button></a>
     <a href="coffee?uid=<?php echo $client['uid']; ?>"><button class="ink-button push-right"><i class="icon-coffee"></i> <?php $coffee = get_snack_by_id(2); echo _("Café express") . ' ' . money_format('%!n&euro;', $coffee['price']); ?></button></a>
+-->
   <form id="orderForm" class="ink-form" method="post" action="dashboard">
     <h3><?php echo $client['firstname'] . ' ' . $client['lastname']; ?></h3>
     <div style="margin: 0;"><?php echo _('Solde : ') . money_format('%!n&euro;', $client['balance']); ?></div>
@@ -49,6 +55,7 @@
 	  <a href="dashboard"><button class="ink-button red"><i class="icon-remove"></i> <?php echo _("Annuler"); ?></button></a>
 	  <button id="statisticsModal" class="ink-button" onclick="loadStatsJSON()"><i class="icon-bar-chart"></i> <?php echo _("Mes statistiques"); ?></button>
 	  <button id="messageModal" class="ink-button"><i class="icon-comment-alt"></i> <?php echo _("Envoyer un message"); ?></button>
+	  <button id="preferencesModal" class="ink-button"><i class="icon-cogs"></i> <?php echo _("Pr&eacute;f&eacute;rences"); ?></button>
 	  <?php
       if(count($client['tags']) > 0) {
         echo '<div class="ink-dropdown">';
@@ -109,6 +116,36 @@
 				<div class="modal-footer">
 					<button class="ink-button caution ink-dismiss"><?php echo _("Annuler"); ?></button>
 					<input type="submit" name="sub" value="<?php echo _("Envoyer le message"); ?>" class="ink-button success green" />
+				</div>
+			</div><!--/.modal-body -->
+		</form>
+	</div><!--/.ink-modal -->
+</div><!--/.ink-shade -->
+<div class="ink-shade">
+	<div id="preferencesModal" class="ink-modal" data-trigger="#preferencesModal">
+		<div class="modal-header">
+			<button class="modal-close ink-dismiss"></button>
+			<h3><?php echo _('Pr&eacute;f&eacute;rences'); ?></h3>
+		</div>
+		<div class="modal-body" id="preferencesModalContent">
+			<form id="preferenceForm" class="ink-form" method="post" action="usersPreferences" onsubmit="return Ink.UI.FormValidator.validate(this);">
+			  <input type="hidden" name="uid" id="uid" value="<?php echo $client['uid']; ?>" hidden />
+			  <div class="control-group large-100">
+			    <?php for($buttonId = 0; $buttonId < 2; $buttonId++) { ?>
+			    <div class="column-group horizontal-gutters">
+				    <p class="label large-30"><?php echo _("Bouton $buttonId: ") ?></p>
+				    <select name=<?php echo "snackId".$buttonId?> class="control unstyled large-20">
+					<?php foreach ($snacks as $snack): ?>
+					        <?php $selected = ($buttonsSnackIds[$buttonId] == $snack['id']  ? "selected" : "");
+							echo "<option value='".$snack['id']."' ".$selected.">".$snack['description_' . getenv('LANG')]."</option>"; ?>
+					<?php endforeach; ?>
+				    </select>
+			    </div>
+			    <?php } ?>
+			  </div>
+				<div class="modal-footer">
+					<button class="ink-button caution ink-dismiss"><?php echo _("Annuler"); ?></button>
+					<input type="submit" name="sub" value="<?php echo _("Appliquer les modifications"); ?>" class="ink-button success green" />
 				</div>
 			</div><!--/.modal-body -->
 		</form>
