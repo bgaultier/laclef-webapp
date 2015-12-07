@@ -63,14 +63,15 @@
 
 			require 'templates/dashboard.php';
 	}
+	else
+		require 'templates/forbidden.php';
+	}
 
 	function grid_action() {
 		// needed to hide the menu
 		$dashboard_active = true;
 
-
 		$messages = get_all_messages();
-		$events = get_google_calendar_events();
 
 		require 'templates/grid.php';
 	}
@@ -376,6 +377,14 @@
 			require 'templates/login.php';
 	}
 
+	function paypal_action() {
+		send_paypal_email($_POST['email'], $_POST['amount']);
+		// Redirect browser
+		header("Location: http://" . $_SERVER['SERVER_NAME'] . "/dashboard");
+		// Make sure that code below does not get executed when we redirect
+		exit;
+	}
+
 	function list_orders_action($uid) {
 			// needed to set the tab active
 			$extras_active = true;
@@ -515,7 +524,7 @@
 		if(user_is_admin($session_uid)) {
 			$job = get_job_by_id($id);
 
-			checkout_job($session_uid, $job);
+			checkout_job($job['uid'], $job);
 
 			// Redirect browser
 			header("Location: http://" . $_SERVER['SERVER_NAME'] . "/jobs");
@@ -552,7 +561,7 @@
 		$money_today = get_money_spent_today();
 		$filename = "laboite.json";
 		if (!file_exists($filename) || (time() - filemtime($filename)) > 60 ) {
-			copy("http://api.laboite.cc/61c119ce.json", $filename);
+			copy("http://api.laboite.cc/c859fd5a.json", $filename);
 		}
 
 		$json_string = file_get_contents($filename);

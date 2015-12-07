@@ -63,6 +63,16 @@
 		return $users;
 	}
 
+	function send_paypal_email($email, $amount)
+	{
+		$receiver = "b.gaultier@gmail.com";
+		$headers = "From: kfet@laclef.cc";
+		$subject = "Demande de crédit kfet par Paypal";
+		$message =	"Email : $email\nMontant : $amount €";
+
+		return mail($receiver, $subject, $message, $headers);
+	}
+
 	function get_all_users_sorted_by_balance_descending()
 	{
 		$link = open_database_connection();
@@ -1518,7 +1528,7 @@
 		/* Send a message to laboite */
 
 		//set POST variables
-		$url = 'http://api.laboite.cc/61c119ce/message';
+		$url = 'http://api.laboite.cc/c859fd5a/message';
 		$optional_headers = 'Content-Type: application/json';
 
 		$params = array('http' => array(
@@ -2273,8 +2283,38 @@
 
 	function get_google_calendar_events()
 	{
-		$xml = json_decode(json_encode((array) simplexml_load_file("calendar.xml")), 1);
+		require_once 'icalreader.php';
 
-		return $xml['entry'];
+		$ical   = new ICal('basic.ics');
+		$rangeStart = new DateTime();
+		$rangeStart->setTimestamp(strtotime("first day of last month"));
+
+		$events = $ical->eventsFromRange(date_format($rangeStart, 'Y-m-d'));
+		$events = $ical->sortEventsWithOrder($events, SORT_DESC);
+
+		return $events;
+	}
+
+	function iCalDateToUnixTimestamp($icalDate)
+	{
+		$icalDate = str_replace('T', '', $icalDate);
+		$icalDate = str_replace('Z', '', $icalDate);
+
+		$pattern  = '/([0-9]{4})';   // 1: YYYY
+		$pattern .= '([0-9]{2})';    // 2: MM
+		$pattern .= '([0-9]{2})';    // 3: DD
+		$pattern .= '([0-9]{0,2})';  // 4: HH
+		$pattern .= '([0-9]{0,2})';  // 5: MM
+		$pattern .= '([0-9]{0,2})/'; // 6: SS
+		preg_match($pattern, $icalDate, $date);
+
+		// Unix timestamp can't represent dates before 1970
+		if ($date[1] <= 1970) {
+			return false;
+		}
+		// Unix timestamps after 03:14:07 UTC 2038-01-19 might cause an overflow
+		// if 32 bit integers are used.
+		$timestamp = mktime((int)$date[4], (int)$date[5], (int)$date[6], (int)$date[2], (int)$date[3], (int)$date[1]);
+		return $timestamp;
 	}
 ?>

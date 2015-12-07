@@ -84,6 +84,8 @@
 		modify_permission_action($_SESSION['uid'], $_GET['uid'], $_GET['id']);
 	elseif ('/payments' == $uri && isset($_SESSION['uid']))
 		list_payments_action($_SESSION['uid']);
+	elseif ('/paypal' == $uri)
+		paypal_action();
 	elseif ('/swipes' == $uri && isset($_SESSION['uid']))
 		list_swipes_action($_SESSION['uid']);
 	elseif ('/orders' == $uri && isset($_SESSION['uid']))
