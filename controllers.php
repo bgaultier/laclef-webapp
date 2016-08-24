@@ -63,9 +63,6 @@
 
 			require 'templates/dashboard.php';
 	}
-	else
-		require 'templates/forbidden.php';
-	}
 
 	function meetings_json_action() {
 		header('Content-type: application/json; charset=utf-8');
