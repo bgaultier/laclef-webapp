@@ -34,8 +34,8 @@
 						foreach ($events as $event): ?>
 						<tr>
 							<td>
-								<strong><?php echo $event['title']; ?></strong>
-								<div class="small"><i class="icon-calendar"></i> <?php echo str_replace("\nb", "", str_replace("CEST", "", str_replace("CET", "", str_replace("<", "", str_replace("<br>", "", substr($event['summary'], 7, strpos($event['summary'],"<br>"))))))); ?></div>
+								<strong><?php echo @$event['SUMMARY']; ?></strong>
+								<div class="small"><i class="icon-calendar"></i> <?php  echo _('Le') . " " . gmdate(" d/m/Y \à H:i", iCalDateToUnixTimestamp($event['DTSTART']) +3600); ?><?php if(@$event['LOCATION']) echo ' <i class="fa fa-map-marker"></i> ' . @$event['LOCATION']; ?></div>
 							</td>
 						</tr>
 						<?php $i++; if($i > 7) break; ?>
@@ -60,6 +60,10 @@
 					<?php endforeach; ?>
 				</tbody>
 			</table>
+			<h2><?php echo _('Compteurs SmarTB'); ?></h2>
+			<div id="iframe">
+				<iframe frameborder="0" marginheight="0" marginwidth="0" scrolling="no" src="http://smartb.labo4g.enstb.fr/demo&amp;id=23&amp;embed=1&amp;apikey=9d557961a518fc3f95cb6478e612e520" style="height : 169px; width: 400px;"></iframe>
+			</div>
 			<h2><?php echo _('Impressions 3D'); ?></h2>
 			<table class="ink-table">
 				<thead>
@@ -89,41 +93,6 @@
 					<?php endforeach; ?>
 				</tbody>
 			</table>
-			<h2>Commandes RSM</h2>
-			<table class="ink-table">
-				<thead>
-					<tr>
-						<th><?php echo _('Commande'); ?></th>
-						<th><?php echo _('Personne'); ?></th>
-						<th><?php echo _('Date estim&eacute;e'); ?></th>
-						<th><?php echo _('Statut'); ?></th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr>
-						<td>Accesoires</td>
-						<td>Nicolas</td>
-						<td>Fin nov.</td>
-						<td><span class="ink-label warning">Traitement</span></td>
-					</tr>
-					<tr>
-						<td>Disques durs</td>
-						<td>Bruno</td>
-						<td>18 nov.</td>
-						<td><span class="ink-label success">Livré</span></td>
-					</tr>
-					<tr>
-						<td>Dock Dell</td>
-						<td>Christophe</td>
-						<td>fin nov.</td>
-						<td><span class="ink-label warning">Traitement</span></td>
-					</tr>
-				</tbody>
-			</table>
-			<h2><?php echo _('Compteurs SmarTB'); ?></h2>
-			<div id="iframe">
-				<iframe frameborder="0" marginheight="0" marginwidth="0" scrolling="no" src="http://smartb.labo4g.enstb.fr/demo&amp;id=23&amp;embed=1&amp;apikey=9d557961a518fc3f95cb6478e612e520" style="height : 169px; width: 400px;"></iframe>
-			</div>
 		</div>
 	</div><!--/.column-group -->
 	<style>
@@ -195,7 +164,7 @@
 		var xAxis = d3.svg.axis()
 				.scale(x)
 				.orient("bottom")
-				.tickFormat(function(d) { return d + "/14"; });
+				.tickFormat(function(d) { return d + "/15"; });
 
 		var yAxis = d3.svg.axis()
 				.scale(y)
