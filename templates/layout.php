@@ -55,7 +55,7 @@
   			<nav class="ink-navigation ink-grid hide-small hide-medium top-space">
   				<ul class="menu horizontal rounded shadowed grey">
   					<li>
-		        <a class="logoPlaceholder" href="/" title="laclef" style="font-family: 'Kreon', serif;"><i class="icon-key"></i> laclef</a>
+		        <a class="logoPlaceholder" href="/" title="laclef" style="font-family: 'Kreon', serif;"><i class="icon-key"></i> MDA</a>
 		      </li>
 		      <?php
 		      		// if user is not connected
@@ -99,6 +99,9 @@
 		      			echo '<li';
 		      			if(isset($payments_active)) echo ' class="active"';
 		      			echo '><a href="payments">' . _('Paiements') . '</a></li>';
+                echo '<li';
+                if(isset($coworking_active)) echo ' class="active"';
+                echo '><a href="coworking">' . _('Cotravail') . '</a></li>';
 		      			echo '<li';
 		      			if(isset($snacks_active)) echo ' class="active"';
 		      			echo '><a href="snacks">' . _('Produits') . '</a></li>';
@@ -111,6 +114,9 @@
 		      			echo '<li';
 		      			if(isset($events_active)) echo ' class="active"';
 		      			echo '><a href="events">' . _('Événements') . '</a></li>';
+                echo '<li';
+                if(isset($meetings_active)) echo ' class="active"';
+                echo '><a href="meetings">' . _('Réunions') . '</a></li>';
 		      			echo '<li';
 		      			if(isset($orders_active)) echo ' class="active"';
 		      			echo '><a href="orders">' . _('Commandes') . '</a></li>';
@@ -179,6 +185,9 @@
 		          			echo '<li';
 		          			if(isset($payments_active)) echo ' class="active"';
 		          			echo '><a href="payments">' . _('Paiements') . '</a></li>';
+                    echo '<li';
+                    if(isset($coworking_active)) echo ' class="active"';
+                    echo '><a href="coworking">' . _('Cotravail') . '</a></li>';
 		          			echo '<li';
 		          			if(isset($snacks_active)) echo ' class="active"';
 		          			echo '><a href="snacks">' . _('Produits') . '</a></li>';
@@ -191,6 +200,8 @@
 		          			echo '<li';
 		          			if(isset($events_active)) echo ' class="active"';
 		          			echo '><a href="events">' . _('Événements') . '</a></li>';
+                    if(isset($meetings_active)) echo ' class="active"';
+                    echo '><a href="meetings">' . _('Réunions') . '</a></li>';
 		          			echo '<li';
 		          			if(isset($orders_active)) echo ' class="active"';
 		      			    echo '><a href="orders">' . _('Commandes') . '</a></li>';

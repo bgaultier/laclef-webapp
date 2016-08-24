@@ -64,10 +64,51 @@
 			require 'templates/dashboard.php';
 	}
 
+	function meetings_json_action() {
+		header('Content-type: application/json; charset=utf-8');
+		header("Cache-Control: no-cache, must-revalidate");
+
+		$meetings = get_all_meetings();
+
+		echo json_encode($meetings);
+	}
+
+	function meetings_action($session_uid) {
+		// needed to set the tab active
+		$meetings_active = true;
+
+		//check if the user is admin
+		if(user_is_admin($session_uid)) {
+			// get all the events
+			$meetings = get_all_meetings();
+
+			require 'templates/meetings.php';
+		}
+		else
+			require 'templates/login.php';
+	}
+
+	function accept_meeting_action($id) {
+		// needed to set the tab active
+		$meetings_active = true;
+
+		$meeting = get_meeting_by_id($_GET['id']);
+
+		if($meeting) {
+			accept_meeting($meeting['id'], 1);
+			$message_active = true;
+			send_meeting_accepted_mail($meeting);
+		}
+
+		// get all the events
+		$meetings = get_all_meetings();
+
+		require 'templates/meetings.php';
+	}
+
 	function grid_action() {
 		// needed to hide the menu
 		$dashboard_active = true;
-
 
 		$messages = get_all_messages();
 		$events = get_google_calendar_events();
@@ -89,8 +130,8 @@
 			exit;
 		}
 		else {
-				// needed to set the tab active
-				$home_active = true;
+			// needed to set the tab active
+			$home_active = true;
 			require 'templates/login.php';
 		}
 	}
@@ -368,12 +409,57 @@
 
 				// list all the payments
 				$payments = get_all_payments();
-				// Fetch all the users UIDs
-				$uids = get_all_uids();
+
+				// get all the users
+				$users = get_all_users_sorted_by_balance_descending();
+
 				require 'templates/payments.php';
 			}
 		else
 			require 'templates/login.php';
+	}
+
+	function coworking_action($uid) {
+		// needed to set the tab active
+		$extras_active = true;
+		$coworking_active = true;
+
+		if(user_is_admin($uid)) {
+			// dealing with coworking add form
+			if(isset($_POST['uid']) && isset($_POST['halfdays'])) {
+				if(isset($_POST['debit']))
+					add_coworking($_POST['uid'], -$_POST['halfdays']);
+				else
+					add_coworking($_POST['uid'], $_POST['halfdays']);
+				// log swipe
+				add_swipe(0, $_POST['uid'], 5, 1);
+			}
+			// list all the coworkings
+			$coworkings = get_coworking_history();
+
+			// get all the users
+			$users = get_all_users_sorted_by_balance_descending();
+
+			require 'templates/coworking.php';
+		}
+		else
+			require 'templates/login.php';
+	}
+
+	function booking_action() {
+		// needed to set the tab active
+		$extras_active = true;
+
+		// dealing with coworking add form
+		if(isset($_POST['uid']) && isset($_POST['start']) && isset($_POST['duration'])) {
+			add_meeting($_POST['uid'], $_POST['start'], $_POST['duration'], 0);
+			$booking_message = true;
+		}
+
+		// get all the users
+		$users = get_all_users_sorted_by_balance_descending();
+
+		require 'templates/booking.php';
 	}
 
 	function list_orders_action($uid) {

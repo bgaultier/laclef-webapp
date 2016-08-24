@@ -99,6 +99,16 @@
 											 );
 			echo json_encode($response);
 		}
+		elseif('coworking' == $_GET['uri'] && isset($_GET['id'])) {
+			send_headers();
+
+			$payment = get_coworking_history_by_uid($_GET['id']);
+
+			$response = array("version" => $version,
+				"response" => $payment
+			);
+			echo json_encode($response);
+		}
 		elseif('snacks' == $_GET['uri'] && isset($_GET['id'])) {
 			send_headers();
 
@@ -276,7 +286,8 @@
 			echo json_encode($orders);
 		}
 		elseif ('swipes' == $_GET['uri'] && isset($input['uid']) && isset($input['service']) && isset($_GET['id'])) {
-			if($input['service'] == 1 && is_payment_reader($_GET['id'])) {
+			$service = intval($input['service']);
+			if($service == 1 && is_payment_reader($_GET['id'])) {
 				 // This is a payment request
 				 $owner = get_tag_owner($input['uid']);
 
@@ -301,7 +312,31 @@
 				 else
 					forbidden();
 			}
-			elseif($input['service'] == 0) {
+			elseif($service == 5) {
+				$uid = get_tag_owner($input['uid']);
+				$user = get_user_by_uid($uid);
+
+				if($uid && floatval($user['coworking']) > 0) {
+					// log swipe
+					$swipe = add_swipe($_GET['id'], $uid, 5, 1);
+					add_coworking_with_swipe($uid, -1, $swipe);
+					$user = get_user_by_uid($uid);
+
+					send_headers();
+
+					$response = array("version" => $version,
+														"response" => "OK",
+														"uid" => $uid,
+														"coworking" => $user['coworking']);
+					echo json_encode($response);
+				}
+				else {
+					// user is not allowed
+					$swipe = add_swipe($_GET['id'], $uid, 5, 0);
+					forbidden();
+				}
+			}
+			elseif($service == 0) {
 				$owner = get_tag_owner($input['uid']);
 				$permission = get_permission($owner, $_GET['id']);
 

@@ -126,6 +126,24 @@
 		return $user;
 	}
 
+	function get_admin_email()
+	{
+		$link = open_database_connection();
+
+		$query = "SELECT * FROM users WHERE admin = '1' LIMIT 1";
+
+		if ($result = mysqli_query($link, $query))
+			$admin = mysqli_fetch_assoc($result);
+
+		// free result set
+		mysqli_free_result($result);
+
+		// close connection
+		mysqli_close($link);
+
+		return $admin['email'];
+	}
+
 	function user_is_admin($uid) {
 			$link = open_database_connection();
 
@@ -184,7 +202,16 @@
 	{
 		$link = open_database_connection();
 
-		$query = "INSERT INTO users (uid, firstname, lastname, email, password, admin, locale, balance) VALUES ('" . mysqli_real_escape_string($link, $values['uid']) . "', '" . mysqli_real_escape_string($link, $values['firstname']) . "', '" . mysqli_real_escape_string($link, $values['lastname']) . "', '" . mysqli_real_escape_string($link, $values['email']) . "', SHA1('" . mysqli_real_escape_string($link, $values['password']) . "'), '" . filter_var($values['admin'], FILTER_VALIDATE_BOOLEAN) . "', '" . mysqli_real_escape_string($link, $values['locale']) . "', '0,00')";
+		$uid = strtolower(str_replace(' ', '', $values['firstname'][0] . substr($values['lastname'], 0, 7)));
+
+		$query = "INSERT INTO users (uid, firstname, lastname, email, password, admin, locale, balance) VALUES ('" .
+							$uid . "', '" .
+							mysqli_real_escape_string($link, $values['firstname']) . "', '" .
+							mysqli_real_escape_string($link, $values['lastname']) . "', '" .
+							mysqli_real_escape_string($link, $values['email']) . "', SHA1('" .
+							mysqli_real_escape_string($link, $values['password']) . "'), '" .
+							filter_var($values['admin'], FILTER_VALIDATE_BOOLEAN) . "', '" .
+							mysqli_real_escape_string($link, $values['locale']) . "', '0,00')";
 
 		$result = mysqli_query($link, $query);
 
@@ -269,8 +296,8 @@
 	}
 
 	function get_tag_icon_html($type) {
-			switch ($type) {
-				case 0:
+		switch ($type) {
+			case 0:
 					return '<i class="icon-credit-card"></i>';
 			case 1:
 					return '<i class="icon-ticket"></i>';
@@ -492,6 +519,8 @@
 				return '<span class="tooltip" data-tip-text="' .	get_reader_service($service) . '"data-tip-where="up" data-tip-color="black"><span class="icon-stack"><i class="icon-check-empty icon-stack-base"></i><i class="icon-money"></i></span></span>';
 			case 4:
 				return '<span class="tooltip" data-tip-text="' .	get_reader_service($service) . '"data-tip-where="up" data-tip-color="black"><span class="fa-stack"><i class="fa fa-square-o fa-stack-2x"></i><i class="fa fa-cube fa-stack-1x"></i></span></span>';
+			case 5:
+				return '<span class="tooltip" data-tip-text="' .	get_reader_service($service) . '"data-tip-where="up" data-tip-color="black"><span class="icon-stack"><i class="icon-check-empty icon-stack-base"></i><i class="icon-briefcase"></i></span></span>';
 		}
 	}
 
@@ -507,11 +536,13 @@
 				return _('Virement');
 			case 4:
 				return _('Impression 3D');
+			case 5:
+				return _('Cotravail');
 		}
 	}
 
 	function get_reader_services() {
-			return array(_('Ouverture de porte'), _('Paiement'), _('Location de matériel'), _('Virement'), _('Impression 3D'));
+			return array(_('Ouverture de porte'), _('Paiement'), _('Location de matériel'), _('Virement'), _('Impression 3D'), _('Cotravail'));
 	}
 
 
@@ -1439,6 +1470,103 @@
 		}
 	}
 
+	/* Meeting Model */
+	function get_all_meetings()
+	{
+		$link = open_database_connection();
+
+		$query = "SELECT * FROM meetings ORDER BY start DESC";
+
+		$meetings = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result)) {
+				$user = get_user_by_uid($row['uid']);
+				$row['title'] = $user['firstname'] . ' ' . $user['lastname'];
+				$row['color'] = ($row['status'] == "1" ? "#4a9b17" : "#c91111");
+				$meetings[] = $row;
+			}
+
+			// free result set
+			mysqli_free_result($result);
+		}
+
+		// close connection
+		mysqli_close($link);
+
+		return $meetings;
+	}
+
+	function get_meeting_by_id($id) {
+		$link = open_database_connection();
+
+		$query = "SELECT * FROM meetings WHERE id = '" . mysqli_real_escape_string($link, $id) . "' LIMIT 1";
+
+		if ($result = mysqli_query($link, $query))
+			$meeting = mysqli_fetch_assoc($result);
+
+		// free result set
+		mysqli_free_result($result);
+
+		// close connection
+		mysqli_close($link);
+
+		return $meeting;
+	}
+
+	function add_meeting($uid, $start, $duration)
+	{
+		$link = open_database_connection();
+
+		$timestamp = strtotime($start) + intval($duration) * 3600;
+		$end = date('Y-m-d H:i:s', $timestamp);
+
+		$query = "INSERT INTO meetings (id, start, end, uid, status) VALUES (NULL, '" .
+					mysqli_real_escape_string($link, $start) . "', '" .
+					mysqli_real_escape_string($link, $end) . "', '" .
+					mysqli_real_escape_string($link, $uid) . "', 0)";
+
+		$result = mysqli_query($link, $query);
+
+		// free result set
+		mysqli_free_result($result);
+
+		// close connection
+		mysqli_close($link);
+
+		return $result;
+	}
+
+	function accept_meeting($id) {
+		$link = open_database_connection();
+
+		$query = "UPDATE meetings SET status = '1' WHERE id = '" . mysqli_real_escape_string($link, $id) . "' LIMIT 1";
+
+		$result = mysqli_query($link, $query);
+
+		// free result set
+		mysqli_free_result($result);
+
+		// close connection
+		mysqli_close($link);
+
+		return $result;
+	}
+
+	function send_meeting_accepted_mail($meeting) {
+		$user = get_user_by_uid($meeting['uid']);
+		$admin = get_admin_email();
+
+		$receiver = $user['email'];
+		$headers = "From: " . $admin;
+		$subject = "Votre demande de réunion a été acceptée !";
+		$message =	"Bonjour " . $user['firstname'] .",\nVotre demande pour la réunion du " . $meeting['start'] . " a été acceptée.\nBonne réunion !";
+
+		$status = mail($receivers, $subject, $message, $headers);
+
+		return $status;
+	}
+
 	/* Message Model */
 	function get_all_messages()
 	{
@@ -1532,6 +1660,121 @@
 
 		$ctx = stream_context_create($params);
 		$fp = fopen($url, 'rb', false, $ctx);
+	}
+
+	/* Coworking Model */
+	function get_coworking_history()
+	{
+		$link = open_database_connection();
+
+		$query = "SELECT * FROM coworking ORDER BY timestamp DESC LIMIT 0,200";
+
+		$coworkings = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result)) {
+				$user = get_user_by_uid($row['uid']);
+				$row['firstname'] = $user['firstname'];
+				$row['lastname'] = $user['lastname'];
+				$coworkings[] = $row;
+			}
+
+			// free result set
+			mysqli_free_result($result);
+		}
+
+		// close connection
+		mysqli_close($link);
+
+		return $coworkings;
+	}
+
+	function get_coworking_history_by_uid()
+	{
+		$link = open_database_connection();
+
+		$query = "SELECT * FROM coworking ORDER BY timestamp DESC LIMIT 0,200";
+
+		$coworkings = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result)) {
+				unset($row['uid']);
+				$row['halfdays'] = intval($row['halfdays']);
+				$coworkings[] = $row;
+			}
+
+			// free result set
+			mysqli_free_result($result);
+		}
+
+		// close connection
+		mysqli_close($link);
+
+		return $coworkings;
+	}
+
+	function add_coworking($uid, $halfdays)
+	{
+		$halfdays = intval($halfdays);
+
+		$link = open_database_connection();
+
+		$query = "INSERT INTO coworking (uid, halfdays, timestamp) VALUES ('" . mysqli_real_escape_string($link, $uid) . "', '$halfdays', NOW())";
+
+		$result = mysqli_query($link, $query);
+
+		// free result set
+		mysqli_free_result($result);
+
+		// close connection
+		mysqli_close($link);
+
+		// credit user account
+		credit_coworking_account($uid, $halfdays);
+	}
+
+	function add_coworking_with_swipe($uid, $halfdays, $swipe)
+	{
+		$halfdays = intval($halfdays);
+
+		$link = open_database_connection();
+
+		$query = "INSERT INTO coworking (uid, halfdays, timestamp, swipe) VALUES ('" . mysqli_real_escape_string($link, $uid) . "', '$halfdays', NOW(), '" . mysqli_real_escape_string($link, $swipe) . "')";
+
+		$result = mysqli_query($link, $query);
+
+		// free result set
+		mysqli_free_result($result);
+
+		// close connection
+		mysqli_close($link);
+
+		// credit user account
+		credit_coworking_account($uid, $halfdays);
+	}
+
+	function credit_coworking_account($uid, $halfdays)
+	{
+		$user = get_user_by_uid($uid);
+		$current_coworking_balance = floatval($user['coworking']);
+		$new_coworking_balance = $current_coworking_balance + floatval($halfdays)/2;
+
+		$new_coworking_balance = str_replace(',', '.', (string) $new_coworking_balance);
+
+		$link = open_database_connection();
+
+		$query = "UPDATE users SET coworking = '$new_coworking_balance' WHERE uid = '" . mysqli_real_escape_string($link, $uid) . "' LIMIT 1";
+
+		$result = mysqli_query($link, $query);
+
+		// free result set
+		mysqli_free_result($result);
+
+		// close connection
+		mysqli_close($link);
+
+		return $result;
 	}
 
 	/* Payment Model */
