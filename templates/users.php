@@ -11,6 +11,7 @@
 	    		<th class="content-left hide-small hide-medium"><?php echo _('Nom'); ?></th>
 	    		<th class="content-left hide-small hide-medium"><?php echo _('Email'); ?></th>
 	    		<th class="content-left"><?php echo _('Admin'); ?></th>
+          <th class="content-left hide-small hide-medium"><?php echo _('Cotravail'); ?></th>
 	    		<th class="content-left hide-small hide-medium"><?php echo _('Solde'); ?></th>
 	    		<th class="content-left"><?php echo _('Actions'); ?></th>
 	    	</tr>
@@ -23,6 +24,7 @@
 						<td class="hide-small hide-medium"><?php echo $user['lastname']; ?></td>
 						<td class="hide-small hide-medium"><a href="mailto:<?php echo $user['email']; ?>"><?php echo $user['email']; ?></a></td>
 						<td><?php if($user['admin'] == 1) echo '<i class="icon-ok" style="margin-left:12px;"></i>'; ?></td>
+            <td class="content-right hide-small hide-medium"><?php echo str_replace('.', ',', (string) $user['coworking']) . ' ' . _('jours'); ?></td>
 						<td class="content-right hide-small hide-medium"><?php echo money_format('%!n&euro;', $user['balance']); ?></td>
 						<td>
 							<a href="user?uid=<?php echo $user['uid']; ?>"><button class="ink-button"><i class="icon-pencil"></i></button></a>
@@ -69,13 +71,6 @@
 		<div class="modal-body" id="modalContent">
 			<form id="userForm" class="ink-form" method="post" action="useradded" onsubmit="return Ink.UI.FormValidator.validate(this);">
 				<fieldset>
-					<div class="control-group required">
-						<label for="uid"><?php echo _('UID : '); ?></label>
-						<div class="control">
-							<input type="text" name="uid" id="uid" class="ink-fv-required" />
-						</div>
-						<p class="tip"><?php echo _('Indiquez ici un identifiant unique'); ?></p>
-					</div>
 					<div class="control-group required">
 						<label for="firstname"><?php echo _('Prénom : '); ?></label>
 						<div class="control">

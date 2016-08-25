@@ -140,6 +140,16 @@
 		kfet_action();
 	elseif ('/about' == $uri)
 		about_action();
+	elseif ('/booking' == $uri)
+		booking_action();
+	elseif ('/meetings.json' == substr($uri, 0, 14))
+		meetings_json_action();
+	elseif ('/meetings' == $uri)
+		meetings_action($_SESSION['uid']);
+	elseif ('/meeting' == substr($uri, 0, 8) && isset($_GET['id']))
+		accept_meeting_action($_GET['id']);
+	elseif ('/coworking' == $uri)
+		coworking_action($_SESSION['uid']);
 	elseif ('/dashboards' == $uri)
 		dashboards_action();
 	elseif ('/dashboard.json' == $uri)
@@ -160,5 +170,4 @@
 		grid_action();
 	else
 		login_action();
-
 ?>
