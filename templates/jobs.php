@@ -67,9 +67,10 @@
 					<div class="control-group required">
 						<p class="label"><?php echo _('Bénéficiaire : '); ?></p>
 						<select name="uid" class="control unstyled">
-							<?php foreach ($uids as $uid): ?>
-								<option value="<?php echo $uid; ?>"><?php echo $uid; ?></option>
-							<?php endforeach; ?>
+							<?php
+								foreach ($users as $user)
+									echo "<option value=" . $user['uid'] . ">" . $user['firstname'] . " " . $user['lastname'] . "</option>";
+							?>
 						</select>
 					</div>
 					<div class="control-group required">

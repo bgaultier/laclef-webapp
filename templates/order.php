@@ -1,8 +1,6 @@
 <?php ob_start() ?>
 <div class="box">
-	<a href="soda?uid=<?php echo $client['uid']; ?>"><button class="ink-button push-right"><i class="icon-beer"></i> <?php $soda = get_snack_by_id(10); echo _("Coca-Cola Zero") . ' ' . money_format('%!n&euro;', $soda['price']);
-		?></button></a>
-		<a href="coffee?uid=<?php echo $client['uid']; ?>"><button class="ink-button push-right"><i class="icon-coffee"></i> <?php $coffee = get_snack_by_id(2); echo _("Café express") . ' ' . money_format('%!n&euro;', $coffee['price']); ?></button></a>
+	<a href="coffee?uid=<?php echo $client['uid']; ?>"><button class="ink-button push-right"><i class="icon-coffee"></i> <?php $coffee = get_snack_by_id(2); echo _("Café express") . ' ' . money_format('%!n&euro;', $coffee['price']); ?></button></a>
 	<form id="orderForm" class="ink-form" method="post" action="dashboard">
 		<h3><?php echo $client['firstname'] . ' ' . $client['lastname']; ?></h3>
 		<div style="margin: 0;"><?php echo _('Solde : ') . money_format('%!n&euro;', $client['balance']); ?></div>
@@ -49,7 +47,8 @@
 		<a href="dashboard"><button class="ink-button red"><i class="icon-remove"></i> <?php echo _("Annuler"); ?></button></a>
 		<button id="statisticsModal" class="ink-button" onclick="loadStatsJSON()"><i class="icon-bar-chart"></i> <?php echo _("Mes statistiques"); ?></button>
 		<button id="messageModal" class="ink-button"><i class="icon-comment-alt"></i> <?php echo _("Envoyer un message"); ?></button>
-		<button id="paypalModal" class="ink-button"><i class="fa fa-paypal"></i> <?php echo _("Créditer compte"); ?></button>
+		<button id="paypalModal" class="ink-button"><i class="fa fa-paypal"></i> <?php echo _("Créditer"); ?></button>
+		<button id="bitcoinModal" class="ink-button"><i class="fa fa-bitcoin"></i> <?php echo _("Créditer"); ?></button>
 		<?php
 			if(count($client['tags']) > 0) {
 				echo '<div class="ink-dropdown">';
@@ -167,6 +166,23 @@
 				</div>
 			</form>
 		</div><!--/.modal-body -->
+	</div><!--/.ink-modal -->
+</div><!--/.ink-shade -->
+<div class="ink-shade">
+	<div id="bitcoinModal" class="ink-modal" data-trigger="#bitcoinModal">
+		<div class="modal-header">
+			<button class="modal-close ink-dismiss"></button>
+			<h3><?php echo _('Créditer le compte de') . ' ' . $client['firstname'] . ' ' . $client['lastname']; ?></h3>
+		</div>
+		<div class="modal-body" id="bitcoinModalContent">
+			<?php if($client['lastpayment']) echo '<p>' . money_format('%!n&euro;', $client['lastpayment']['amount']) . ' ' . _("ont été crédités") . ' ' . strtolower(datetime_to_string($client['lastpayment']['timestamp'])) . '</p>'; ?>
+			<p><?php echo _("Veuillez utiliser le QRcode ci-dessous afin de recharger votre compte Kfet en Bitcoins :"); ?></p>
+			<img src="templates/images/bitcoin_wallet.jpg" alt="Bitcoin wallet"  height="256" />
+			<p class="small"><?php echo _('Valeur courante du bitcoin :') . ' ' . money_format('%!n&euro;', $bitcoin) . ' ' . _('(basée sur CoinDesk)'); ?></p>
+		</div><!--/.modal-body -->
+		<div class="modal-footer">
+			<button class="ink-button caution ink-dismiss"><?php echo _("Fermer"); ?></button>
+		</div><!--/.modal-footer -->
 	</div><!--/.ink-modal -->
 </div><!--/.ink-shade -->
 <script src="templates/d3/d3.v3.min.js"></script>

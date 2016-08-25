@@ -96,8 +96,8 @@
 		modify_snack_action($_SESSION['uid'], $_GET['id']);
 	elseif ('/snacks' == $uri && isset($_SESSION['uid']))
 		list_snacks_action($_SESSION['uid']);
-  elseif ('/job/checkout' == substr($uri, 0, 13) && isset($_GET['id']))
-    checkout_job_action($_SESSION['uid'], $_GET['id']);
+	elseif ('/job/checkout' == substr($uri, 0, 13) && isset($_GET['id']))
+		checkout_job_action($_SESSION['uid'], $_GET['id']);
 	elseif ('/job/delete' == substr($uri, 0, 11) && isset($_GET['id']))
 		delete_job_action($_SESSION['uid'], $_GET['id']);
 	elseif ('/job' == substr($uri, 0, 4) && isset($_GET['id']))
@@ -118,6 +118,14 @@
 		modify_event_action($_SESSION['uid'], $_GET['id']);
 	elseif ('/events' == $uri && isset($_SESSION['uid']))
 		list_events_action($_SESSION['uid']);
+	elseif ('/checkin' == $uri)
+		checkin_action();
+	elseif ('/checkout/delete' == substr($uri, 0, 16) && isset($_GET['id']))
+		delete_checkout_action($_GET['id']);
+	elseif ('/checkout' == $uri)
+		checkout_action();
+	elseif ('/stocks' == $uri)
+		list_stocks_action();
 	elseif ('/tag/delete' == substr($uri, 0, 11) && isset($_GET['uid']))
 		delete_tag_action($_SESSION['uid'], $_GET['uid']);
 	elseif ('/tag' == substr($uri, 0, 4) && isset($_GET['uid']))

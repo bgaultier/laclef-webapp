@@ -21,7 +21,7 @@
 			      <td><?php echo $user['uid']; ?></td>
 						<td class="hide-small hide-medium"><?php echo $user['firstname']; ?></td>
 						<td class="hide-small hide-medium"><?php echo $user['lastname']; ?></td>
-						<td class="hide-small hide-medium"><?php echo $user['email']; ?></td>
+						<td class="hide-small hide-medium"><a href="mailto:<?php echo $user['email']; ?>"><?php echo $user['email']; ?></a></td>
 						<td><?php if($user['admin'] == 1) echo '<i class="icon-ok" style="margin-left:12px;"></i>'; ?></td>
 						<td class="content-right hide-small hide-medium"><?php echo money_format('%!n&euro;', $user['balance']); ?></td>
 						<td>

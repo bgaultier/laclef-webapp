@@ -42,6 +42,31 @@
 		return $users;
 	}
 
+	function get_all_users_sorted_by_lastname_ascending()
+	{
+		$link = open_database_connection();
+
+		$query = "SELECT * FROM users ORDER BY lastname ASC";
+
+		$users = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result)) {
+				$row['tags'] = get_user_tags($row['uid']);
+				$row['equipments'] = get_user_equipments($row['uid']);
+				$users[] = $row;
+			}
+
+			// free result set
+			mysqli_free_result($result);
+		}
+
+		// close connection
+		mysqli_close($link);
+
+		return $users;
+	}
+
 	function search_users($pattern) {
 			$link = open_database_connection();
 
@@ -2123,6 +2148,252 @@
 		}
 	}
 
+	/* Item Model */
+	function get_all_items() {
+		$link = open_database_connection();
+
+		$query = "SELECT * FROM items ORDER BY name ASC ";
+
+		$items = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result))
+				$items[] = $row;
+
+			// free result set
+			mysqli_free_result($result);
+		}
+
+		// close connection
+		mysqli_close($link);
+
+		return $items;
+	}
+
+	function get_item_by_id($id) {
+		$link = open_database_connection();
+
+		$query = "SELECT * FROM items WHERE id = '" . mysqli_real_escape_string($link, $id) . "' LIMIT 1";
+
+		if ($result = mysqli_query($link, $query))
+			$item = mysqli_fetch_assoc($result);
+
+		// free result set
+		mysqli_free_result($result);
+
+		// close connection
+		mysqli_close($link);
+
+		return $item;
+	}
+
+	function add_item($name, $unit, $alert_on) {
+		$link = open_database_connection();
+
+		$query = "INSERT INTO items (id, name, unit, alert_on) VALUES (
+									NULL,
+									'" . mysqli_real_escape_string($link, $name) . "',
+									'" . mysqli_real_escape_string($link, $unit) . "',
+									'" . mysqli_real_escape_string($link, $alert_on) . "'
+								 )";
+		$result = mysqli_query($link, $query);
+
+		// free result set
+		mysqli_free_result($result);
+
+		// close connection
+		mysqli_close($link);
+
+		return $result;
+	}
+
+	function get_all_checkouts() {
+		$link = open_database_connection();
+
+		$query = "SELECT * FROM checkouts ORDER BY timestamp DESC";
+
+		$checkouts = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result))
+				$checkouts[] = $row;
+
+			// free result set
+			mysqli_free_result($result);
+		}
+
+		// close connection
+		mysqli_close($link);
+
+		return $checkouts;
+	}
+
+	function add_checkout($checkin, $item, $customer, $quantity) {
+		$link = open_database_connection();
+
+		$query = "INSERT INTO checkouts (id, `checkin?`, `timestamp`, item, customer, quantity) VALUES (
+									NULL,
+									'" . mysqli_real_escape_string($link, $checkin) . "',
+									NOW(), '" . mysqli_real_escape_string($link, $item) . "',
+									'" . mysqli_real_escape_string($link, $customer) . "',
+									'" . mysqli_real_escape_string($link, $quantity) . "'
+								 )";
+		$result = mysqli_query($link, $query);
+
+		// free result set
+		mysqli_free_result($result);
+
+		// close connection
+		mysqli_close($link);
+
+		if(intval($checkin) == 0) {
+			$item = get_item_by_id($item);
+			$item['stock'] = get_stocks_by_id($item['id']);
+			if($item['stock'] < $item['alert_on'])
+				send_alert_email($item);
+		}
+
+
+		return $result;
+	}
+
+	function delete_checkout($id)
+	{
+		$link = open_database_connection();
+
+		$query = "DELETE FROM checkouts WHERE id = '" . mysqli_real_escape_string($link, $id) . "' LIMIT 1";
+
+		$result = mysqli_query($link, $query);
+
+		// free result set
+		mysqli_free_result($result);
+
+		// close connection
+		mysqli_close($link);
+
+		return $result;
+	}
+
+	function get_all_stocks() {
+		$link = open_database_connection();
+
+		$query = "SELECT * FROM items ORDER BY name ASC ";
+
+		$items = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result)) {
+				$row['stocks'] = get_stocks_by_id($row['id']);
+				$items[] = $row;
+			}
+
+			// free result set
+			mysqli_free_result($result);
+		}
+
+		// close connection
+		mysqli_close($link);
+
+		return $items;
+	}
+
+	function get_stocks_by_id($id) {
+		$link = open_database_connection();
+
+		$query = "SELECT SUM(quantity) AS checkins FROM checkouts WHERE `checkin?` = 1 AND item = '" . mysqli_real_escape_string($link, $id) . "'";
+		$checkins = 0;
+
+		if ($result = mysqli_query($link, $query))
+			$checkins = mysqli_fetch_assoc($result);
+
+		// free result set
+		mysqli_free_result($result);
+
+		$query = "SELECT SUM(quantity) AS checkouts FROM checkouts WHERE `checkin?` = 0 AND item = '" . mysqli_real_escape_string($link, $id) . "'";
+		$checkouts = 0;
+
+		if ($result = mysqli_query($link, $query))
+			$checkouts = mysqli_fetch_assoc($result);
+
+		// free result set
+		mysqli_free_result($result);
+
+		// close connection
+		mysqli_close($link);
+
+		return (intval($checkins['checkins']) - intval($checkouts['checkouts']));
+	}
+
+	/* Customer Model */
+	function get_all_customers() {
+		$link = open_database_connection();
+
+		$query = "SELECT * FROM customers ORDER BY name ASC ";
+
+		$customers = array();
+		if ($result = mysqli_query($link, $query)) {
+			// fetch associative array
+			while ($row = mysqli_fetch_assoc($result))
+				$customers[] = $row;
+
+			// free result set
+			mysqli_free_result($result);
+		}
+
+		// close connection
+		mysqli_close($link);
+
+		return $customers;
+	}
+
+	function add_customer($name) {
+		$link = open_database_connection();
+
+		$query = "INSERT INTO customers (id, name) VALUES (
+									NULL,
+									'" . mysqli_real_escape_string($link, $name) . "'
+								 )";
+		$result = mysqli_query($link, $query);
+
+		// free result set
+		mysqli_free_result($result);
+
+		// close connection
+		mysqli_close($link);
+
+		return $result;
+	}
+
+	function send_alert_email($item)
+	{
+		$receiver = "b.gaultier@gmail.com";
+		$headers = "From: kfet@laclef.cc";
+		$subject = 'Alerte : stock "' . $item['name'] . '" bas !';
+		$message = "Bonjour Sandra,\n\nLe stock pour : \"" . $item['name'] . "\" est de  " .
+				   $item['stock'] . " " . $item['unit'];
+		if (intval($item['stock']) > 1) $message .= 's';
+		$message .= " !\n\nBonne journée :)";
+
+		return mail($receiver, $subject, $message, $headers);
+	}
+
+	function get_customer_by_id($id) {
+		$link = open_database_connection();
+
+		$query = "SELECT * FROM customers WHERE id = '" . mysqli_real_escape_string($link, $id) . "' LIMIT 1";
+
+		if ($result = mysqli_query($link, $query))
+			$customer = mysqli_fetch_assoc($result);
+
+		// free result set
+		mysqli_free_result($result);
+
+		// close connection
+		mysqli_close($link);
+
+		return $customer;
+	}
+
 	/* Event Model */
 	function get_all_events() {
 		$link = open_database_connection();
@@ -2281,6 +2552,16 @@
 		return $users;
 	}
 
+	function get_current_bitcoin_value()
+	{
+		$url = 'https://api.coindesk.com/v1/bpi/currentprice/EUR.json';
+		$json_string = file_get_contents($url);
+
+		$parsed_json = json_decode($json_string);
+
+		return $parsed_json->{'bpi'}->{'EUR'}->{'rate_float'};
+	}
+
 	function get_google_calendar_events()
 	{
 		require_once 'icalreader.php';
@@ -2293,6 +2574,32 @@
 		$events = $ical->sortEventsWithOrder($events, SORT_DESC);
 
 		return $events;
+	}
+
+	function get_current_helpdesk_operator()
+	{
+		if (date('H') > 7 && date('H') < 18) {
+			require_once 'icalreader.php';
+
+			$ical   = new ICal('helpdesk.ics');
+			$rangeStart = new DateTime();
+
+			$rangeStart = new DateTime();
+			$rangeStart->setTimestamp(strtotime('today'));
+
+			$rangeEnd = new DateTime;
+
+			$events = $ical->eventsFromRange(date_format($rangeStart, 'Y-m-d'), date_format($rangeEnd, 'Y-m-d H:i'));
+			$events = $ical->sortEventsWithOrder($events, SORT_DESC);
+
+			if(isset($events[0])) {
+				$last_event = $events[0];
+				$current_helpdesk_operator = ucwords(str_replace('.', " ", str_replace('@telecom-bretagne.eu', "", str_replace('mailto:', "", $last_event ["ORGANIZER_array"][0] ["SENT-BY"]))));
+				return $current_helpdesk_operator;
+			}
+			return NULL;
+		}
+		else return NULL;
 	}
 
 	function iCalDateToUnixTimestamp($icalDate)

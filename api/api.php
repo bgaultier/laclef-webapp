@@ -340,7 +340,7 @@
 		header(':', true, 400);
 		send_headers();
 
-		$response = array("version" => $version,
+		$response = array("version" => "0.1",
 											"response" => "Bad Request",
 										 );
 		echo json_encode($response);
@@ -350,7 +350,7 @@
 		header(':', true, 403);
 		send_headers();
 
-		$response = array("version" => $version,
+		$response = array("version" => "0.1",
 											"response" => "Forbidden",
 										 );
 		echo json_encode($response);

@@ -50,12 +50,14 @@
 				$client['tags'] = get_user_tags($client['uid']);
 				$client['equipments'] = get_user_equipments($client['uid']);
 				$client['jobs'] = get_jobs_by_uid($client['uid']);
+				$bitcoin = get_current_bitcoin_value();
 			}
 			else {
 				$messages = get_all_messages();
 				$events = get_google_calendar_events();
 				$first_coffee = get_first_coffee();
 				$jobs = get_last_jobs();
+				$helpdesk_operator = get_current_helpdesk_operator();
 			}
 
 			// get all the users
@@ -369,8 +371,10 @@
 
 				// list all the payments
 				$payments = get_all_payments();
-				// Fetch all the users UIDs
-				$uids = get_all_uids();
+
+				// get all the users
+				$users = get_all_users_sorted_by_lastname_ascending();
+
 				require 'templates/payments.php';
 			}
 		else
@@ -476,8 +480,8 @@
 				else
 					add_job($_POST['uid'], $_POST['timestamp'], $_POST['file'], $_POST['duration'], $_POST['filament'], $_POST['delivery'], $_POST['price']);
 			}
-			// get all the uids
-			$uids = get_all_uids();
+			// get all the users
+			$users = get_all_users_sorted_by_lastname_ascending();
 
 			// get all the printig jobs
 			$jobs = get_all_jobs();
@@ -651,6 +655,57 @@
 
 	 	foreach ($user_orders as $label => $orders)
 	 		echo "$label\t$orders\n";
+	}
+
+	function checkin_action() {
+		// needed to set the tab active
+		$stocks_active = true;
+
+		$items = get_all_items();
+
+		require 'templates/checkin.php';
+	}
+
+	function checkout_action() {
+		// needed to set the tab active
+		$stocks_active = true;
+
+		$items = get_all_items();
+		$customers = get_all_customers();
+
+		require 'templates/checkout.php';
+	}
+
+	function delete_checkout_action($id) {
+		//check if the user is admin
+		delete_checkout($id);
+
+		// Redirect browser
+		header("Location: http://" . $_SERVER['SERVER_NAME'] . "/stocks");
+		// Make sure that code below does not get executed when we redirect
+		exit;
+	}
+
+	function list_stocks_action($uid) {
+		// needed to set the tab active
+		$stocks_active = true;
+
+		// dealing with itemForm
+		if(isset($_POST['unit']))
+			add_item($_POST['name'], $_POST['unit'], $_POST['alert_on']);
+
+		// dealing with checkoutForm
+		if(isset($_POST['quantity']))
+			add_checkout($_POST['checkin'], $_POST['item'], $_POST['customer'], $_POST['quantity']);
+
+		// dealing with checkoutForm
+		if(isset($_POST['customer_name']))
+			add_customer($_POST['customer_name']);
+
+		$items = get_all_stocks();
+
+		$checkouts = get_all_checkouts();
+		require 'templates/stocks.php';
 	}
 
 	function events_json_action() {
